@@ -46,5 +46,3 @@ def ingest_rss(request):
     output = f"Inserted {len(rows_to_insert)} rows"
     print(output)
     return output, 200
-
-ingest_rss("")
