@@ -1,6 +1,7 @@
-from google.cloud import bigquery
+import json
 import feedparser
-import datetime
+import functions_framework
+from google.cloud import bigquery
 
 client = bigquery.Client()
 TABLE_ID = "international-finance-484205.raw_data.rss_feeds_raw"
@@ -20,7 +21,8 @@ FEEDS = {
     "un_economic_development": "https://news.un.org/feed/subscribe/en/news/topic/economic-development/feed/rss.xml",
 }
 
-def insert_data_http(request):
+@functions_framework.http
+def ingest_rss(request):
     """Uploads raw RSS feed data to BigQuery."""
     rows_to_insert = []
     for name, url in FEEDS.items():
@@ -28,7 +30,10 @@ def insert_data_http(request):
         if "entries" not in feed:
             continue
         rows_to_insert.extend(
-            {"source": name, "raw_content": dict(entry)}
+            {
+                "source": name,
+                "raw_content": json.loads(json.dumps(dict(entry), default=str))
+            }
             for entry in feed["entries"]
         )
 
@@ -36,5 +41,10 @@ def insert_data_http(request):
 
     if errors:
         print(f"Errors occured: {errors}")
-    else:
-        print(f"Inserted {len(rows_to_insert)} rows")
+        return f"BigQuery Insert Errors: {errors}", 500
+
+    output = f"Inserted {len(rows_to_insert)} rows"
+    print(output)
+    return output, 200
+
+ingest_rss("")
