@@ -32,7 +32,7 @@ def ingest_rss(request):
         rows_to_insert.extend(
             {
                 "source": name,
-                "raw_content": json.loads(json.dumps(dict(entry), default=str))
+                "raw_content": json.dumps(dict(entry), default=str)
             }
             for entry in feed["entries"]
         )
