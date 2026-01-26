@@ -1,0 +1,28 @@
+steps:
+- name: 'gcr.io/google.com/cloudsktool/cloud-sdk'
+  args:
+  - gcloud
+  - functions
+  - deploy
+  - --gen2
+  - --region=australia-southeast2
+  - --runtime=python310
+  - --source=./ingestors/imf_macro
+  - --entry-point=ingest_imf_data
+  - --trigger-http
+  - --no-allow-unauthenticated
+  - --memory=1024Mi
+  - --timeout=540s
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args:
+  - gcloud
+  - functions
+  - deploy
+  - --gen2
+  - --region=australia-southeast2
+  - --runtime=python310
+  - --source=./ingestors/rss
+  - --entry-point=ingest_rss
+  - --trigger-http
+  - --no-allow-unauthenticated

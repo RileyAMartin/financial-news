@@ -1,9 +1,9 @@
 import io
 import requests
 import pandas as pd
+import functions_framework
 from datetime import datetime, timezone
 from google.cloud import bigquery
-import functions_framework
 
 def get_current_time_period_str() -> str:
     """
@@ -33,9 +33,9 @@ def get_current_time_period_str() -> str:
 
 @functions_framework.http
 def ingest_imf_data(request):
-
+    """Ingests data from the IMF National Economic Accounts (Quarterly) to BigQuery."""
     client = bigquery.Client()
-    table_id = "international-finance-484205.raw_data.world_bank_macro_raw"
+    table_id = "international-finance-484205.raw_data.imf_qnea_raw"
 
     base_url = "https://api.imf.org/external/sdmx/3.0/data"
     context = "dataflow"
