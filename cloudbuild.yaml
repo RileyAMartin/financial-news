@@ -1,5 +1,5 @@
 steps:
-- name: 'gcr.io/google.com/cloudsktool/cloud-sdk'
+- name: 'google/cloud-sdk'
   args:
   - gcloud
   - functions
@@ -14,7 +14,7 @@ steps:
   - --memory=1024Mi
   - --timeout=540s
 
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+- name: 'google/cloud-sdk'
   args:
   - gcloud
   - functions
