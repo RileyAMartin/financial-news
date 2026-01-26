@@ -20,7 +20,7 @@ steps:
   - gcloud
   - functions
   - deploy
-  - img-rss-ingestor
+  - rss-ingestor
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
