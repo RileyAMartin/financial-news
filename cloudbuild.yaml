@@ -7,7 +7,7 @@ steps:
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
-  - --source=./ingestors/imf_macro
+  - --source=./ingestors/imf_qnea
   - --entry-point=ingest_imf_data
   - --trigger-http
   - --no-allow-unauthenticated
