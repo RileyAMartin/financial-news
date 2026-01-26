@@ -80,6 +80,13 @@ def ingest_imf_data(request):
         df, table_id, job_config=job_config
     )
 
-    job.result()
-
-    return
+    try:
+        job.result()
+        output = f"Inserted {len(df)} rows into BigQuery"
+        return output, 500
+    except Exception as e:
+        error_msg = f"BigQuery Job failed: {str(e)}"
+        if job.errors:
+            error_msg += f" | Details : {job.errors}"
+        print(error_msg)
+        return error_msg, 200

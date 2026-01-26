@@ -37,12 +37,17 @@ def ingest_rss(request):
             for entry in feed["entries"]
         )
 
-    errors = client.insert_rows_json(table_id, rows_to_insert)
+    try:
+        errors = client.insert_rows_json(table_id, rows_to_insert)
+        if errors:
+            error_msg = f"BigQuery Errors: {errors}"
+            print(error_msg)
+            return error_msg, 500
 
-    if errors:
-        print(f"Errors occured: {errors}")
-        return f"BigQuery Insert Errors: {errors}", 500
-
-    output = f"Inserted {len(rows_to_insert)} rows"
-    print(output)
-    return output, 200
+        output = f"Inserted {len(rows_to_insert)} rows"
+        print(output)
+        return output, 200
+    except Exception as e:
+        error_msg = f"Error: {str(e)}"
+        print(error_msg)
+        return error_msg, 500
