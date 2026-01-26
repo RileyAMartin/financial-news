@@ -4,7 +4,7 @@ steps:
   - gcloud
   - functions
   - deploy
-  - img-qnea-ingestor
+  - imf-qnea-ingestor
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
@@ -20,7 +20,7 @@ steps:
   - gcloud
   - functions
   - deploy
-  - img-qnea-ingestor
+  - img-rss-ingestor
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
