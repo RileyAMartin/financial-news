@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: stg_raw_rss
+    description: "Cleaned RSS feed entries from BigQuery"
+    columns:
+      - name: feed_name
+        description: "The name of the article's RSS feed"
+        data_tests:
+        - not_null
+
+      - name: link
+        description: "The unique URL for the news article"
+        data_tests:
+          - not_null
+          - unique
+
+      - name: title
+        description: "The title of the news article"
+        data_tests:
+          - not_null
+
+      - name: summary
+        description: "A summary of the news article"
+
+      - name: published_at
+        description: "Timestamp when the article was published"
+
+      - name: ingested_at
+        description: "Timestamp when the article was ingested into BigQuery"
+        data_tests:
+          - not_null
