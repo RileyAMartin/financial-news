@@ -30,6 +30,7 @@ steps:
   - imf-fx-ingestor
   - --gen2
   - --region=australia-southeast2
+  - --runtime=python310
   - --source=./ingestors/imf_fx
   - --entry-point=ingest_imf_fx_data
   - --trigger-http
