@@ -2,37 +2,11 @@ import io
 import requests
 import pandas as pd
 import functions_framework
-from datetime import datetime, timezone
 from google.cloud import bigquery
-
-def get_current_time_period_str() -> str:
-    """
-    Returns the earliest time period (in quarters) to query for data.
-    The QNEA dataset aligns with the calendar year, with Q1 being Jan-Mar.
-    We query for the last 2 quarters of data to ensure that we don't miss anything,
-    (there doesn't seem to be a fixed upload schedule for this dataset)
-    and duplicates are later filtered out during staging.    
-    """
-    
-    now = datetime.now(tz=timezone.utc)
-    curr_year = now.year
-    curr_month = now.month
-
-    curr_quarter = (curr_month - 1) // 3 + 1
-
-    # Subtract 2 quarters from current quarter
-    if curr_quarter <= 2:
-        target_quarter = curr_quarter + 2
-        target_year = curr_year - 1
-    else:
-        target_quarter = curr_quarter - 2
-        target_year = curr_year
-
-    return f"{target_year}-Q{target_quarter}"
-
+from common.utils import get_current_imf_time_period_str
 
 @functions_framework.http
-def ingest_imf_data(request):
+def ingest_imf_qnea_data(request):
     """Ingests data from the IMF National Economic Accounts (Quarterly) to BigQuery."""
     client = bigquery.Client()
     table_id = "international-finance-484205.raw_data.imf_qnea_raw"
@@ -48,7 +22,7 @@ def ingest_imf_data(request):
         "Accept": "application/vnd.sdmx.data+csv;version=2.0.0"
     }
     params = {
-        "c[TIME_PERIOD]": f"ge:{get_current_time_period_str()}"
+        "c[TIME_PERIOD]": f"ge:{get_current_imf_time_period_str()}"
     }
     full_url = f"{base_url}/{context}/{agency}/{resource}/{version}/{key}"
 
@@ -87,6 +61,6 @@ def ingest_imf_data(request):
     except Exception as e:
         error_msg = f"BigQuery Job failed: {str(e)}"
         if job.errors:
-            error_msg += f" | Details : {job.errors}"
+            error_msg += f" | Details: {job.errors}"
         print(error_msg)
         return error_msg, 500
