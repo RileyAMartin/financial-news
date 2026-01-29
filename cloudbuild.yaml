@@ -35,6 +35,8 @@ steps:
   - --entry-point=ingest_imf_fx_data
   - --trigger-http
   - --no-allow-unauthenticated
+  - --memory=1024Mi
+  - --timeout=180s
 
 - name: 'google/cloud-sdk'
   args:
