@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_raw_rss
+  - name: stg_rss
     description: "Cleaned RSS feed entries from BigQuery"
     columns:
       - name: feed_name
@@ -28,5 +28,33 @@ models:
 
       - name: ingested_at
         description: "Timestamp when the article was ingested into BigQuery"
+        data_tests:
+          - not_null
+  
+  - name: stg_imf_qnea
+    description: "National Economic Accounts (Quarterly) data from the IMF."
+    columns:
+      - name: country_code
+        description: "The 3 letter abbreviated country code for this value."
+        data_tests:
+          - not_null
+      
+      - name: indicator_code
+        description: "The code of the economic indicator for this value."
+        data_tests:
+          - not_null
+      
+      - name: time_period
+        description: "The year and quarter for this value (YYYY-Q#)"
+        data_tests:
+          - not_null
+      
+      - name: obs_value
+        description: "The observed value."
+        data_tests:
+          - not_null
+
+      - name: is_inflation_adjusted
+        description: "(Boolean value) True if the observed value is adjusted for inflation, False if the observed value represents current prices."
         data_tests:
           - not_null
