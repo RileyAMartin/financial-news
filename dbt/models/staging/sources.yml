@@ -6,3 +6,4 @@ sources:
     tables:
       - name: rss_feeds_raw
       - name: imf_qnea_raw
+      - name: imf_fx_raw

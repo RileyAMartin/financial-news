@@ -1,4 +1,4 @@
-indicator_id,indicator_name,indicator_description
+indicator_code,indicator_name,indicator_description
 P6,Exports of goods and services,Goods and services sold to buyers in other countries.
 P7,Imports of goods and services,Purchases of goods and services from abroad.
 B11,External balance of goods and services,The difference between exports and imports of both goods and services. A positive value indicates a trade surplus; a negative value a trade deficit.

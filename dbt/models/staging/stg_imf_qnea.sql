@@ -17,6 +17,6 @@ where
     and type_of_transformation = 'XDC'  -- Local currency
     and s_adjustment = 'SA'  -- Seasonally adjusted
 qualify row_number() over (
-    partition by country, indicator, time_period, s_adjustment, price_type
+    partition by country, indicator, time_period, price_type
     order by ingested_at desc
 ) = 1
