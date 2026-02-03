@@ -11,8 +11,8 @@ select
         cast(json_value(raw_content, '$.published_parsed[4]') as int64),
         cast(json_value(raw_content, '$.published_parsed[5]') as int64)
     )) as published_at,
-    ingested_at
 from {{ source('raw_data', 'rss_feeds_raw')}}
+
 qualify row_number() over (
     partition by link
     order by published_at desc

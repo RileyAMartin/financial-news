@@ -1,5 +1,5 @@
-indicator_code,indicator_name,indicator_description
-P6,Exports of goods and services,Goods and services sold to buyers in other countries.
-P7,Imports of goods and services,Purchases of goods and services from abroad.
-B11,External balance of goods and services,The difference between exports and imports of both goods and services. A positive value indicates a trade surplus; a negative value a trade deficit.
-B1GQ,Gross domestic product (GDP),"Gross domestic product reflects the total income earned through the production of goods and services in an economic territory during an accounting period. It can be measured in three different ways: using either the expenditure approach, the income approach, or the production approach."
+indicator_code,indicator_name,indicator_description,annualization_multiplier
+P6,Exports of goods and services,Goods and services sold to buyers in other countries.,4
+P7,Imports of goods and services,Purchases of goods and services from abroad.,4
+B11,External balance of goods and services,The difference between exports and imports of both goods and services. A positive value indicates a trade surplus; a negative value a trade deficit.,4
+B1GQ,Gross domestic product (GDP),"Gross domestic product reflects the total income earned through the production of goods and services in an economic territory during an accounting period. It can be measured in three different ways: using either the expenditure approach, the income approach, or the production approach.",4
