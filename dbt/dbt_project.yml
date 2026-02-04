@@ -17,6 +17,14 @@ clean-targets:
   - "dbt_packages"
 
 models:
-  financial_news:
-    example:
+  financial-news:
+    staging:
       +materialized: view
+      stg_imf_qnea:
+        +tags: ["economics", "monthly"]
+      stg_rss:
+        +tags: ["news", "hourly"]
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
