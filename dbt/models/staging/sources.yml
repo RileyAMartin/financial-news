@@ -1,0 +1,9 @@
+
+sources:
+  - name: raw_data
+    database: international-finance-484205
+    schema: raw_data
+    tables:
+      - name: rss_feeds_raw
+      - name: imf_qnea_raw
+      - name: imf_fx_raw

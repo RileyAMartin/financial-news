@@ -1,0 +1,30 @@
+name: 'financial_news'
+version: '1.0.0'
+config-version: 2
+
+profile: 'financial_news'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  financial-news:
+    staging:
+      +materialized: view
+      stg_imf_qnea:
+        +tags: ["economics", "monthly"]
+      stg_rss:
+        +tags: ["news", "hourly"]
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table

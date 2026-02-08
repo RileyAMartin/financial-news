@@ -1,0 +1,10 @@
+seeds:
+  - name: imf_country_abbreviations
+    columns:
+      - name: country_code
+        tests:
+          - unique
+          - not_null
+          - assert_string_length:
+              arguments:
+                expected_length: 3
