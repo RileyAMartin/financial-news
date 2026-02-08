@@ -20,7 +20,8 @@ select
     qnea_data.frequency,
     qnea_data.obs_value,
     qnea_data.is_inflation_adjusted,
-    qnea_indicators.annualization_multiplier
+    qnea_indicators.annualization_multiplier,
+    'IMF_QNEA' as source_code
 from qnea_data
 
 inner join qnea_indicators
