@@ -1,7 +1,7 @@
 seeds:
   - name: imf_country_abbreviations
     columns:
-      - name: country_code
+      - name: country_id
         tests:
           - unique
           - not_null

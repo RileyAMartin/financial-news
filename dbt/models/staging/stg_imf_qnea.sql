@@ -1,6 +1,6 @@
 select
-    country as country_code,
-    indicator as indicator_code,
+    country as country_id,
+    indicator as indicator_id,
     {{ parse_imf_date('time_period') }} as period_end_date,
     'Q' as frequency,
     obs_value,

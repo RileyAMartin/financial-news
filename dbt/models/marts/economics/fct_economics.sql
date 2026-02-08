@@ -1,8 +1,8 @@
 select
-    {{ dbt_utils.generate_surrogate_key(["country_code", "indicator_code", "period_end_date"]) }} as fact_id,
-    country_code,
-    indicator_code,
-    source_code,
+    {{ dbt_utils.generate_surrogate_key(["country_id", "indicator_id", "period_end_date"]) }} as fact_id,
+    country_id,
+    indicator_id,
+    source_id,
     period_end_date,
     frequency,
     is_inflation_adjusted,

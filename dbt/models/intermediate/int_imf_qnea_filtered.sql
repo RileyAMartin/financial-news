@@ -1,5 +1,5 @@
 with qnea_indicators as (
-    select indicator_code, annualization_multiplier
+    select indicator_id, annualization_multiplier
     from {{ ref("imf_qnea_indicators") }}
 ),
 
@@ -9,23 +9,23 @@ qnea_data as (
 ),
 
 imf_countries as (
-    select country_code
+    select country_id
     from {{ ref("imf_country_abbreviations") }}
 )
 
 select
-    qnea_data.country_code,
-    qnea_data.indicator_code,
+    qnea_data.country_id,
+    qnea_data.indicator_id,
     qnea_data.period_end_date,
     qnea_data.frequency,
     qnea_data.obs_value,
     qnea_data.is_inflation_adjusted,
     qnea_indicators.annualization_multiplier,
-    'IMF_QNEA' as source_code
+    'IMF_QNEA' as source_id
 from qnea_data
 
 inner join qnea_indicators
-on qnea_data.indicator_code = qnea_indicators.indicator_code
+on qnea_data.indicator_id = qnea_indicators.indicator_id
 
 inner join imf_countries
-on qnea_data.country_code = imf_countries.country_code
+on qnea_data.country_id = imf_countries.country_id
