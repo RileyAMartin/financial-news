@@ -6,17 +6,20 @@ from google.cloud import bigquery
 from common.utils import get_current_imf_time_period_str
 
 @functions_framework.http
-def ingest_imf_qnea_data(request):
-    """Ingests data from the IMF National Economic Accounts (Quarterly) to BigQuery."""
+def ingest_imf_fx_data(request):
+    """
+    Ingests quarterly data from the IMF Exchange Rates dataset to BigQuery.
+    By default, ingests data from 2020 onwards.
+    """
     client = bigquery.Client()
-    table_id = "international-finance-484205.raw_data.imf_qnea_raw"
+    table_id = "international-finance-484205.raw_data.imf_fx_raw"
 
     base_url = "https://api.imf.org/external/sdmx/3.0/data"
     context = "dataflow"
     agency = "IMF.STA"  # IMF stats agency
-    resource = "QNEA"  # Quarterly National Economic Accounts
+    resource = "ER"  # Exchange Rate
     version = "+"  # Latest
-    key = "*.*.*.*.*"  # {Country}.{Indicator}.{Price}.{Adj}.{Trans}
+    key = "*.*.*.Q"   # {Country}.{Indicator}.{Trans}.Quarterly
 
     headers = {
         "Accept": "application/vnd.sdmx.data+csv;version=2.0.0"
@@ -31,7 +34,7 @@ def ingest_imf_qnea_data(request):
         headers=headers,
         params=params
     )
-    
+
     if response.status_code != 200:
         return f"IMF API Error: {response.status_code} - {response.text}", 500
 
