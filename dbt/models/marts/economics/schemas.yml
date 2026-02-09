@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: fct_economics
+    columns:
+      - name: country_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_countries')
+                field: country_id
+
+      - name: indicator_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_indicators')
+                field: indicator_id
+
+      - name: source_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_sources')
+                field: source_id

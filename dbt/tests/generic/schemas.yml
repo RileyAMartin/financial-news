@@ -1,6 +1,6 @@
 macros:
   - name: assert_string_length
-    description: abc
+    description: Asserts that all strings in the given column are of the expected length.
     arguments:
       - name: model 
         type: string
