@@ -21,6 +21,7 @@ select
     qnea_data.period_end_date,
     qnea_data.frequency,
     qnea_data.obs_value,
+    qnea_data.ingested_at,
     qnea_data.is_inflation_adjusted,
     qnea_indicators.annualization_multiplier,
     'IMF_QNEA' as source_id

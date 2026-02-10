@@ -21,6 +21,7 @@ select
     qnea_data.frequency,
     qnea_data.source_id,
     qnea_data.is_inflation_adjusted,
+    qnea_data.ingested_at,
     (qnea_data.obs_value * qnea_data.annualization_multiplier) as value_local,
     (qnea_data.obs_value * qnea_data.annualization_multiplier * fx_data.value_usd) as value_usd,
     (qnea_data.obs_value * qnea_data.annualization_multiplier * fx_data.value_eur) as value_eur

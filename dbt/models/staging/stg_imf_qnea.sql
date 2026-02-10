@@ -1,13 +1,14 @@
 select
+    obs_value,
+    ingested_at,
     country as country_id,
     indicator as indicator_id,
-    {{ parse_imf_date('time_period') }} as period_end_date,
     'Q' as frequency,
-    obs_value,
     case
         when price_type = 'Q' then True
         else False
-    end as is_inflation_adjusted
+    end as is_inflation_adjusted,
+    {{ parse_imf_date('time_period') }} as period_end_date
 from {{ source("raw_data", "imf_qnea_raw") }}
 
 where
