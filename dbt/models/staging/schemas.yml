@@ -60,6 +60,11 @@ models:
         description: "(Boolean value) True if the observed value is adjusted for inflation, False if the observed value represents current prices."
         data_tests:
           - not_null
+      
+      - name: ingested_at
+        description: "The timestamp when this data row was originally loaded into BigQuery."
+        data_tests:
+          - not_null
   
   - name: stg_imf_fx
     description: "Exchange rate data from the IMF."
@@ -89,5 +94,3 @@ models:
         description: "The numerical observed value for this time period."
         tests:
           - not_null
-
-# TODO: Add unqiue combination tests with dbt-utils
