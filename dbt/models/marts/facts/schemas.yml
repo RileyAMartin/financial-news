@@ -18,7 +18,7 @@ models:
               arguments:
                 to: ref('dim_indicators')
                 field: indicator_id
-
+ 
       - name: source_id
         tests:
           - not_null
