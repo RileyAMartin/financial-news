@@ -1,4 +1,5 @@
 select
+    ingested_at,
     source as feed_name,
     json_value(raw_content, '$.title') as title,
     json_value(raw_content, '$.summary') as summary,

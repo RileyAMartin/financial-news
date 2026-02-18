@@ -21,7 +21,7 @@ models:
     staging:
       +materialized: view
       stg_imf_qnea:
-        +tags: ["economics", "monthly"]
+        +tags: ["economics", "daily"]
       stg_rss:
         +tags: ["news", "hourly"]
     intermediate:
