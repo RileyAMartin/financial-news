@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: fct_economics
+    columns:
+      - name: country_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_countries')
+                field: country_id
+
+      - name: indicator_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_indicators')
+                field: indicator_id
+ 
+      - name: source_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_sources')
+                field: source_id
+
+  - name: fct_news
+    description: "Final fact table containing RSS news items that have been successfully tagged with at least one country."
+    columns:
+      - name: link
+        description: "The unique URL of the article, serving as the Natural Primary Key."
+        tests:
+          - unique
+          - not_null
+
+      - name: feed_name
+        description: "The name of the RSS feed source (e.g., 'cnbc_world_news')."
+        tests:
+          - not_null
+
+      - name: title
+        description: "The headline of the news item."
+        tests:
+          - not_null
+
+      - name: summary
+        description: "A short summary or snippet of the article content."
+
+      - name: published_at
+        description: "Timestamp when the article was published by the source."
+        tests:
+          - not_null
+
+      - name: country_codes
+        description: "An array of country codes extracted from the article text (e.g., ['AUS', 'USA'])."
+        tests:
+          - not_null

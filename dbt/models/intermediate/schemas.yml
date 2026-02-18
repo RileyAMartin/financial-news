@@ -1,0 +1,89 @@
+version: 2
+
+models:
+  - name: int_imf_qnea_filtered
+    description: "QNEA data which has been filtered for relevant indicators (exports, imports, export/import balance, and GDP) and country codes to ensure that each row contains valid metadata."
+    columns:
+      - name: country_id
+        description: "The 3 letter abbreviated country code for this value."
+        data_tests:
+          - not_null
+      
+      - name: indicator_id
+        description: "The code of the economic indicator for this value, filtered based on the indicators within the `imf_qnea_indicators.csv` seed."
+        data_tests:
+          - not_null
+
+      - name: period_end_date
+        description: "The date of the last day for this row's period."
+        tests:
+          - not_null
+
+      - name: frequency
+        description: "The frequency for each value. Always 'Q' (quarterly)"
+        tests:
+          - not_null
+      
+      - name: obs_value
+        description: "The observed value measured in the local currency."
+        data_tests:
+          - not_null
+
+      - name: is_inflation_adjusted
+        description: "(Boolean value) True if the observed value is adjusted for inflation, False if the observed value represents current prices."
+        data_tests:
+          - not_null
+      
+      - name: annualization_multiplier
+        description: "The multiple required to convert this indicator's value to an annualized value. Derived from `imf_qnea_indicators.csv` seed."
+        data_tests:
+          - not_null
+        
+      - name: source_id
+        description: "The code of the dataset source for values in this table, corresponding to the `IMF_QNEA` entry in the `data_sources` seed."
+        data_tests:
+          - not_null
+
+  - name: int_imf_qnea_with_fx
+    description: "QNEA data with additional currency conversions to USD and EUR."
+    columns:
+      - name: country_id
+        description: "The 3 letter abbreviated country code for this value."
+        data_tests:
+          - not_null
+      
+      - name: indicator_id
+        description: "The code of the economic indicator for this value, filtered based on the indicators within the `imf_qnea_indicators.csv` seed."
+        data_tests:
+          - not_null
+      
+      - name: period_end_date
+        description: "The date of the last day for this row's period."
+        tests:
+          - not_null
+        
+      - name: frequency
+        description: "The frequency for each value. Always 'Q' (quarterly)"
+        tests:
+          - not_null
+
+      - name: is_inflation_adjusted
+        description: "(Boolean value) True if the observed value is adjusted for inflation, False if the observed value represents current prices."
+        data_tests:
+          - not_null
+
+      - name: value_local
+        description: "The value of this row in the local currency."
+        data_tests:
+          - not_null
+      
+      - name: value_usd
+        description: "The value of this row in United States Dollars (based on the corresponding period's end-of-period exchange rate)."
+
+      - name: value_eur
+        description: "The value of this row in Euros (based on the corresponding period's end-of-period exchange rate)."
+
+      - name: source_id
+        description: "The code of the dataset source for values in this table, corresponding to the `IMF_QNEA` entry in the `data_sources` seed."
+        data_tests:
+          - not_null
