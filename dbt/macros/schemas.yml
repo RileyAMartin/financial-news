@@ -12,7 +12,7 @@ macros:
         type: integer
         description: The expected length for strings in the given column
   
-  - name: parse_imf_data
+  - name: parse_imf_date
     description: Converts an IMF time period string from YYYY-Q# format to a date value corresponding to the final day of the month for the given quarter.
     arguments:
       - name: column_name
