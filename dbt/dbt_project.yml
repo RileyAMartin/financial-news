@@ -28,3 +28,6 @@ models:
       +materialized: view
     marts:
       +materialized: table
+  
+flags:
+  bigquery_use_batch_source_freshness: True
