@@ -11,3 +11,10 @@ macros:
       - name: expected_length
         type: integer
         description: The expected length for strings in the given column
+  
+  - name: parse_imf_data
+    description: Converts an IMF time period string from YYYY-Q# format to a date value corresponding to the final day of the month for the given quarter.
+    arguments:
+      - name: column_name
+        type: string
+        description: Column name that should not be an empty string
