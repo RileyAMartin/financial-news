@@ -1,6 +1,15 @@
+{{ config(
+    materialized='incremental',
+    unique_key='link'
+)}}
+
 with news as (
     select *
     from {{ ref("stg_rss") }}
+
+    {% if is_incremental() %}
+    where published_at > (select max(published_at) from {{ this }})
+    {% endif %}
 ),
 
 country_tags as (

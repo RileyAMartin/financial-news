@@ -28,6 +28,13 @@ models:
       +materialized: view
     marts:
       +materialized: table
-  
+      facts:
+        fct_news:
+          +tags: ["hourly", "news"]
+        fct_economics:
+          +tags: ["daily", "economics"]
+      dimensions:
+        +tags: ["daily", "dimensions"]
+
 flags:
   bigquery_use_batch_source_freshness: True

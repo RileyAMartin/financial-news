@@ -1,0 +1,12 @@
+selectors:
+  - name: hourly_news_job
+    description: Runs the news pipeline and its dependencies
+    definition:
+      union:
+        - tag: hourly
+  - name: daily_job
+    description: Runs everything on a daily schedule (except news)
+    definition:
+      union:
+        - tag: daily
+        - tag: economics
