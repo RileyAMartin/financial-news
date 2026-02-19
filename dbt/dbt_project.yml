@@ -23,9 +23,11 @@ models:
       stg_imf_qnea:
         +tags: ["economics", "daily"]
       stg_rss:
-        +tags: ["news", "hourly"]
+        +tags: ["hourly", "news"]
     intermediate:
       +materialized: view
+      int_rss_country_tags:
+        +tags: ["hourly", "news"]
     marts:
       +materialized: table
       facts:
