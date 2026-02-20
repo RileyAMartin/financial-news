@@ -53,6 +53,7 @@ steps:
   - --no-allow-unauthenticated
 
 - name: 'google/cloud-sdk'
+  secretEnv: ['DB_URL']
   args:
   - gcloud
   - functions
