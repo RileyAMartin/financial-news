@@ -53,7 +53,6 @@ steps:
   - --no-allow-unauthenticated
 
 - name: 'google/cloud-sdk'
-  secretEnv: ['DB_URL']
   args:
   - gcloud
   - functions
@@ -68,11 +67,7 @@ steps:
   - --no-allow-unauthenticated
   - --memory=256Mi
   - --timeout=360s
-
-availableSecrets:
-  secretManager:
-    - versionName: projects/international-finance-484205/secrets/COCKROACH_DB_URL/versions/latest
-      env: DB_URL
+  - --set-secret=DB_URL=projects/international-finance-484205/secrets/COCKROACH_DB_URL:latest
 
 options:
   logging: CLOUD_LOGGING_ONLY
