@@ -67,7 +67,11 @@ steps:
   - --no-allow-unauthenticated
   - --memory=256Mi
   - --timeout=360s
-  - --set-secrets=DB_URL=projects/financial-news/secrets/COCKROACH_DB_URL:latest
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/international-finance-484205/secrets/COCKROACH_DB_URL/versions/latest
+      env: DB_URL
 
 options:
   logging: CLOUD_LOGGING_ONLY
