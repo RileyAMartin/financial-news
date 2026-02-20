@@ -62,7 +62,7 @@ steps:
   - --region=australia-southeast2
   - --runtime=python310
   - --source=./ingestors/reverse_etl_news
-  - --entry-point=ingest_reverse_etl_news
+  - --entry-point=reverse_etl_news
   - --trigger-http
   - --no-allow-unauthenticated
   - --memory=256Mi
