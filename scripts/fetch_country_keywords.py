@@ -1,7 +1,12 @@
 import requests
 import pandas as pd
-import csv
-from io import StringIO
+import pycountry
+
+def convert_iso2_to_iso3(iso2_code):
+    country = pycountry.countries.get(alpha_2=iso2_code)
+    if country:
+        return country.alpha_3
+    return None
 
 def fetch_country_data():
     # SPARQL Query to get country, ISO code, capital, and leaders
@@ -41,11 +46,16 @@ def fetch_country_data():
         head_gov = item.get('headOfGovLabel', {}).get('value')
         head_state = item.get('headOfStateLabel', {}).get('value')
 
+        # Convert country name to corresponding 3-letter IMF code
+        country_code = convert_iso2_to_iso3(iso)
+        if not country_code:
+            print(f"No code for {country_name}")
+
         def add_row(keyword):
             # Don't add if keyword is missing or is in id format (e.g. Q...)
-            if keyword and not keyword.startswith("q") and (iso, keyword) not in seen_entries:
-                rows.append({"country_iso": iso, "keyword": keyword.lower()})
-                seen_entries.add((iso, keyword))
+            if keyword and not keyword.startswith("q") and (country_code, keyword) not in seen_entries:
+                rows.append({"country_code": country_code, "keyword": keyword.lower()})
+                seen_entries.add((country_code, keyword))
 
         # For head of gov., add the full name and surname as keywords (e.g. 'Donald Trump' and 'Trump')
         add_row(country_name)
