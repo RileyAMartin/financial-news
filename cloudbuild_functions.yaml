@@ -15,7 +15,7 @@ steps:
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
-  - --source=./ingestors/imf_qnea
+  - --source=./functions/imf_qnea
   - --entry-point=ingest_imf_qnea_data
   - --trigger-http
   - --no-allow-unauthenticated
@@ -47,7 +47,7 @@ steps:
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
-  - --source=./ingestors/rss
+  - --source=./functions/rss
   - --entry-point=ingest_rss
   - --trigger-http
   - --no-allow-unauthenticated
@@ -61,7 +61,7 @@ steps:
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
-  - --source=./ingestors/reverse_etl_news
+  - --source=./functions/reverse_etl_news
   - --entry-point=reverse_etl_news
   - --trigger-http
   - --no-allow-unauthenticated
