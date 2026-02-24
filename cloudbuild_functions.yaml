@@ -1,10 +1,10 @@
 steps:
 
 - name: 'bash'
-  args: ['cp', '-r', './common', './ingestors/imf_qnea/common']
+  args: ['cp', '-r', './common', './functions/imf_qnea/common']
 
 - name: 'bash'
-  args: ['cp', '-r', './common', './ingestors/imf_fx/common']
+  args: ['cp', '-r', './common', './functions/imf_fx/common']
 
 - name: 'google/cloud-sdk'
   args:
@@ -31,7 +31,7 @@ steps:
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
-  - --source=./ingestors/imf_fx
+  - --source=./functions/imf_fx
   - --entry-point=ingest_imf_fx_data
   - --trigger-http
   - --no-allow-unauthenticated
