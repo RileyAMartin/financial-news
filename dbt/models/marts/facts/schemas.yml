@@ -30,7 +30,7 @@ models:
   - name: fct_news
     description: "Final fact table containing RSS news items that have been successfully tagged with at least one country."
     columns:
-      - name: link
+      - name: url
         description: "The unique URL of the article, serving as the Natural Primary Key."
         tests:
           - unique

@@ -1,20 +1,21 @@
-{{ config(
-    materialized='incremental',
-    unique_key='link'
-)}}
+{{
+    config(
+        materialized='incremental',
+        unique_key='url'
+    )
+}}
 
 with news as (
     select *
-    from {{ ref("stg_rss") }}
-
+    from {{ ref("stg_news") }}
     {% if is_incremental() %}
-    where published_at > (select max(published_at) from {{ this }})
+    where ingested_at > (select coalesce(max(ingested_at), '1990-01-01') from {{ this }})
     {% endif %}
 ),
 
 country_tags as (
     select *
-    from {{ ref("int_rss_country_tags") }}
+    from {{ ref("int_news_country_tags") }}
 )
 
 select
@@ -22,4 +23,4 @@ select
     country_tags.country_codes
 from news
 inner join country_tags
-    on news.link = country_tags.link
+    on news.url = country_tags.url

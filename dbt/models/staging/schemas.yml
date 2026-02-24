@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_rss
+  - name: stg_news
     description: "Cleaned RSS feed entries from BigQuery"
     columns:
       - name: feed_name
@@ -9,7 +9,7 @@ models:
         data_tests:
         - not_null
 
-      - name: link
+      - name: url
         description: "The unique URL for the news article"
         data_tests:
           - not_null
