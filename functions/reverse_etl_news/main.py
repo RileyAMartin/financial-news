@@ -1,6 +1,5 @@
 import os
-import json
-from datetime import datetime
+from datetime import datetime, timezone
 import functions_framework
 from google.cloud import bigquery
 import psycopg2
@@ -32,16 +31,20 @@ def reverse_etl_news(request):
             
         last_ingested_at = result[0]
 
+        if last_ingested_at.tzinfo is None:
+            last_ingested_at = last_ingested_at.replace(tzinfo=timezone.utc)
+
     bq_client = bigquery.Client()
     
     bq_query = """
         SELECT
-            link as url, 
-            feed_name as source_id, 
+            link, 
+            ingested_at,
+            feed_name,
             title, 
-            summary,
-            published_at, 
-            country_codes
+            summary, 
+            country_codes,
+            published_at
         FROM `international-finance-484205.dbt_prod.fct_news`
         WHERE published_at > @last_ingested
         ORDER BY published_at ASC
@@ -56,9 +59,9 @@ def reverse_etl_news(request):
     rows_iterator = bq_client.query(bq_query, job_config=job_config).result()
 
     insert_query = """
-        INSERT INTO news_items (url, source_id, title, summary, published_at, country_tags)
+        INSERT INTO fct_news (link, ingested_at, feed_name, title, summary, country_codes, published_at)
         VALUES %s
-        ON CONFLICT (url) DO NOTHING;
+        ON CONFLICT (link) DO NOTHING;
     """
     
     update_watermark_query = """
@@ -71,13 +74,19 @@ def reverse_etl_news(request):
     total_inserted = 0
     batch_latest_timestamp = last_ingested_at
 
-    # Add each row to the batch and insert when batch size is reached
     for row in rows_iterator:
-        tags_json = json.dumps(row.country_codes) if row.country_codes else '[]'
+        # Pass the list directly; psycopg2 will automatically format it as a SQL array
+        tags_array = row.country_codes if row.country_codes else []
         
+        # The order here must exactly match the columns in the INSERT statement
         record = (
-            row.url, row.source_id, row.title, row.summary,
-            row.published_at, tags_json
+            row.link,
+            row.ingested_at,
+            row.feed_name,
+            row.title,
+            row.summary,
+            tags_array,
+            row.published_at
         )
         batch.append(record)
         
