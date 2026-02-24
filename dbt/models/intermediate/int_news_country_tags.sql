@@ -15,7 +15,7 @@ with news as (
     from {{ ref("stg_news") }}
 
     {% if is_incremental() %}
-    where ingested_at > (select max(ingested_at) from {{ this }})
+    where ingested_at > (select coalesce(max(ingested_at), "1900-01-01") from {{ this }})
     {% endif %}
 ),
 

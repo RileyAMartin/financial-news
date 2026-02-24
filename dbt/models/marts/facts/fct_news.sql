@@ -16,6 +16,9 @@ with news as (
 country_tags as (
     select *
     from {{ ref("int_news_country_tags") }}
+    {% if is_incremental() %}
+    where ingested_at > (select coalesce(max(ingested_at), '1900-01-01') from {{ this }})
+    {% endif %}
 )
 
 select
