@@ -4,12 +4,12 @@ models:
   - name: int_imf_qnea_filtered
     description: "QNEA data which has been filtered for relevant indicators (exports, imports, export/import balance, and GDP) and country codes to ensure that each row contains valid metadata."
     columns:
-      - name: country_id
+      - name: country_code
         description: "The 3 letter abbreviated country code for this value."
         data_tests:
           - not_null
       
-      - name: indicator_id
+      - name: indicator_code
         description: "The code of the economic indicator for this value, filtered based on the indicators within the `imf_qnea_indicators.csv` seed."
         data_tests:
           - not_null
@@ -39,7 +39,7 @@ models:
         data_tests:
           - not_null
         
-      - name: source_id
+      - name: source_code
         description: "The code of the dataset source for values in this table, corresponding to the `IMF_QNEA` entry in the `data_sources` seed."
         data_tests:
           - not_null
@@ -47,12 +47,12 @@ models:
   - name: int_imf_qnea_with_fx
     description: "QNEA data with additional currency conversions to USD and EUR."
     columns:
-      - name: country_id
+      - name: country_code
         description: "The 3 letter abbreviated country code for this value."
         data_tests:
           - not_null
       
-      - name: indicator_id
+      - name: indicator_code
         description: "The code of the economic indicator for this value, filtered based on the indicators within the `imf_qnea_indicators.csv` seed."
         data_tests:
           - not_null
@@ -83,7 +83,7 @@ models:
       - name: value_eur
         description: "The value of this row in Euros (based on the corresponding period's end-of-period exchange rate)."
 
-      - name: source_id
+      - name: source_code
         description: "The code of the dataset source for values in this table, corresponding to the `IMF_QNEA` entry in the `data_sources` seed."
         data_tests:
           - not_null

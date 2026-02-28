@@ -1,8 +1,8 @@
 select
-    source_code as source_id,
-    source_publisher,
-    source_publisher_short,
-    source_dataset,
-    source_dataset_short,
-    source_url
+    source_code,
+    publisher,
+    publisher_short,
+    dataset,
+    dataset_short,
+    url
 from {{ ref("data_sources") }}

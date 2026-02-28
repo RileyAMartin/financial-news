@@ -1,3 +1,3 @@
-source_code,source_publisher,source_publisher_short,source_dataset,source_dataset_short,source_url
+source_code,publisher,publisher_short,dataset,dataset_short,url
 IMF_QNEA,International Monetary Fund,IMF,Quarterly National Accounts,QNEA,https://data.imf.org/en/datasets/IMF.STA:QNEA
 IMF_ER,International_Monetary Fund,IMF,Exchange Rates,ER,https://data.imf.org/en/datasets/IMF.STA:ER

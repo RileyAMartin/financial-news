@@ -1,8 +1,16 @@
+{{
+    config(
+        materialized="incremental",
+        unique_key=["indicator_code", "period_end_date", "country_code", "is_inflation_adjusted"]
+    )
+}}
+
 select
     obs_value,
     ingested_at,
-    country as country_id,
-    indicator as indicator_id,
+    country as country_code,
+    indicator as indicator_code,
+    'IMF_QNEA' as source_code,
     'Q' as frequency,
     case
         when price_type = 'Q' then True
@@ -19,6 +27,10 @@ where
     and price_type in ('Q', 'V')  -- Constant and current prices
     and type_of_transformation = 'XDC'  -- Local currency
     and s_adjustment = 'SA'  -- Seasonally adjusted
+
+    {% if is_incremental() %}
+    and ingested_at > (select coalesce(max(ingested_at), "1990-01-01") from {{ this }})
+    {% endif %}
 
 qualify row_number() over (
     partition by country, indicator, time_period, price_type

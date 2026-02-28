@@ -8,3 +8,12 @@ seeds:
           - assert_string_length:
               arguments:
                 expected_length: 3
+
+  - name: country_keywords
+    columns:
+      - name: country_code
+        tests:
+          - not_null
+          - assert_string_length:
+              arguments:
+                expected_length: 3

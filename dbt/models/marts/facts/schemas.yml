@@ -3,29 +3,29 @@ version: 2
 models:
   - name: fct_economics
     columns:
-      - name: country_id
+      - name: country_code
         tests:
           - not_null
           - relationships:
               arguments:
                 to: ref('dim_countries')
-                field: country_id
+                field: country_code
 
-      - name: indicator_id
+      - name: indicator_code
         tests:
           - not_null
           - relationships:
               arguments:
                 to: ref('dim_indicators')
-                field: indicator_id
+                field: indicator_code
  
-      - name: source_id
+      - name: source_code
         tests:
           - not_null
           - relationships:
               arguments:
                 to: ref('dim_sources')
-                field: source_id
+                field: source_code
 
   - name: fct_news
     description: "Final fact table containing RSS news items that have been successfully tagged with at least one country."

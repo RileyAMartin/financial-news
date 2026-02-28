@@ -1,6 +1,13 @@
+{{
+    config(
+        materialized="incremental",
+        unique_key=["indicator_code", "period_end_date", "country_code", "is_inflation_adjusted"]
+    )
+}}
+
 with qnea_indicators as (
     select
-        indicator_code as indicator_id,
+        indicator_code,
         annualization_multiplier
     from {{ ref("imf_qnea_indicators") }}
 ),
@@ -8,27 +15,24 @@ with qnea_indicators as (
 qnea_data as (
     select *
     from {{ ref("stg_imf_qnea") }}
+    
+    {% if is_incremental() %}
+    where ingested_at > (select coalesce(max(ingested_at), "1990-01-01") from {{ this }})
+    {% endif %}
 ),
 
 imf_countries as (
-    select country_code as country_id
+    select country_code
     from {{ ref("imf_country_abbreviations") }}
 )
 
 select
-    qnea_data.country_id,
-    qnea_data.indicator_id,
-    qnea_data.period_end_date,
-    qnea_data.frequency,
-    qnea_data.obs_value,
-    qnea_data.ingested_at,
-    qnea_data.is_inflation_adjusted,
-    qnea_indicators.annualization_multiplier,
-    'IMF_QNEA' as source_id
+    qnea_data.*,
+    qnea_indicators.annualization_multiplier
 from qnea_data
 
 inner join qnea_indicators
-on qnea_data.indicator_id = qnea_indicators.indicator_id
+on qnea_data.indicator_code = qnea_indicators.indicator_code
 
 inner join imf_countries
-on qnea_data.country_id = imf_countries.country_id
+on qnea_data.country_code = imf_countries.country_code

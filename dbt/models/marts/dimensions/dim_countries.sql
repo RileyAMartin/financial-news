@@ -1,5 +1,5 @@
 select
-    country_code as country_id,
-    country_official_name,
-    country_display_name
+    country_code,
+    official_name,
+    display_name
 from {{ ref("imf_country_abbreviations") }}
