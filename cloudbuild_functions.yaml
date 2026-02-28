@@ -1,10 +1,10 @@
 steps:
 
 - name: 'bash'
-  args: ['cp', '-r', './common', './ingestors/imf_qnea/common']
+  args: ['cp', '-r', './common', './functions/imf_qnea/common']
 
 - name: 'bash'
-  args: ['cp', '-r', './common', './ingestors/imf_fx/common']
+  args: ['cp', '-r', './common', './functions/imf_fx/common']
 
 - name: 'google/cloud-sdk'
   args:
@@ -15,7 +15,7 @@ steps:
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
-  - --source=./ingestors/imf_qnea
+  - --source=./functions/imf_qnea
   - --entry-point=ingest_imf_qnea_data
   - --trigger-http
   - --no-allow-unauthenticated
@@ -31,7 +31,7 @@ steps:
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
-  - --source=./ingestors/imf_fx
+  - --source=./functions/imf_fx
   - --entry-point=ingest_imf_fx_data
   - --trigger-http
   - --no-allow-unauthenticated
@@ -47,7 +47,7 @@ steps:
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
-  - --source=./ingestors/rss
+  - --source=./functions/rss
   - --entry-point=ingest_rss
   - --trigger-http
   - --no-allow-unauthenticated
@@ -61,13 +61,13 @@ steps:
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
-  - --source=./ingestors/reverse_etl_news
-  - --entry-point=ingest_reverse_etl_news
+  - --source=./functions/reverse_etl_news
+  - --entry-point=reverse_etl_news
   - --trigger-http
   - --no-allow-unauthenticated
   - --memory=256Mi
   - --timeout=360s
-  - --set-secrets=DB_URL=projects/financial-news/secrets/COCKROACH_DB_URL:latest
+  - --set-secrets=DB_URL=projects/international-finance-484205/secrets/COCKROACH_DB_URL:latest
 
 options:
   logging: CLOUD_LOGGING_ONLY

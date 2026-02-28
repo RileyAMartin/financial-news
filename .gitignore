@@ -1,7 +1,9 @@
 .venv
 venv
+gcloud_creds.json
 
 .env
 .env.*
+__pycache__/
 
 notebooks/
