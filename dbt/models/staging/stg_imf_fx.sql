@@ -11,7 +11,7 @@ select
     frequency,
     country as country_code,
     indicator as indicator_code,
-    {{ parse_imf_date('time_period') }} as period_end_date,
+    {{ parse_imf_date('time_period') }} as period_end_date
 from {{ source("raw_data", "imf_fx_raw") }}
 
 where

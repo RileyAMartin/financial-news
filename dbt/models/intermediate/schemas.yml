@@ -2,88 +2,123 @@ version: 2
 
 models:
   - name: int_imf_qnea_filtered
-    description: "QNEA data which has been filtered for relevant indicators (exports, imports, export/import balance, and GDP) and country codes to ensure that each row contains valid metadata."
+    description: "QNEA data filtered to relevant indicators (exports, imports, trade balance, and GDP) and valid country codes, with annualization metadata joined in."
     columns:
       - name: country_code
-        description: "The 3 letter abbreviated country code for this value."
+        description: "The 3-letter abbreviated country code for this value."
         data_tests:
           - not_null
-      
+
       - name: indicator_code
-        description: "The code of the economic indicator for this value, filtered based on the indicators within the `imf_qnea_indicators.csv` seed."
+        description: "The IMF indicator code, filtered to those present in the `imf_qnea_indicators` seed."
         data_tests:
           - not_null
 
       - name: period_end_date
-        description: "The date of the last day for this row's period."
-        tests:
+        description: "The date of the last day of this row's quarter."
+        data_tests:
           - not_null
 
       - name: frequency
-        description: "The frequency for each value. Always 'Q' (quarterly)"
-        tests:
+        description: "The frequency of the observation. Always 'Q' (quarterly)."
+        data_tests:
           - not_null
-      
+
       - name: obs_value
-        description: "The observed value measured in the local currency."
+        description: "The seasonally adjusted observed value in the local currency."
         data_tests:
           - not_null
 
       - name: is_inflation_adjusted
-        description: "(Boolean value) True if the observed value is adjusted for inflation, False if the observed value represents current prices."
+        description: "True if the observed value is adjusted for inflation (constant prices); False if it represents current prices."
         data_tests:
           - not_null
-      
+
       - name: annualization_multiplier
-        description: "The multiple required to convert this indicator's value to an annualized value. Derived from `imf_qnea_indicators.csv` seed."
+        description: "The multiplier required to convert this indicator's quarterly value to an annualized figure. Sourced from the `imf_qnea_indicators` seed."
         data_tests:
           - not_null
-        
+
       - name: source_code
-        description: "The code of the dataset source for values in this table, corresponding to the `IMF_QNEA` entry in the `data_sources` seed."
+        description: "The identifier for the data source. Always 'IMF_QNEA', corresponding to the entry in the `data_sources` seed."
+        data_tests:
+          - not_null
+
+      - name: ingested_at
+        description: "The timestamp when this record was originally loaded into BigQuery."
         data_tests:
           - not_null
 
   - name: int_imf_qnea_with_fx
-    description: "QNEA data with additional currency conversions to USD and EUR."
+    description: "QNEA data with annualized values calculated in local currency, USD, and EUR using period-average exchange rates."
     columns:
       - name: country_code
-        description: "The 3 letter abbreviated country code for this value."
+        description: "The 3-letter abbreviated country code for this value."
         data_tests:
           - not_null
-      
+
       - name: indicator_code
-        description: "The code of the economic indicator for this value, filtered based on the indicators within the `imf_qnea_indicators.csv` seed."
+        description: "The IMF indicator code, filtered to those present in the `imf_qnea_indicators` seed."
         data_tests:
           - not_null
-      
+
       - name: period_end_date
-        description: "The date of the last day for this row's period."
-        tests:
+        description: "The date of the last day of this row's quarter."
+        data_tests:
           - not_null
-        
+
       - name: frequency
-        description: "The frequency for each value. Always 'Q' (quarterly)"
-        tests:
+        description: "The frequency of the observation. Always 'Q' (quarterly)."
+        data_tests:
           - not_null
 
       - name: is_inflation_adjusted
-        description: "(Boolean value) True if the observed value is adjusted for inflation, False if the observed value represents current prices."
+        description: "True if the observed value is adjusted for inflation (constant prices); False if it represents current prices."
+        data_tests:
+          - not_null
+
+      - name: obs_value
+        description: "The raw seasonally adjusted observed value in the local currency, before annualization."
+
+      - name: annualization_multiplier
+        description: "The multiplier used to convert this indicator's quarterly value to an annualized figure."
+
+      - name: source_code
+        description: "The identifier for the data source. Always 'IMF_QNEA', corresponding to the entry in the `data_sources` seed."
+        data_tests:
+          - not_null
+
+      - name: ingested_at
+        description: "The timestamp when this record was originally loaded into BigQuery."
         data_tests:
           - not_null
 
       - name: value_local
-        description: "The value of this row in the local currency."
+        description: "The annualized value in the local currency (obs_value × annualization_multiplier)."
         data_tests:
           - not_null
-      
+
       - name: value_usd
-        description: "The value of this row in United States Dollars (based on the corresponding period's end-of-period exchange rate)."
+        description: "The annualized value in US dollars, converted using the period-average exchange rate."
 
       - name: value_eur
-        description: "The value of this row in Euros (based on the corresponding period's end-of-period exchange rate)."
+        description: "The annualized value in Euros, converted using the period-average exchange rate."
 
-      - name: source_code
-        description: "The code of the dataset source for values in this table, corresponding to the `IMF_QNEA` entry in the `data_sources` seed."
+  - name: int_news_country_tags
+    description: "Intermediate model that matches news articles against country keywords to produce a list of country codes associated with each article."
+    columns:
+      - name: url
+        description: "The unique URL of the article, matching the natural primary key in stg_news."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: ingested_at
+        description: "The timestamp when this article was originally loaded into BigQuery."
+        data_tests:
+          - not_null
+
+      - name: country_codes
+        description: "An array of distinct country codes matched from the article's title and summary text."
         data_tests:
           - not_null

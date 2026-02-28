@@ -2,48 +2,83 @@ version: 2
 
 models:
   - name: fct_economics
+    description: "Fact table of quarterly national economic accounts data with values denominated in local currency, USD, and EUR."
     columns:
       - name: country_code
-        tests:
+        description: "The 3-letter country code for this row."
+        data_tests:
           - not_null
           - relationships:
-              arguments:
-                to: ref('dim_countries')
-                field: country_code
+              to: ref('dim_countries')
+              field: country_code
 
       - name: indicator_code
-        tests:
+        description: "The IMF indicator code identifying the economic measure."
+        data_tests:
           - not_null
           - relationships:
-              arguments:
-                to: ref('dim_indicators')
-                field: indicator_code
- 
+              to: ref('dim_indicators')
+              field: indicator_code
+
       - name: source_code
-        tests:
+        description: "The identifier of the data source for this row."
+        data_tests:
           - not_null
           - relationships:
-              arguments:
-                to: ref('dim_sources')
-                field: source_code
+              to: ref('dim_sources')
+              field: source_code
+
+      - name: period_end_date
+        description: "The date of the last day of the quarter this row represents."
+        data_tests:
+          - not_null
+
+      - name: frequency
+        description: "The frequency of the observation. Always 'Q' (quarterly)."
+        data_tests:
+          - not_null
+
+      - name: is_inflation_adjusted
+        description: "True if the value is adjusted for inflation (constant prices); False if it represents current prices."
+        data_tests:
+          - not_null
+
+      - name: ingested_at
+        description: "The timestamp when this record was originally loaded into BigQuery."
+        data_tests:
+          - not_null
+
+      - name: value_local
+        description: "The annualized value in the local currency."
+
+      - name: value_usd
+        description: "The annualized value in US dollars, converted using the period-average exchange rate."
+
+      - name: value_eur
+        description: "The annualized value in Euros, converted using the period-average exchange rate."
 
   - name: fct_news
-    description: "Final fact table containing RSS news items that have been successfully tagged with at least one country."
+    description: "Fact table of RSS news articles that have been successfully matched to at least one country."
     columns:
+      - name: ingested_at
+        description: "The timestamp when this article was originally loaded into BigQuery."
+        data_tests:
+          - not_null
+
       - name: url
-        description: "The unique URL of the article, serving as the Natural Primary Key."
-        tests:
+        description: "The unique URL of the article, serving as the natural primary key."
+        data_tests:
           - unique
           - not_null
 
       - name: feed_name
-        description: "The name of the RSS feed source (e.g., 'cnbc_world_news')."
-        tests:
+        description: "The name of the RSS feed source."
+        data_tests:
           - not_null
 
       - name: title
-        description: "The headline of the news item."
-        tests:
+        description: "The headline of the news article."
+        data_tests:
           - not_null
 
       - name: summary
@@ -51,10 +86,10 @@ models:
 
       - name: published_at
         description: "Timestamp when the article was published by the source."
-        tests:
+        data_tests:
           - not_null
 
       - name: country_codes
-        description: "An array of country codes extracted from the article text (e.g., ['AUS', 'USA'])."
-        tests:
+        description: "An array of country codes matched from the article's title and summary (e.g., ['AUS', 'USA'])."
+        data_tests:
           - not_null
