@@ -1,0 +1,72 @@
+version: 2
+
+models:
+  - name: dim_countries
+    description: "Dimension table of countries tracked in the pipeline, sourced from the IMF country abbreviations seed."
+    columns:
+      - name: country_code
+        description: "The 3-letter ISO country code, serving as the primary key."
+        data_tests:
+          - unique
+          - not_null
+          - assert_string_length:
+              expected_length: 3
+
+      - name: official_name
+        description: "The official country name as defined by the IMF."
+        data_tests:
+          - not_null
+
+      - name: display_name
+        description: "A shortened or common name used for display purposes."
+        data_tests:
+          - not_null
+
+  - name: dim_indicators
+    description: "Dimension table of QNEA economic indicators tracked in the pipeline."
+    columns:
+      - name: indicator_code
+        description: "The IMF indicator code, serving as the primary key."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: name
+        description: "A short human-readable name for the indicator."
+        data_tests:
+          - not_null
+
+      - name: description
+        description: "A detailed description of what the indicator measures."
+
+  - name: dim_sources
+    description: "Dimension table of data sources used in the pipeline."
+    columns:
+      - name: source_code
+        description: "A short identifier for the data source, serving as the primary key."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: publisher
+        description: "The full name of the organisation that publishes the dataset."
+        data_tests:
+          - not_null
+
+      - name: publisher_short
+        description: "An abbreviated name for the publisher."
+        data_tests:
+          - not_null
+
+      - name: dataset
+        description: "The full name of the dataset."
+        data_tests:
+          - not_null
+
+      - name: dataset_short
+        description: "An abbreviated name for the dataset."
+        data_tests:
+          - not_null
+
+      - name: url
+        description: "A URL linking to the dataset's source page."

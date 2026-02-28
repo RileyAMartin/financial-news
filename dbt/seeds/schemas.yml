@@ -1,10 +1,92 @@
+version: 2
+
 seeds:
   - name: imf_country_abbreviations
+    description: "Reference table of IMF country codes and their official and display names."
     columns:
       - name: country_code
-        tests:
+        description: "The 3-letter ISO country code."
+        data_tests:
           - unique
           - not_null
           - assert_string_length:
-              arguments:
-                expected_length: 3
+              expected_length: 3
+
+      - name: official_name
+        description: "The official country name as defined by the IMF."
+        data_tests:
+          - not_null
+
+      - name: display_name
+        description: "A shortened or common name used for display purposes."
+        data_tests:
+          - not_null
+
+  - name: country_keywords
+    description: "Lookup table of keywords associated with each country, used to tag news articles."
+    columns:
+      - name: country_code
+        description: "The 3-letter country code this keyword is associated with."
+        data_tests:
+          - not_null
+          - assert_string_length:
+              expected_length: 3
+
+      - name: keyword
+        description: "A keyword or phrase (e.g. a country name, leader name, or major city) whose presence in an article indicates relevance to the associated country."
+        data_tests:
+          - not_null
+
+  - name: imf_qnea_indicators
+    description: "Reference table of QNEA economic indicators tracked in this pipeline."
+    columns:
+      - name: indicator_code
+        description: "The IMF indicator code."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: name
+        description: "A short human-readable name for the indicator."
+        data_tests:
+          - not_null
+
+      - name: description
+        description: "A detailed description of what the indicator measures."
+
+      - name: annualization_multiplier
+        description: "The multiplier applied to a quarterly value to produce an annualized figure. Always 4 for quarterly data."
+        data_tests:
+          - not_null
+
+  - name: data_sources
+    description: "Reference table of data sources used in this pipeline."
+    columns:
+      - name: source_code
+        description: "A short identifier for the data source, used as the primary key throughout the pipeline."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: publisher
+        description: "The full name of the organisation that publishes the dataset."
+        data_tests:
+          - not_null
+
+      - name: publisher_short
+        description: "An abbreviated name for the publisher."
+        data_tests:
+          - not_null
+
+      - name: dataset
+        description: "The full name of the dataset."
+        data_tests:
+          - not_null
+
+      - name: dataset_short
+        description: "An abbreviated name for the dataset."
+        data_tests:
+          - not_null
+
+      - name: url
+        description: "A URL linking to the dataset's source page."

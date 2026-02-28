@@ -1,96 +1,105 @@
 version: 2
 
 models:
-  - name: stg_rss
-    description: "Cleaned RSS feed entries from BigQuery"
+  - name: stg_news
+    description: "Cleaned RSS feed entries from BigQuery."
     columns:
-      - name: feed_name
-        description: "The name of the article's RSS feed"
+      - name: ingested_at
+        description: "The timestamp when this record was originally loaded into BigQuery."
         data_tests:
-        - not_null
+          - not_null
 
-      - name: link
-        description: "The unique URL for the news article"
+      - name: feed_name
+        description: "The name of the RSS feed the article was retrieved from."
+        data_tests:
+          - not_null
+
+      - name: url
+        description: "The unique URL for the news article, serving as the natural primary key."
         data_tests:
           - not_null
           - unique
 
       - name: title
-        description: "The title of the news article"
+        description: "The title of the news article."
         data_tests:
           - not_null
 
       - name: summary
-        description: "A summary of the news article"
+        description: "A short summary or snippet of the article content."
 
       - name: published_at
-        description: "Timestamp when the article was published"
+        description: "Timestamp when the article was published by the source."
         data_tests:
           - not_null
-  
+
   - name: stg_imf_qnea
-    description: "National Economic Accounts (Quarterly) data from the IMF."
+    description: "Quarterly National Economic Accounts (QNEA) data from the IMF, filtered to seasonally adjusted values in local currency."
     columns:
-      - name: country_id
-        description: "The 3 letter abbreviated country code for this value."
+      - name: country_code
+        description: "The 3-letter abbreviated country code for this value."
         data_tests:
           - not_null
-      
-      - name: indicator_id
+
+      - name: indicator_code
         description: "The code of the economic indicator for this value."
         data_tests:
           - not_null
-      
+
       - name: period_end_date
-        description: "The date of the last day for this row's period."
-        tests:
+        description: "The date of the last day of this row's quarter."
+        data_tests:
           - not_null
-        
+
       - name: frequency
-        description: "The frequency for each value. Always 'Q' (quarterly)"
-        tests:
+        description: "The frequency of the observation. Always 'Q' (quarterly)."
+        data_tests:
           - not_null
-      
+
       - name: obs_value
-        description: "The seasonally adjusted observed value, represented in the country's local currency (XDC)."
+        description: "The seasonally adjusted observed value in the country's local currency (XDC)."
         data_tests:
           - not_null
 
       - name: is_inflation_adjusted
-        description: "(Boolean value) True if the observed value is adjusted for inflation, False if the observed value represents current prices."
+        description: "True if the observed value is adjusted for inflation (constant prices); False if it represents current prices."
         data_tests:
           - not_null
-      
+
       - name: ingested_at
-        description: "The timestamp when this data row was originally loaded into BigQuery."
+        description: "The timestamp when this record was originally loaded into BigQuery."
         data_tests:
           - not_null
-  
+
   - name: stg_imf_fx
-    description: "Exchange rate data from the IMF."
+    description: "Period-average exchange rate data from the IMF."
     columns:
-      - name: country_id
-        description:
-          "The 3-letter country abbreviation for this row."
-        tests:
-        - not_null
-      
-      - name: indicator_id
-        description: "The type of exchange rate metric. Either local currency to USD (USD_XDC) or local currency to EUR (USD_XDC)"
-        tests:
+      - name: country_code
+        description: "The 3-letter country code for this row."
+        data_tests:
           - not_null
-      
+
+      - name: indicator_code
+        description: "The exchange rate metric type. Either US dollars per local currency unit (USD_XDC) or Euros per local currency unit (EUR_XDC)."
+        data_tests:
+          - not_null
+
       - name: period_end_date
-        description: "The date of the last day for this row's period."
-        tests:
+        description: "The date of the last day of this row's quarter."
+        data_tests:
           - not_null
-        
+
       - name: frequency
-        description: "The frequency for each value. Always 'Q' (quarterly)"
-        tests:
+        description: "The frequency of the observation. Always 'Q' (quarterly)."
+        data_tests:
           - not_null
 
       - name: obs_value
-        description: "The numerical observed value for this time period."
-        tests:
+        description: "The period-average exchange rate (USD or EUR per one unit of local currency) for this quarter."
+        data_tests:
+          - not_null
+
+      - name: ingested_at
+        description: "The timestamp when this record was originally loaded into BigQuery."
+        data_tests:
           - not_null
