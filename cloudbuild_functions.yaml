@@ -36,7 +36,7 @@ steps:
   - --trigger-http
   - --no-allow-unauthenticated
   - --memory=1024Mi
-  - --timeout=180s
+  - --timeout=540s
 
 - name: 'google/cloud-sdk'
   args:
@@ -57,7 +57,7 @@ steps:
   - gcloud
   - functions
   - deploy
-  - reverse-etl-news
+  - reverse-etl
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
@@ -65,8 +65,8 @@ steps:
   - --entry-point=reverse_etl_news
   - --trigger-http
   - --no-allow-unauthenticated
-  - --memory=256Mi
-  - --timeout=360s
+  - --memory=1024Mi
+  - --timeout=720s
   - --set-secrets=DB_URL=projects/international-finance-484205/secrets/COCKROACH_DB_URL:latest
 
 options:
