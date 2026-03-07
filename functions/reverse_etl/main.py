@@ -124,8 +124,8 @@ def reverse_etl(request):
             load_dotenv()
         except ImportError:
             pass
-        # Parse the request
 
+        # Parse the request
         payload = request.get_json(silent=True)
         if not payload:
             return ({"error": "Request body must be valid JSON."}, 400)
@@ -169,12 +169,17 @@ def reverse_etl(request):
             identifiers_to_validate.append(watermark_column)
         for name in identifiers_to_validate:
             _validate_identifier(name, "identifier")
-        # Get the high watermark from the destination table (if applicable) and build the BigQuery query
 
+        # Get the high watermark from the destination table (if applicable) and build the BigQuery query
         db_url = os.environ.get("DB_URL")
         if not db_url:
-            return ({"error": "Environment variable DB_URL is not set."}, 500)
-        conn = psycopg2.connect(db_url)
+            return ({"error": "Environment variable DB_URL is not set."}, 500)        
+        cert_path = "/etc/secrets/root.crt"
+        separator = "&" if "?" in db_url else "?"
+        ssl_params = f"sslmode=verify-full&sslrootcert={cert_path}"
+        authenticated_url = f"{db_url}{separator}{ssl_params}"
+
+        conn = psycopg2.connect(authenticated_url)
 
         watermark_value = None
         if watermark_column:
@@ -192,7 +197,6 @@ def reverse_etl(request):
         batch = []
 
         # Batch upload the data into the PostgreSQL table
-
         for row in rows_iterator:
             batch.append(tuple(row[c] for c in columns))
 
