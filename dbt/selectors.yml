@@ -1,12 +1,10 @@
 selectors:
-  - name: hourly_news_job
+  - name: news_pipeline
     description: Runs the news pipeline and its dependencies
-    definition:
-      union:
-        - tag: hourly
-  - name: daily_job
-    description: Runs everything on a daily schedule (except news)
-    definition:
-      union:
-        - tag: daily
-        - tag: economics
+    definition: +fct_news
+  - name: economics_pipeline
+    description: Runs the economics pipeline and its dependencies
+    definition: +fct_economics
+  - name: dimensions_pipeline
+    description: Runs the pipeline for all dimension tables and their dependencies
+    definition: +dimensions

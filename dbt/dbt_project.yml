@@ -26,8 +26,6 @@ models:
         +tags: ["hourly", "news"]
     intermediate:
       +materialized: view
-      int_news_country_tags:
-        +tags: ["hourly", "news"]
     marts:
       +materialized: table
       facts:
