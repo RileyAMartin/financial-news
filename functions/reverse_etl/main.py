@@ -18,6 +18,27 @@ def _validate_identifier(name: str, label: str) -> None:
         raise ValueError(f"Unsafe {label} identifier: {name!r}")
 
 
+def get_db_connection():
+    """Initialise and return a connection to the destination PostgreSQL db using credentials."""
+
+    db_url = os.environ.get("DB_URL")
+    db_cert_content = os.environ.get("DB_CERT")
+
+    if not db_url or not db_cert_content:
+        raise ValueError("Environment variables DB_URL and DB_CERT must be set.")
+    
+    cert_path = "/tmp/root.crt"
+
+    if not os.path.exists(cert_path):
+        with open(cert_path, "w") as cert_file:
+            cert_file.write(db_cert_content)
+    
+    separator = "&" if "?" in db_url else "?"
+    ssl_params = f"sslmode=verify-full&sslrootcert={cert_path}"
+    authenticated_url = f"{db_url}{separator}{ssl_params}"
+
+    return psycopg2.connect(authenticated_url)
+
 def _get_watermark(
     conn: psycopg2.extensions.connection, pg_table: str, watermark_column: str
 ):
@@ -171,15 +192,7 @@ def reverse_etl(request):
             _validate_identifier(name, "identifier")
 
         # Get the high watermark from the destination table (if applicable) and build the BigQuery query
-        db_url = os.environ.get("DB_URL")
-        if not db_url:
-            return ({"error": "Environment variable DB_URL is not set."}, 500)        
-        cert_path = "/etc/secrets/root.crt"
-        separator = "&" if "?" in db_url else "?"
-        ssl_params = f"sslmode=verify-full&sslrootcert={cert_path}"
-        authenticated_url = f"{db_url}{separator}{ssl_params}"
-
-        conn = psycopg2.connect(authenticated_url)
+        conn = get_db_connection()
 
         watermark_value = None
         if watermark_column:
