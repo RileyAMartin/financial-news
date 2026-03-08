@@ -7,3 +7,4 @@ gcloud_creds.json
 __pycache__/
 
 notebooks/
+logs/

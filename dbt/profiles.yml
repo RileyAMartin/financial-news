@@ -1,0 +1,11 @@
+financial_news: 
+  target: prod
+  outputs:
+    prod:
+      type: bigquery
+      method: oauth
+      project: international-finance-484205 
+      dataset: dbt_prod
+      threads: 1
+      timeout_seconds: 300
+      location: australia-southeast2
