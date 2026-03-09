@@ -20,10 +20,6 @@ models:
   financial_news:
     staging:
       +materialized: view
-      stg_imf_qnea:
-        +tags: ["economics", "daily"]
-      stg_news:
-        +tags: ["hourly", "news"]
     intermediate:
       +materialized: view
     marts:
@@ -32,9 +28,9 @@ models:
         fct_news:
           +tags: ["hourly", "news"]
         fct_economics:
-          +tags: ["daily", "economics"]
+          +tags: ["weekly", "economics"]
       dimensions:
-        +tags: ["daily", "dimensions"]
+        +tags: ["dimensions"]
 
 flags:
   bigquery_use_batch_source_freshness: True

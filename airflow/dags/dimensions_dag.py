@@ -10,7 +10,7 @@ from utils.common import (
 )
 
 with DAG(
-    dag_id="reference_data_pipeline",
+    dag_id="dimensions_pipeline",
     default_args={
         "owner": "Riley",
         "retries": 1,
