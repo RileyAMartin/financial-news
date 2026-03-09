@@ -1,0 +1,17 @@
+require("dotenv").config();
+
+const config = {
+  port: process.env.PORT || 3000,
+  db: {
+    url: process.env.DB_URL,
+    cert: process.env.DB_CERT,
+  },
+};
+
+if (!config.db.url || !config.db.cert) {
+  throw new Error(
+    "Database configuration is missing. Please set DB_URL and DB_CERT in the environment variables."
+  );
+}
+
+module.exports = config;
