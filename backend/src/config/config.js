@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 const config = {
   port: process.env.PORT || 3000,
   db: {
@@ -14,4 +12,4 @@ if (!config.db.url || !config.db.cert) {
   );
 }
 
-module.exports = config;
+export default config;
