@@ -1,10 +1,10 @@
 steps:
 
 - name: 'bash'
-  args: ['cp', '-r', './common', './functions/imf_qnea/common']
+  args: ['cp', '-r', './functions/common', './functions/imf_qnea/common']
 
 - name: 'bash'
-  args: ['cp', '-r', './common', './functions/imf_fx/common']
+  args: ['cp', '-r', './functions/common', './functions/imf_fx/common']
 
 - name: 'google/cloud-sdk'
   args:
