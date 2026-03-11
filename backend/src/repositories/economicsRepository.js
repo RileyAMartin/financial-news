@@ -1,6 +1,7 @@
-import { query } from "../utils/db";
+import { query } from "../config/db.js";
 
 export const economicsRepository = {
+  // Fetches all requested indicators in a single batch query using `= ANY($2)`.
   async getIndicatorsDataByCountry(
     countryCode,
     indicatorCodes,

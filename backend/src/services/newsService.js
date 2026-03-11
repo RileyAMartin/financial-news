@@ -1,6 +1,5 @@
 import { newsRepository } from "../repositories/newsRepository.js";
-
-const PAGE_SIZE = 20;
+import { NEWS_PAGE_SIZE as PAGE_SIZE } from "../utils/constants.js";
 
 export const newsService = {
   async getNewsFeed(countryCode, startDate = null, endDate = null, page = 1) {

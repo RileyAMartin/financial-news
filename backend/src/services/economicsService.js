@@ -1,12 +1,14 @@
-import { economicsRepository } from "../repositories/economicsRepository";
+import { economicsRepository } from "../repositories/economicsRepository.js";
+import { IMF_INDICATOR_CODES } from "../utils/constants.js";
 
 export const economicsService = {
   async getCountryDashboard(countryCode, startDate, endDate) {
+    // Maps each IMF SDMX code to the user-facing JSON key in the response
     const codeMap = {
-      B1GQ: "gdp",
-      P7: "exports",
-      P6: "imports",
-      B11: "exportBalance",
+      [IMF_INDICATOR_CODES.GDP]: "gdp",
+      [IMF_INDICATOR_CODES.EXPORTS]: "exports",
+      [IMF_INDICATOR_CODES.IMPORTS]: "imports",
+      [IMF_INDICATOR_CODES.EXPORT_BALANCE]: "exportBalance",
     };
 
     const rows = await economicsRepository.getIndicatorsDataByCountry(

@@ -1,6 +1,6 @@
-import { dimensionsService } from "../services/dimensionsService";
-import { AppError } from "../utils/appError";
-import { RESPONSE_CODES, RESPONSE_MESSAGES } from "../constants/constants";
+import { dimensionsService } from "../services/dimensionsService.js";
+import { AppError } from "../utils/appError.js";
+import { RESPONSE_CODES, RESPONSE_MESSAGES } from "../utils/constants.js";
 
 export const validateCountryCode = async (req, res, next) => {
   // Verifies that countryCode exists in request and is a 3-letter code

@@ -15,9 +15,20 @@ export const RESPONSE_MESSAGES = {
   DATE_RANGE_INVALID: "Invalid date range.",
   PAGE_MALFORMED: "Page must be a positive integer.",
   GENERIC_ERROR: "An error occurred. Please try again.",
+  NOT_FOUND: "The requested resource could not be found.",
 };
 
 export const STATUS_MESSAGES = {
   SUCCESS: "success",
   FAIL: "fail",
 };
+
+// IMF SDMX indicator codes used in the economics dashboard
+export const IMF_INDICATOR_CODES = {
+  GDP: "B1GQ",
+  EXPORTS: "P7",
+  IMPORTS: "P6",
+  EXPORT_BALANCE: "B11",
+};
+
+export const NEWS_PAGE_SIZE = 20;

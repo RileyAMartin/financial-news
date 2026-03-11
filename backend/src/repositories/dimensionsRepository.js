@@ -1,4 +1,4 @@
-import { query } from "../utils/db";
+import { query } from "../config/db.js";
 
 export const dimensionsRepository = {
   async getAllCountries() {

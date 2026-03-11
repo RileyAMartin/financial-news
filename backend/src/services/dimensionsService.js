@@ -1,4 +1,4 @@
-import { dimensionsRepository } from "../repositories/dimensionsRepository";
+import { dimensionsRepository } from "../repositories/dimensionsRepository.js";
 
 export const dimensionsService = {
   async getAllCountries() {

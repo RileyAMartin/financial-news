@@ -1,5 +1,5 @@
-import { newsService } from "../services/newsService";
-import { RESPONSE_CODES, STATUS_MESSAGES } from "../constants/constants";
+import { newsService } from "../services/newsService.js";
+import { RESPONSE_CODES, STATUS_MESSAGES } from "../utils/constants.js";
 
 export const newsController = {
   async getCountryNewsFeed(req, res) {

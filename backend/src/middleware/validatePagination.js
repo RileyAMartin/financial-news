@@ -1,5 +1,5 @@
-import { AppError } from "../utils/appError";
-import { RESPONSE_CODES, RESPONSE_MESSAGES } from "../constants/constants";
+import { AppError } from "../utils/appError.js";
+import { RESPONSE_CODES, RESPONSE_MESSAGES } from "../utils/constants.js";
 
 export const validatePagination = (req, res, next) => {
   const { page } = req.query;
@@ -9,7 +9,7 @@ export const validatePagination = (req, res, next) => {
     return next();
   }
 
-  const parsedPage = parseInt(page);
+  const parsedPage = parseInt(page, 10);
 
   if (isNaN(parsedPage) || parsedPage < 1) {
     throw new AppError(
@@ -18,5 +18,6 @@ export const validatePagination = (req, res, next) => {
     );
   }
 
+  req.query.page = parsedPage;
   next();
 };
