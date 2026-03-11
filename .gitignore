@@ -8,3 +8,5 @@ __pycache__/
 
 notebooks/
 logs/
+
+node_modules/
