@@ -1,7 +1,12 @@
-import { query } from "../config/db.js";
+import { query } from "../utils/db";
 
 export const economicsRepository = {
-  async getIndicatorsDataByCountry(countryCode, indicatorCodes, startDate, endDate) {
+  async getIndicatorsDataByCountry(
+    countryCode,
+    indicatorCodes,
+    startDate,
+    endDate
+  ) {
     const querySql = `
         SELECT
             e.country_code,

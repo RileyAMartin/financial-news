@@ -1,4 +1,4 @@
-import { query } from "../config/db.js";
+import { query } from "../utils/db";
 
 export const newsRepository = {
   async getRecentByCountry(countryCode, limit = 20, offset = 0) {

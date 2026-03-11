@@ -14,19 +14,19 @@ export const newsService = {
     // Otherwise, fetch the most recent news
     let rows;
     if (startDate && endDate) {
-        rows = await newsRepository.getByCountryAndDateRange(
-            countryCode,
-            startDate,
-            endDate,
-            fetchLimit,
-            offset
-        );
+      rows = await newsRepository.getByCountryAndDateRange(
+        countryCode,
+        startDate,
+        endDate,
+        fetchLimit,
+        offset
+      );
     } else {
-        rows = await newsRepository.getRecentByCountry(
-            countryCode,
-            fetchLimit,
-            offset
-        );
+      rows = await newsRepository.getRecentByCountry(
+        countryCode,
+        fetchLimit,
+        offset
+      );
     }
 
     const hasMore = rows.length > PAGE_SIZE;
