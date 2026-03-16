@@ -169,6 +169,7 @@ def reverse_etl(request):
         columns: list[str] = payload["columns"]
         conflict_columns: list[str] = payload["conflict_columns"]
         watermark_column: str | None = payload.get("watermark_column")
+        full_refresh: bool = payload.get("full_refresh", False)
 
         if not isinstance(columns, list) or not columns:
             return ({"error": "'columns' must be a non-empty list of strings."}, 400)
@@ -194,8 +195,13 @@ def reverse_etl(request):
         # Get the high watermark from the destination table (if applicable) and build the BigQuery query
         conn = get_db_connection()
 
+        if full_refresh:
+            with conn.cursor() as cur:
+                cur.execute(sql.SQL("TRUNCATE TABLE {table} RESTART IDENTITY;").format(table=sql.Identifier(pg_table)))
+            conn.commit()
+
         watermark_value = None
-        if watermark_column:
+        if watermark_column and not full_refresh:
             watermark_value = _get_watermark(conn, pg_table, watermark_column)
         bq_query, job_config = _build_bq_query(
             bq_dataset, bq_table, columns, watermark_column, watermark_value
