@@ -20,7 +20,7 @@ export function MetricsPanel({
         </span>
       </div>
 
-      {loading && (
+      {loading && !error && (
         <div className="status-card loading-state" role="status" aria-live="polite">
           <span className="spinner" aria-hidden="true" />
           <span>Loading Economic Metrics</span>

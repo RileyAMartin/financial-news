@@ -58,6 +58,7 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry }) {
   const clearHover = () => {
     if (hoveredLayerRef.current) {
       const layer = hoveredLayerRef.current;
+      // const iso3 = layer.feature.id;
       const iso3 = getFeatureIso3(layer.feature.properties);
       layer.setStyle(iso3 === selectedCountry ? MAP_STYLE.selected : MAP_STYLE.default);
       layer.closeTooltip();
@@ -66,11 +67,13 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry }) {
   };
 
   const styleFeature = (feature) => {
+    // const iso3 = feature.id;
     const iso3 = getFeatureIso3(feature.properties);
     return iso3 === selectedCountry ? MAP_STYLE.selected : MAP_STYLE.default;
   };
 
   const onEachFeature = (feature, layer) => {
+    // const iso3 = feature.id;
     const iso3 = getFeatureIso3(feature.properties);
     const name = getFeatureName(feature.properties);
 

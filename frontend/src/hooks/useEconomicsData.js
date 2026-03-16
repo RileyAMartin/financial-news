@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getEconomicsByCountry } from "../api/economicsApi";
 
 export function useEconomicsData(countryCode, startDate, endDate) {
+  const requestSequenceRef = useRef(0);
   const [state, setState] = useState({
     data: {},
-    loading: true,
+    loading: false,
     error: "",
   });
 
@@ -14,6 +15,8 @@ export function useEconomicsData(countryCode, startDate, endDate) {
     }
 
     const controller = new AbortController();
+    requestSequenceRef.current += 1;
+    const requestSequence = requestSequenceRef.current;
 
     async function load() {
       try {
@@ -26,9 +29,11 @@ export function useEconomicsData(countryCode, startDate, endDate) {
           controller.signal
         );
 
-        setState({ data, loading: false, error: "" });
+        if (requestSequence === requestSequenceRef.current) {
+          setState({ data, loading: false, error: "" });
+        }
       } catch (error) {
-        if (error.name !== "AbortError") {
+        if (requestSequence === requestSequenceRef.current && error.name !== "AbortError") {
           setState({
             data: {},
             loading: false,
