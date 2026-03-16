@@ -3,11 +3,23 @@
   min-height: 360px;
 }
 
+.mapLoaded {
+  background: var(--bg-panel-map);
+}
+
+.loadingPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
 .worldMap {
   height: 355px;
   border-radius: 8px;
   z-index: 1;
-  background: var(--bg-panel-2);
+  background: var(--bg-panel-map);
 }
 
 .countryTooltip {
@@ -19,21 +31,18 @@
   padding: 3px 7px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
-/* Fix for the focus outline issue on click/drag */
 :global(path.leaflet-interactive:focus) {
   outline: none;
 }
 
-/* Disable pointer events on countries while dragging/zooming to prevent sticky hover states */
 .mapDragging :global(.leaflet-interactive) {
   pointer-events: none !important;
 }
 
 :global(.leaflet-container) {
-  background: var(--bg-surface) !important;
+  background: var(--bg-panel-map) !important;
   outline: none;
 }
-/* Customizing Leaflet Controls */
 :global(.leaflet-control-zoom) {
   border: 1px solid var(--border) !important;
   border-radius: 6px !important;

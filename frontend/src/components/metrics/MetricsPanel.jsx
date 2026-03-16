@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { MetricCard } from "./MetricCard";
 import styles from "./MetricsPanel.module.css";
 
@@ -11,13 +12,35 @@ export function MetricsPanel({
   startDate,
   endDate,
 }) {
+  const displayRange = useMemo(() => {
+    if (startDate !== "1990-01-01") {
+      return `${startDate} to ${endDate}`;
+    }
+
+    if (!metrics || metrics.length === 0) {
+      return "All";
+    }
+
+    let earliest = null;
+    metrics.forEach(([_, metric]) => {
+      if (!metric?.data) return;
+      metric.data.forEach((point) => {
+        if (!point.date) return;
+        const dateStr = point.date.substring(0, 10);
+        if (!earliest || dateStr < earliest) {
+          earliest = dateStr;
+        }
+      });
+    });
+
+    return earliest ? `${earliest} to ${endDate}` : "All";
+  }, [startDate, endDate, metrics]);
+
   return (
     <section className={`panel ${styles.economicsPanel}`}>
       <div className={styles.panelTitleRow}>
         <h2>Economic Metrics</h2>
-        <span>
-          {startDate} to {endDate}
-        </span>
+        <span>{displayRange}</span>
       </div>
 
       {loading && !error && (

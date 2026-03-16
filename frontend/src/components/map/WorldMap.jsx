@@ -3,7 +3,6 @@ import { GeoJSON, MapContainer, TileLayer, useMapEvents } from "react-leaflet";
 import { getFeatureIso3, getFeatureName } from "../../utils/geo";
 import styles from "./WorldMap.module.css";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
 
 const MAP_STYLE = {
   default: {
@@ -113,11 +112,16 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry }) {
   };
 
   if (!geoJson) {
-    return <div className={`panel ${styles.mapPanel}`}>Loading world map...</div>;
+    return (
+      <div className={`panel ${styles.mapPanel} ${styles.loadingPanel}`}>
+        <span className="spinner" aria-hidden="true" />
+        <span>Loading world map...</span>
+      </div>
+    );
   }
 
   return (
-    <section className={`panel ${styles.mapPanel}`}>
+    <section className={`panel ${styles.mapPanel} ${styles.mapLoaded}`}>
       <MapContainer
         center={[20, 0]}
         zoom={2}
