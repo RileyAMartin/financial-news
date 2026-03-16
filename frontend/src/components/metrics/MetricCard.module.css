@@ -1,0 +1,115 @@
+.metricCard {
+  border: 1px solid #24405d;
+  border-radius: 8px;
+  background: linear-gradient(160deg, #112136, #0b1929);
+  padding: 10px;
+}
+
+.metricCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.metricTitleWrap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.metricTitleWrap h3 {
+  margin: 0;
+  font-size: 0.96rem;
+}
+
+.tooltipWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+}
+
+.infoIcon {
+  color: #5a7d9b;
+  transition: color 0.15s ease;
+}
+
+.infoIcon:hover {
+  color: #90cdf4;
+}
+
+.tooltipBubble {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  background: #1a2e44;
+  color: #e2e8f0;
+  border: 1px solid #375a7c;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  width: max-content;
+  max-width: 380px; 
+  z-index: 999; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.tooltipWrapper:hover .tooltipBubble {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.switch {
+  border: 1px solid #355a80;
+  background: #0d1b2c;
+  border-radius: 999px;
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+}
+
+.switchLabel {
+  font-size: 0.7rem;
+  color: #8da9c6;
+  border-radius: 999px;
+  padding: 3px 8px;
+}
+
+.disabledSwitch {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.disabledLabel {
+  opacity: 0.35;
+}
+
+.active {
+  color: #0b1420;
+  background: linear-gradient(145deg, #d7f56d, #b8da35);
+}
+
+.metricMeta {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  margin: 8px 0;
+}
+
+.chartWrap {
+  width: 100%;
+}
+
+.cardEmpty {
+  color: var(--text-muted);
+  margin: 12px 0 4px;
+}

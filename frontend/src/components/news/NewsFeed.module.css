@@ -1,0 +1,145 @@
+.newsPanel {
+  padding: 12px;
+  min-height: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.panelTitleRow h2 {
+  margin: 0;
+  font-size: 1.03rem;
+}
+
+.panelTitleRow span {
+  color: var(--text-muted);
+  font-size: 0.74rem;
+}
+
+.newsFeed {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: #4e7397 rgba(15, 29, 46, 0.65);
+}
+
+.newsFeed::-webkit-scrollbar {
+  width: 10px;
+}
+
+.newsFeed::-webkit-scrollbar-track {
+  background: rgba(11, 24, 37, 0.7);
+  border-radius: 999px;
+}
+
+.newsFeed::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid rgba(11, 24, 37, 0.7);
+  background: linear-gradient(180deg, #5f89b3, #355d84);
+}
+
+.newsFeed::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #7ca3ca, #426d97);
+}
+
+.newsCard {
+  border: 1px solid #294765;
+  border-radius: 8px;
+  padding: 10px;
+  background: linear-gradient(160deg, #112338, #0c1826);
+}
+
+.newsTitle {
+  color: #b5ddff;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.newsTitle:hover {
+  text-decoration: underline;
+}
+
+.newsCard p {
+  color: #c2d6eb;
+  font-size: 0.84rem;
+  margin: 8px 0;
+  line-height: 1.45;
+}
+
+.newsMetaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.74rem;
+}
+
+.newsMetaRow a {
+  color: #86c8ff;
+}
+
+.feedName {
+  color: var(--text-muted);
+}
+
+.tags {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  border: 1px solid #375d82;
+  border-radius: 6px;
+  font-size: 0.69rem;
+  letter-spacing: 0.04em;
+  color: #d6e9fd;
+  background: rgba(50, 80, 110, 0.3);
+  padding: 2px 6px;
+}
+
+.endOfFeedCard {
+  text-align: center;
+  border-style: dashed;
+  border-color: #3a5f84;
+  background: linear-gradient(160deg, rgba(19, 37, 56, 0.7), rgba(13, 25, 39, 0.85));
+}
+
+.endOfFeedCard p {
+  margin: 4px 0;
+  color: #b9cfe6;
+  font-size: 0.83rem;
+}
+
+.feedTrigger {
+  width: 100%;
+  height: 2px;
+}
+
+@media (max-width: 1140px) {
+  .newsPanel {
+    max-height: none;
+  }
+
+  .newsFeed {
+    max-height: 56vh;
+  }
+}

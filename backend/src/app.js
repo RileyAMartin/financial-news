@@ -3,6 +3,7 @@ import rateLimit from "express-rate-limit";
 import config from "./config/config.js";
 import economicsRoutes from "./routes/economicsRoutes.js";
 import newsRoutes from "./routes/newsRoutes.js";
+import dimensionsRoutes from "./routes/dimensionsRoutes.js";
 import { AppError } from "./utils/appError.js";
 import { RESPONSE_CODES, RESPONSE_MESSAGES } from "./utils/constants.js";
 
@@ -22,6 +23,7 @@ app.use(limiter);
 // Routes
 app.use("/api/economics", economicsRoutes);
 app.use("/api/news", newsRoutes);
+app.use("/api/dimensions", dimensionsRoutes);
 
 // 404
 app.use("/{*splat}", (req, res, next) => {

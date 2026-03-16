@@ -1,0 +1,78 @@
+.mapPanel {
+  padding: 8px;
+  min-height: 360px;
+}
+
+.worldMap {
+  height: 355px;
+  border-radius: 8px;
+  z-index: 1;
+  background: var(--bg-panel-2);
+}
+
+.countryTooltip {
+  background: #0f1b29;
+  color: #deecff;
+  border: 1px solid #386186;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  padding: 3px 7px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+/* Fix for the focus outline issue on click/drag */
+:global(path.leaflet-interactive:focus) {
+  outline: none;
+}
+
+/* Disable pointer events on countries while dragging/zooming to prevent sticky hover states */
+.mapDragging :global(.leaflet-interactive) {
+  pointer-events: none !important;
+}
+
+:global(.leaflet-container) {
+  background: var(--bg-surface) !important;
+  outline: none;
+}
+/* Customizing Leaflet Controls */
+:global(.leaflet-control-zoom) {
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  overflow: hidden;
+  box-shadow: var(--shadow) !important;
+}
+
+:global(.leaflet-control-zoom-in),
+:global(.leaflet-control-zoom-out) {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-main) !important;
+  border-bottom: 1px solid var(--border) !important;
+  transition: all 0.2s ease;
+}
+
+:global(.leaflet-control-zoom-in:hover),
+:global(.leaflet-control-zoom-out:hover) {
+  background-color: var(--bg-panel) !important;
+  color: var(--accent) !important;
+}
+
+:global(.leaflet-control-zoom-out) {
+  border-bottom: none !important;
+}
+
+:global(.leaflet-control-attribution) {
+  background: rgba(13, 29, 45, 0.8) !important;
+  color: var(--text-muted) !important;
+  padding: 0 8px !important;
+  border-top-left-radius: 8px;
+}
+
+:global(.leaflet-control-attribution a) {
+  color: var(--accent) !important;
+  text-decoration: none;
+}
+
+@media (max-width: 760px) {
+  .worldMap {
+    height: 310px;
+  }
+}

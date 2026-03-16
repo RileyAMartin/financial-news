@@ -1,0 +1,110 @@
+.dashboardHeader {
+  padding: 14px;
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) 1.35fr;
+  gap: 14px;
+}
+
+.headerLeft h1 {
+  margin: 0;
+  font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+  letter-spacing: 0.02em;
+}
+
+.countryBadges {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.countryTag,
+.dataChip {
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  padding: 5px 10px;
+}
+
+.countryTag {
+  color: #08121d;
+  background: linear-gradient(145deg, #f6ff81, #cde93a);
+}
+
+.dataChip {
+  color: #d4e8fc;
+  border: 1px solid #36597d;
+  background: rgba(50, 84, 115, 0.35);
+}
+
+.headerRight {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  align-items: end;
+}
+
+.controlGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 140px; 
+}
+
+.controlGroup:nth-child(3) {
+  width: 200px;
+}
+
+.controlGroup span {
+  color: var(--text-muted);
+  font-size: 0.77rem;
+  letter-spacing: 0.05em;
+}
+
+.controlGroup select {
+  width: 100%;
+  min-height: 35px;
+  border-radius: 7px;
+  border: 1px solid #395f84;
+  background: #0b1826;
+  color: var(--text-main);
+  padding: 6px 8px;
+}
+
+.currencyToggle {
+  display: inline-grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  background: #0d1c2d;
+  border: 1px solid #355a80;
+  border-radius: 7px;
+  padding: 4px;
+}
+
+.currencyToggle button {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: 5px;
+  min-height: 28px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.active {
+  color: #f7ffd4 !important;
+  background: linear-gradient(145deg, #1b77c9, #115693) !important;
+}
+
+@media (max-width: 1140px) {
+  .dashboardHeader {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .headerRight {
+    grid-template-columns: 1fr;
+  }
+}
