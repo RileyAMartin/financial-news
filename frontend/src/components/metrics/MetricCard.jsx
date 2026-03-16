@@ -1,5 +1,6 @@
 import { Info } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import {
   CartesianGrid,
   Line,
@@ -24,6 +25,10 @@ export function MetricCard({
   isInflationAdjusted,
   onToggleInflation,
 }) {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0 });
+  const iconRef = useRef(null);
+
   const currencyField = getCurrencyField(currency);
 
   const hasNominal = useMemo(() => metric.data.some((point) => !point.isInflationAdjusted), [metric]);
@@ -45,22 +50,49 @@ export function MetricCard({
       date: point.date,
       value: point[currencyField],
     }));
-  }, [metric, currencyField, isInflationAdjusted]);
+  }, [metric, currencyField, effectiveIsInflationAdjusted]);
+
+  const handleMouseEnter = () => {
+    if (iconRef.current) {
+      const rect = iconRef.current.getBoundingClientRect();
+      setTooltipPos({
+        top: rect.top - 8,
+        left: rect.left + rect.width / 2,
+      });
+      setShowTooltip(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setShowTooltip(false);
+  };
 
   return (
     <article className={styles.metricCard}>
       <header className={styles.metricCardHeader}>
         <div className={styles.metricTitleWrap}>
           <h3 className="metric-title">{metric.metadata.name}</h3>
-          <div className={styles.tooltipWrapper}>
+          <div 
+            className={styles.tooltipWrapper}
+            ref={iconRef}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
             <Info 
               size={14} 
               className={styles.infoIcon} 
               strokeWidth={2.5}
             />
-            <div className={styles.tooltipBubble} role="tooltip">
-              {metric.metadata.description}
-            </div>
+            {showTooltip && createPortal(
+              <div 
+                className={styles.tooltipBubble} 
+                role="tooltip"
+                style={{ top: tooltipPos.top, left: tooltipPos.left }}
+              >
+                {metric.metadata.description}
+              </div>,
+              document.body
+            )}
           </div>
         </div>
 

@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import styles from "./newsFeed.module.css";
+import { UI_CONSTANTS } from "../../utils/constants";
+import { StatusBanner } from "../layout/StatusBanner";
 
 export function NewsFeed({
   items,
@@ -21,7 +23,7 @@ export function NewsFeed({
           onLoadMore();
         }
       },
-      { rootMargin: "180px 0px" }
+      { rootMargin: UI_CONSTANTS.NEWS.INTERSECTION_ROOT_MARGIN }
     );
 
     observer.observe(triggerRef.current);
@@ -53,11 +55,11 @@ export function NewsFeed({
               {article.title}
             </a>
 
-            <p>{(article.summary || "No summary available").slice(0, 180)}...</p>
+            <p>{(article.summary || UI_CONSTANTS.NEWS.FALLBACK_SUMMARY).slice(0, UI_CONSTANTS.NEWS.MAX_SUMMARY_LENGTH)}...</p>
 
             <div className={styles.newsMetaRow}>
               <span className={styles.feedName}>
-                {(article.feed_name || "Unknown source")
+                {(article.feed_name || UI_CONSTANTS.NEWS.FALLBACK_SOURCE)
                   .replace(/_/g, " ")
                   .toUpperCase()}
               </span>
@@ -77,17 +79,11 @@ export function NewsFeed({
         ))}
 
         {loading && (
-          <div className="status-card loading-state" role="status" aria-live="polite">
-            <span className="spinner" aria-hidden="true" />
-            
-            <span>{items.length === 0 ? "Loading News" : "Loading More News"}</span>
-          </div>
+          <StatusBanner type="loading" message={items.length === 0 ? "Loading News" : "Loading More News"} isCard />
         )}
 
         {error && (
-          <div className="status-card error" role="alert">
-            {error}
-          </div>
+          <StatusBanner type="error" message={error} isCard />
         )}
 
         {!loading && !hasMore && items.length > 0 && (

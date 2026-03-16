@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { GeoJSON, MapContainer, TileLayer, useMapEvents } from "react-leaflet";
+import { useRef, useState, useEffect } from "react";
+import { GeoJSON, MapContainer, TileLayer, useMapEvents, useMap } from "react-leaflet";
 import { getFeatureIso3, getFeatureName } from "../../utils/geo";
 import styles from "./WorldMap.module.css";
 import "leaflet/dist/leaflet.css";
@@ -51,8 +51,23 @@ function MapInteractions({ onDragStart, onDragEnd, onZoomStart }) {
   return null;
 }
 
-export function WorldMap({ geoJson, selectedCountry, onSelectCountry }) {
+function MapResizer() {
+  const map = useMap();
+  useEffect(() => {
+    const observer = new ResizeObserver(() => {
+      map.invalidateSize();
+    });
+    observer.observe(map.getContainer());
+    return () => observer.disconnect();
+  }, [map]);
+  return null;
+}
+
+export function WorldMap({ geoJson, selectedCountry, onSelectCountry, countries, loading }) {
   const hoveredLayerRef = useRef(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const availableCountryCodes = countries ? countries.map((c) => c.country_code) : [];
 
   const clearHover = () => {
     if (hoveredLayerRef.current) {
@@ -68,6 +83,11 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry }) {
   const styleFeature = (feature) => {
     // const iso3 = feature.id;
     const iso3 = getFeatureIso3(feature.properties);
+    const isAvailable = availableCountryCodes.includes(iso3);
+
+    if (!isAvailable) {
+      return { ...MAP_STYLE.default, fillColor: "#2d3748", fillOpacity: 0.1 };
+    }
     return iso3 === selectedCountry ? MAP_STYLE.selected : MAP_STYLE.default;
   };
 
@@ -75,16 +95,21 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry }) {
     // const iso3 = feature.id;
     const iso3 = getFeatureIso3(feature.properties);
     const name = getFeatureName(feature.properties);
+    const isAvailable = availableCountryCodes.includes(iso3);
 
-    layer.bindTooltip(`${name} (${iso3 || "N/A"})`, {
-      direction: "top",
-      sticky: true,
-      opacity: 0.96,
-      className: styles.countryTooltip,
-    });
+    layer.bindTooltip(
+      isAvailable ? `${name} (${iso3})` : `${name} (N/A)`,
+      {
+        direction: "top",
+        sticky: true,
+        opacity: 0.96,
+        className: styles.countryTooltip,
+      }
+    );
 
     layer.on({
       mouseover: (e) => {
+        if (!isAvailable) return;
         const layer = e.target;
         // If we moved directly from one country to another without mouseout...
         if (hoveredLayerRef.current && hoveredLayerRef.current !== layer) {
@@ -98,20 +123,21 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry }) {
         hoveredLayerRef.current = layer;
       },
       mouseout: (e) => {
+        if (!isAvailable) return;
         // Only clear if we are moving out of the current hovered layer
         if (hoveredLayerRef.current === e.target) {
           clearHover();
         }
       },
       click: () => {
-        if (iso3 && iso3 !== selectedCountry) {
+        if (isAvailable && iso3 && iso3 !== selectedCountry) {
           onSelectCountry(iso3);
         }
       },
     });
   };
 
-  if (!geoJson) {
+  if (loading || !geoJson) {
     return (
       <div className={`panel ${styles.mapPanel} ${styles.loadingPanel}`}>
         <span className="spinner" aria-hidden="true" />
@@ -122,41 +148,51 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry }) {
 
   return (
     <section className={`panel ${styles.mapPanel} ${styles.mapLoaded}`}>
-      <MapContainer
-        center={[20, 0]}
-        zoom={2}
-        minZoom={2}
-        maxZoom={6}
-        scrollWheelZoom={true}
-        maxBounds={[
-          [-90, -180],
-          [90, 180],
-        ]}
-        maxBoundsViscosity={1.0}
-        className={styles.worldMap}
-        attributionControl={false}
-      >
-        <MapInteractions
-          onDragStart={clearHover}
-          onDragEnd={() => {}}
-          onZoomStart={clearHover}
-        />
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
-          noWrap={true}
-          bounds={[
+      <div className={`${styles.mapContainerWrapper} ${isCollapsed ? styles.collapsed : ""}`}>
+        <MapContainer
+          center={[20, 0]}
+          zoom={2}
+          minZoom={2}
+          maxZoom={6}
+          scrollWheelZoom={true}
+          maxBounds={[
             [-90, -180],
             [90, 180],
           ]}
-        />
-        <GeoJSON
-          key={selectedCountry} // Only re-render when selection changes, NOT on hover
-          data={geoJson}
-          style={styleFeature}
-          onEachFeature={onEachFeature}
-        />
-      </MapContainer>
+          maxBoundsViscosity={1.0}
+          className={styles.worldMap}
+          attributionControl={false}
+        >
+          <MapResizer />
+          <MapInteractions
+            onDragStart={clearHover}
+            onDragEnd={() => {}}
+            onZoomStart={clearHover}
+          />
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
+            noWrap={true}
+            bounds={[
+              [-90, -180],
+              [90, 180],
+            ]}
+          />
+          <GeoJSON
+            key={selectedCountry} // Only re-render when selection changes, NOT on hover
+            data={geoJson}
+            style={styleFeature}
+            onEachFeature={onEachFeature}
+          />
+        </MapContainer>
+        <button 
+          className={styles.collapseButton} 
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          aria-label={isCollapsed ? "Expand map" : "Collapse map"}
+        >
+          {isCollapsed ? "↓" : "↑"}
+        </button>
+      </div>
     </section>
   );
 }

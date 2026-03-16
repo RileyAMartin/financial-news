@@ -1,12 +1,4 @@
-export const CURRENCIES = ["LOCAL", "EUR", "USD"];
-
-export const TIME_PERIODS = [
-  { value: "1Y", label: "1Y", years: 1 },
-  { value: "3Y", label: "3Y", years: 3 },
-  { value: "5Y", label: "5Y", years: 5 },
-  { value: "10Y", label: "10Y", years: 10 },
-  { value: "ALL", label: "All", years: null },
-];
+export { CURRENCIES, TIME_PERIODS } from "../utils/constants";
 
 export const initialDashboardState = {
   selectedCountry: "",

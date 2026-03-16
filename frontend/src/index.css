@@ -79,7 +79,7 @@ body {
 .status-card {
   border: 1px solid #2f4f6f;
   border-radius: 10px;
-  padding: 12px;
+  padding: 6px 12px;
   background: linear-gradient(160deg, rgba(20, 40, 60, 0.7), rgba(14, 28, 43, 0.82));
   color: #cfe2f7;
   font-size: 0.84rem;

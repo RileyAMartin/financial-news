@@ -1,10 +1,17 @@
 .mapPanel {
-  padding: 8px;
-  min-height: 360px;
+  padding: 0 8px;
+  min-height: auto;
+  transition: min-height 0.3s ease;
 }
 
 .mapLoaded {
   background: var(--bg-panel-map);
+}
+
+.mapContainerWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .loadingPanel {
@@ -13,6 +20,7 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
+  min-height: 360px;
 }
 
 .worldMap {
@@ -20,6 +28,37 @@
   border-radius: 8px;
   z-index: 1;
   background: var(--bg-panel-map);
+  transition: height 0.3s ease;
+}
+
+.collapsed .worldMap {
+  height: 120px !important;
+}
+
+.collapseButton {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-main);
+  padding: 4px 16px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.collapseButton:hover {
+  background: var(--bg-panel);
+  color: var(--accent);
 }
 
 .countryTooltip {
@@ -48,6 +87,7 @@
   border-radius: 6px !important;
   overflow: hidden;
   box-shadow: var(--shadow) !important;
+  user-select: none;
 }
 
 :global(.leaflet-control-zoom-in),
@@ -83,5 +123,8 @@
 @media (max-width: 760px) {
   .worldMap {
     height: 310px;
+  }
+  .collapsed .worldMap {
+    height: 100px !important;
   }
 }

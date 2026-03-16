@@ -7,11 +7,10 @@ import { NewsFeed } from "./components/news/NewsFeed";
 import { useDimensionsData } from "./hooks/useDimensionsData";
 import { useEconomicsData } from "./hooks/useEconomicsData";
 import { useNewsFeed } from "./hooks/useNewsFeed";
-import {
-  dashboardReducer,
-  initialDashboardState,
-} from "./state/dashboardState";
+import { dashboardReducer, initialDashboardState } from "./state/dashboardState";
+import { UI_CONSTANTS } from "./utils/constants";
 import { getDateRange } from "./utils/dateRange";
+import { StatusBanner } from "./components/layout/StatusBanner";
 
 export default function App() {
   const [state, dispatch] = useReducer(dashboardReducer, initialDashboardState);
@@ -54,7 +53,7 @@ export default function App() {
     }
 
     const preferred =
-      countries.find((country) => country.country_code === "USA") || countries[0];
+      countries.find((country) => country.country_code === UI_CONSTANTS.MAP.FALLBACK_COUNTRY_CODE) || countries[0];
 
     dispatch({ type: "setCountry", payload: preferred.country_code });
   }, [countries, state.selectedCountry]);
@@ -99,6 +98,8 @@ export default function App() {
         <WorldMap
           geoJson={geoJson}
           selectedCountry={state.selectedCountry}
+          countries={countries}
+          loading={dimensionsLoading}
           onSelectCountry={(code) => dispatch({ type: "setCountry", payload: code })}
         />
 
@@ -127,11 +128,8 @@ export default function App() {
           </div>
         </section>
 
-        {(dimensionsLoading || statusError) && (
-          <div className={`status-banner ${statusError ? "error" : ""}`} role="status">
-            {dimensionsLoading && <span className="spinner" aria-hidden="true" />}
-            <span>{dimensionsLoading ? "Initializing dashboard..." : statusError}</span>
-          </div>
+        {statusError && (
+          <StatusBanner type="error" message={statusError} />
         )}
       </main>
     </div>
