@@ -87,7 +87,7 @@ export function MetricCard({
         <p className={styles.cardEmpty}>No data points in this range.</p>
       ) : (
         <div className={styles.chartWrap}>
-          <ResponsiveContainer width="100%" height={240}>
+          <ResponsiveContainer width="100%" height={180}>
             <LineChart data={chartData} margin={{ top: 18, right: 18, left: 0, bottom: 4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1f2d3d" vertical={false} />
               

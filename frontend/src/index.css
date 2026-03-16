@@ -39,7 +39,10 @@ body {
 }
 
 .dashboard-shell {
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .dashboard-main {
@@ -47,6 +50,8 @@ body {
   margin: 14px auto 24px;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
   gap: 14px;
 }
 
@@ -62,11 +67,13 @@ body {
   grid-template-columns: 1.9fr 1.1fr;
   gap: 12px;
   align-items: stretch;
+  flex: 1;
+  min-height: 0;
 }
 
 .news-wrapper {
   position: relative;
-  min-height: 600px;
+  min-height: 0;
 }
 
 .status-card {
