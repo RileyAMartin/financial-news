@@ -146,7 +146,6 @@ def reverse_etl(request):
         except ImportError:
             pass
 
-        # Parse the request
         payload = request.get_json(silent=True)
         if not payload:
             return ({"error": "Request body must be valid JSON."}, 400)
