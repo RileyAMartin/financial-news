@@ -102,3 +102,8 @@ models:
         description: "Closing price for the day, used for quarter period-average calculations."
         data_tests:
           - not_null
+
+      - name: ingested_at
+        description: "The timestamp when this record was originally loaded into BigQuery."
+        data_tests:
+          - not_null

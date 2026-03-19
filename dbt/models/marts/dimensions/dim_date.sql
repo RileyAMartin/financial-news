@@ -8,9 +8,9 @@ with date_spine as (
 
 select
     cast(date_day as date) as date_day,
-    extract(year from date_day) as year,
-    extract(month from date_day) as month,
-    extract(quarter from date_day) as quarter,
+    extract(year from date_day) as date_year,
+    extract(month from date_day) as date_month,
+    extract(quarter from date_day) as date_quarter,
     cast(
         date_day = date_sub(
             date_add(date_trunc(date_day, quarter), interval 3 month),
