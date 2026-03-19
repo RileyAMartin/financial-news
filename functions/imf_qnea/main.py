@@ -4,7 +4,6 @@ import pandas as pd
 import functions_framework
 from datetime import datetime, timezone
 from google.cloud import bigquery
-from common.utils import get_current_imf_time_period_str
 
 def get_current_imf_time_period_str() -> str:
     """
