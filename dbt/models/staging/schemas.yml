@@ -71,35 +71,34 @@ models:
         data_tests:
           - not_null
 
-  - name: stg_imf_fx
-    description: "Period-average exchange rate data from the IMF."
+  - name: stg_fx
+    description: "Daily FX OHLC rates from the raw fx table, normalized to USD quote currency."
     columns:
-      - name: country_code
-        description: "The 3-letter country code for this row."
+      - name: date_day
+        description: "The calendar date for this daily FX observation."
         data_tests:
           - not_null
 
-      - name: indicator_code
-        description: "The exchange rate metric type. Either US dollars per local currency unit (USD_XDC) or Euros per local currency unit (EUR_XDC)."
+      - name: base_currency_code
+        description: "The ISO 4217 base currency code being priced."
         data_tests:
           - not_null
 
-      - name: period_end_date
-        description: "The date of the last day of this row's quarter."
+      - name: quote_currency_code
+        description: "The ISO 4217 quote currency code. Filtered to USD in this model."
         data_tests:
           - not_null
 
-      - name: frequency
-        description: "The frequency of the observation. Always 'Q' (quarterly)."
-        data_tests:
-          - not_null
+      - name: open_price
+        description: "Opening price for the day."
 
-      - name: obs_value
-        description: "The period-average exchange rate (USD or EUR per one unit of local currency) for this quarter."
-        data_tests:
-          - not_null
+      - name: high_price
+        description: "Highest traded price for the day."
 
-      - name: ingested_at
-        description: "The timestamp when this record was originally loaded into BigQuery."
+      - name: low_price
+        description: "Lowest traded price for the day."
+
+      - name: close_price
+        description: "Closing price for the day, used for quarter period-average calculations."
         data_tests:
           - not_null

@@ -1,6 +1,29 @@
 version: 2
 
 models:
+  - name: dim_currencies
+    description: "Dimension table of country-level local currencies, sourced from the currencies seed."
+    columns:
+      - name: country_code
+        description: "The 3-letter ISO country code, serving as the primary key."
+        data_tests:
+          - unique
+          - not_null
+          - assert_string_length:
+              expected_length: 3
+
+      - name: currency_code
+        description: "The 3-letter ISO 4217 currency code for the country."
+        data_tests:
+          - not_null
+          - assert_string_length:
+              expected_length: 3
+
+      - name: currency_name
+        description: "Human-readable currency name for the country."
+        data_tests:
+          - not_null
+
   - name: dim_countries
     description: "Dimension table of countries tracked in the pipeline, sourced from the IMF country abbreviations seed."
     columns:
@@ -70,3 +93,47 @@ models:
 
       - name: url
         description: "A URL linking to the dataset's source page."
+
+  - name: dim_date
+    description: "Date dimension with daily granularity and standardized calendar and Australian financial-year attributes."
+    columns:
+      - name: date_day
+        description: "The calendar date, serving as the primary key."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: year
+        description: "Calendar year."
+        data_tests:
+          - not_null
+
+      - name: month
+        description: "Calendar month number (1-12)."
+        data_tests:
+          - not_null
+
+      - name: quarter
+        description: "Calendar quarter number (1-4)."
+        data_tests:
+          - not_null
+
+      - name: is_quarter_end
+        description: "True when date_day is the final day of a calendar quarter."
+        data_tests:
+          - not_null
+
+      - name: year_quarter
+        description: "Canonical quarter key in YYYY-QN format for easy grouping."
+        data_tests:
+          - not_null
+
+      - name: financial_quarter
+        description: "Australian financial quarter number (Q1=Jul-Sep, Q2=Oct-Dec, Q3=Jan-Mar, Q4=Apr-Jun)."
+        data_tests:
+          - not_null
+
+      - name: financial_year
+        description: "Australian financial year label, where dates from Jul-Jun map to the ending year."
+        data_tests:
+          - not_null

@@ -1,6 +1,28 @@
 version: 2
 
 seeds:
+  - name: dim_currencies_seed
+    description: "Source-of-truth mapping of countries to their primary ISO currency codes and names."
+    columns:
+      - name: country_code
+        description: "The 3-letter ISO country code."
+        data_tests:
+          - not_null
+          - assert_string_length:
+              expected_length: 3
+
+      - name: currency_code
+        description: "The 3-letter ISO 4217 currency code used by the country."
+        data_tests:
+          - not_null
+          - assert_string_length:
+              expected_length: 3
+
+      - name: currency_name
+        description: "Human-readable currency name."
+        data_tests:
+          - not_null
+
   - name: imf_country_abbreviations
     description: "Reference table of IMF country codes and their official and display names."
     columns:

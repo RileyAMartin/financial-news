@@ -49,60 +49,58 @@ models:
         data_tests:
           - not_null
 
-  - name: int_imf_qnea_with_fx
-    description: "QNEA data with annualized values calculated in local currency, USD, and EUR using period-average exchange rates."
+  - name: int_fx_quarterly_avg
+    description: "Quarterly period-average FX rates calculated as the average daily close price by base currency and quarter."
     columns:
-      - name: country_code
-        description: "The 3-letter abbreviated country code for this value."
+      - name: base_currency_code
+        description: "The ISO 4217 base currency code being priced."
         data_tests:
           - not_null
 
-      - name: indicator_code
-        description: "The IMF indicator code, filtered to those present in the `imf_qnea_indicators` seed."
+      - name: quote_currency_code
+        description: "The ISO 4217 quote currency code."
         data_tests:
           - not_null
 
-      - name: period_end_date
-        description: "The date of the last day of this row's quarter."
+      - name: year
+        description: "Calendar year of the quarter."
         data_tests:
           - not_null
 
-      - name: frequency
-        description: "The frequency of the observation. Always 'Q' (quarterly)."
+      - name: quarter
+        description: "Calendar quarter number (1-4)."
         data_tests:
           - not_null
 
-      - name: is_inflation_adjusted
-        description: "True if the observed value is adjusted for inflation (constant prices); False if it represents current prices."
+      - name: year_quarter
+        description: "Canonical quarter key in YYYY-QN format from dim_date."
         data_tests:
           - not_null
 
-      - name: obs_value
-        description: "The raw seasonally adjusted observed value in the local currency, before annualization."
-
-      - name: annualization_multiplier
-        description: "The multiplier used to convert this indicator's quarterly value to an annualized figure."
-
-      - name: source_code
-        description: "The identifier for the data source. Always 'IMF_QNEA', corresponding to the entry in the `data_sources` seed."
+      - name: financial_year
+        description: "Australian financial year, where July-June maps to one financial year."
         data_tests:
           - not_null
 
-      - name: ingested_at
-        description: "The timestamp when this record was originally loaded into BigQuery."
+      - name: financial_quarter
+        description: "Australian financial quarter number (Q1=Jul-Sep, Q2=Oct-Dec, Q3=Jan-Mar, Q4=Apr-Jun)."
         data_tests:
           - not_null
 
-      - name: value_local
-        description: "The annualized value in the local currency (obs_value × annualization_multiplier)."
+      - name: quarter_start_date
+        description: "First date available in the quarter for this currency pair."
         data_tests:
           - not_null
 
-      - name: value_usd
-        description: "The annualized value in US dollars, converted using the period-average exchange rate."
+      - name: quarter_end_date
+        description: "Last date available in the quarter for this currency pair."
+        data_tests:
+          - not_null
 
-      - name: value_eur
-        description: "The annualized value in Euros, converted using the period-average exchange rate."
+      - name: period_average_rate
+        description: "The average daily close price for the quarter."
+        data_tests:
+          - not_null
 
   - name: int_news_country_tags
     description: "Intermediate model that matches news articles against country keywords to produce a list of country codes associated with each article."
