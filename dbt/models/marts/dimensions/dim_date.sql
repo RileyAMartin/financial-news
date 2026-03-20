@@ -32,5 +32,6 @@ select
     case
         when extract(month from date_day) >= 7 then extract(year from date_day) + 1
         else extract(year from date_day)
-    end as financial_year
+    end as financial_year,
+    current_timestamp() as processed_at
 from date_spine

@@ -28,6 +28,7 @@ dim_date as (
 
 select
     news.ingested_at,
+    current_timestamp() as processed_at,
     news.url,
     news.feed_name,
     news.title,

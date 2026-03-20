@@ -1,17 +1,6 @@
-{{ 
-    config(
-        materialized='incremental',
-        unique_key=['country_code', 'currency_code', 'indicator_code', 'date_day', 'is_inflation_adjusted']
-    )
-}}
-
 with qnea as (
     select *
     from {{ ref('int_imf_qnea_filtered') }}
-
-    {% if is_incremental() %}
-    where ingested_at > (select coalesce(max(ingested_at), '1900-01-01') from {{ this }})
-    {% endif %}
 ),
 
 country_currency as (
@@ -30,6 +19,7 @@ select
     qnea.frequency,
     qnea.is_inflation_adjusted,
     qnea.ingested_at,
+    current_timestamp() as processed_at,
     (qnea.obs_value * qnea.annualization_multiplier) as value_local
 from qnea
 inner join {{ ref('dim_date') }} as dim_date

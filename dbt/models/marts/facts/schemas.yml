@@ -64,6 +64,11 @@ models:
         data_tests:
           - not_null
 
+      - name: processed_at
+        description: "The timestamp when this row was processed in dbt."
+        data_tests:
+          - not_null
+
       - name: value_local
         description: "The annualized value in the local currency."
 
@@ -117,11 +122,87 @@ models:
         data_tests:
           - not_null
 
+      - name: ingested_at
+        description: "The timestamp when this record was originally loaded into BigQuery."
+        data_tests:
+          - not_null
+
+      - name: processed_at
+        description: "The timestamp when this row was processed in dbt."
+        data_tests:
+          - not_null
+
+  - name: fct_fx_quarterly
+    description: "Fact table of quarterly average FX rates to USD, aggregated from daily FX observations."
+    columns:
+      - name: base_currency_code
+        description: "The ISO 4217 base currency code being converted to quote currency units."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_currencies')
+                field: currency_code
+
+      - name: quote_currency_code
+        description: "The ISO 4217 quote currency code. In this model, it is expected to be USD."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_currencies')
+                field: currency_code
+
+      - name: date_year
+        description: "Calendar year derived from date_day."
+        data_tests:
+          - not_null
+
+      - name: date_quarter
+        description: "Calendar quarter number (1-4) derived from date_day."
+        data_tests:
+          - not_null
+
+      - name: open_price
+        description: "Quarterly average of daily open FX prices."
+        data_tests:
+          - not_null
+
+      - name: high_price
+        description: "Quarterly average of daily high FX prices."
+        data_tests:
+          - not_null
+
+      - name: low_price
+        description: "Quarterly average of daily low FX prices."
+        data_tests:
+          - not_null
+
+      - name: period_average_rate
+        description: "Quarterly average of daily close FX prices."
+        data_tests:
+          - not_null
+
+      - name: ingested_at
+        description: "The latest ingested_at timestamp among daily FX records in the quarter."
+        data_tests:
+          - not_null
+
+      - name: processed_at
+        description: "The timestamp when this row was processed in dbt."
+        data_tests:
+          - not_null
+
   - name: fct_news
     description: "Fact table of RSS news articles that have been successfully matched to at least one country."
     columns:
       - name: ingested_at
         description: "The timestamp when this article was originally loaded into BigQuery."
+        data_tests:
+          - not_null
+
+      - name: processed_at
+        description: "The timestamp when this row was processed in dbt."
         data_tests:
           - not_null
 

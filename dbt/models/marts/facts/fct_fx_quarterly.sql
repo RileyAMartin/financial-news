@@ -11,7 +11,9 @@ select
     avg(open_price) as open_price,
     avg(high_price) as high_price,
     avg(low_price) as low_price,
-    avg(close_price) as period_average_rate
+    avg(close_price) as period_average_rate,
+    max(ingested_at) as ingested_at,
+    current_timestamp() as processed_at
 from fx_daily
 group by
     base_currency_code,

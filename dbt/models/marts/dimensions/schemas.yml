@@ -24,6 +24,11 @@ models:
         data_tests:
           - not_null
 
+      - name: processed_at
+        description: "The timestamp when this dimension row was processed in dbt."
+        data_tests:
+          - not_null
+
   - name: dim_countries
     description: "Dimension table of countries tracked in the pipeline, sourced from the IMF country abbreviations seed."
     columns:
@@ -33,7 +38,8 @@ models:
           - unique
           - not_null
           - assert_string_length:
-              expected_length: 3
+              arguments:
+                expected_length: 3
 
       - name: official_name
         description: "The official country name as defined by the IMF."
@@ -42,6 +48,11 @@ models:
 
       - name: display_name
         description: "A shortened or common name used for display purposes."
+        data_tests:
+          - not_null
+
+      - name: processed_at
+        description: "The timestamp when this dimension row was processed in dbt."
         data_tests:
           - not_null
 
@@ -61,6 +72,11 @@ models:
 
       - name: description
         description: "A detailed description of what the indicator measures."
+
+      - name: processed_at
+        description: "The timestamp when this dimension row was processed in dbt."
+        data_tests:
+          - not_null
 
   - name: dim_sources
     description: "Dimension table of data sources used in the pipeline."
@@ -93,6 +109,11 @@ models:
 
       - name: url
         description: "A URL linking to the dataset's source page."
+
+      - name: processed_at
+        description: "The timestamp when this dimension row was processed in dbt."
+        data_tests:
+          - not_null
 
   - name: dim_date
     description: "Date dimension with daily granularity and standardized calendar and Australian financial-year attributes."
@@ -135,5 +156,10 @@ models:
 
       - name: financial_year
         description: "Australian financial year label, where dates from Jul-Jun map to the ending year."
+        data_tests:
+          - not_null
+
+      - name: processed_at
+        description: "The timestamp when this dimension row was processed in dbt."
         data_tests:
           - not_null

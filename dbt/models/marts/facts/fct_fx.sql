@@ -17,7 +17,9 @@ select
     fx_daily.open_price,
     fx_daily.high_price,
     fx_daily.low_price,
-    fx_daily.close_price
+    fx_daily.close_price,
+    fx_daily.ingested_at,
+    current_timestamp() as processed_at
 from fx_daily
 inner join {{ ref('dim_date') }} as dim_date
     on fx_daily.date_day = dim_date.date_day
