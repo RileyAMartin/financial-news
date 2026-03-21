@@ -25,5 +25,5 @@ inner join {{ ref('dim_date') }} as dim_date
     on fx_daily.date_day = dim_date.date_day
 
 {% if is_incremental() %}
-where fx_daily.date_day > (select coalesce(max(date_day), '1990-01-01') from {{ this }})
+where fx_daily.ingested_at > (select coalesce(max(ingested_at), timestamp('1990-01-01')) from {{ this }})
 {% endif %}

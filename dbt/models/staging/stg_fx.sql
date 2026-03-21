@@ -24,7 +24,7 @@ with raw_fx as (
         and upper(quote_currency_code) = 'USD'
 
     {% if is_incremental() %}
-        and ingested_at > (select coalesce(max(ingested_at), '1990-01-01') from {{ this }})
+        and ingested_at > (select coalesce(max(ingested_at), timestamp('1990-01-01')) from {{ this }})
     {% endif %}
 )
 
