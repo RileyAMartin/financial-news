@@ -65,7 +65,3 @@ with DAG(
     )
 
     ingest_rss_task >> run_dbt_news_models >> sync_fct_news
-
-
-if __name__ == "__main__":
-    dag.test()

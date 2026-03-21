@@ -56,7 +56,3 @@ with DAG(
         python_callable=execute_dynamic_full_refresh,
         provide_context=True,
     )
-
-
-if __name__ == "__main__":
-    dag.test()

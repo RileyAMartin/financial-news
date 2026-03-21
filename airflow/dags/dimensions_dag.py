@@ -150,7 +150,3 @@ with DAG(
         sync_dim_sources,
         sync_dim_date,
     ]
-
-
-if __name__ == "__main__":
-    dag.test()

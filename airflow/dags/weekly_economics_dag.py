@@ -25,12 +25,6 @@ with DAG(
     tags=["economics"],
 ) as dag:
 
-    ingest_imf_fx = PythonOperator(
-        task_id="ingest_imf_fx",
-        python_callable=call_authenticated_cloud_function,
-        op_kwargs={"url": IMF_FX_URL},
-    )
-
     ingest_imf_qnea = PythonOperator(
         task_id="ingest_imf_qnea",
         python_callable=call_authenticated_cloud_function,
@@ -80,7 +74,3 @@ with DAG(
     )
 
     ingest_imf_fx >> ingest_imf_qnea >> run_dbt_economics_models >> sync_fct_economics
-
-
-if __name__ == "__main__":
-    dag.test()
