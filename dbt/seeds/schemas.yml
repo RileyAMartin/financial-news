@@ -1,7 +1,7 @@
 version: 2
 
 seeds:
-  - name: dim_currencies_seed
+  - name: currencies
     description: "Source-of-truth mapping of countries to their primary ISO currency codes and names."
     columns:
       - name: country_code

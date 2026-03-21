@@ -8,3 +8,6 @@ selectors:
   - name: dimensions_pipeline
     description: Runs the pipeline for all dimension tables and their dependencies
     definition: +dimensions
+  - name: fx_pipeline
+    description: Runs the pipeline for all FX tables and their dependencies
+    definition: +fct_fx_quarterly
