@@ -2,7 +2,7 @@ with qnea_indicators as (
     select
         indicator_code,
         annualization_multiplier
-    from {{ ref("imf_qnea_indicators") }}
+    from {{ ref("dim_indicators") }}
 ),
 
 qnea_data as (
@@ -12,7 +12,7 @@ qnea_data as (
 
 imf_countries as (
     select country_code
-    from {{ ref("imf_country_abbreviations") }}
+    from {{ ref("dim_countries") }}
 )
 
 select

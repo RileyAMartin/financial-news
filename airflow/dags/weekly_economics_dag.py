@@ -5,7 +5,6 @@ from airflow.operators.bash import BashOperator
 from utils.common import (
     VENV_ACTIVATE,
     DBT_PROJECT_DIR,
-    IMF_FX_URL,
     IMF_QNEA_URL,
     REVERSE_ETL_URL,
     call_authenticated_cloud_function,
