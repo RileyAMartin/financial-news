@@ -26,3 +26,4 @@ inner join {{ ref('dim_date') }} as dim_date
     on qnea.period_end_date = dim_date.date_day
 left join country_currency
     on qnea.country_code = country_currency.country_code
+where country_currency.currency_code is not null
