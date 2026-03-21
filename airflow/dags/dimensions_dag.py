@@ -42,8 +42,9 @@ with DAG(
                 "columns": [
                     "country_code",
                     "official_name",
+                    "currency_code",
                     "display_name",
-                    "processed_at",
+                    "processed_at"
                 ],
                 "conflict_columns": ["country_code"],
                 "watermark_column": None,
@@ -62,12 +63,11 @@ with DAG(
                 "bq_table": "dim_currencies",
                 "pg_table": "dim_currencies",
                 "columns": [
-                    "country_code",
                     "currency_code",
                     "currency_name",
                     "processed_at",
                 ],
-                "conflict_columns": ["country_code"],
+                "conflict_columns": ["currency_code"],
                 "watermark_column": None,
                 "full_refresh": True,
             },
@@ -144,8 +144,8 @@ with DAG(
     )
 
     run_dbt_seeds_and_dims >> [
-        sync_dim_countries,
         sync_dim_currencies,
+        sync_dim_countries,
         sync_dim_indicators,
         sync_dim_sources,
         sync_dim_date,

@@ -1,7 +1,7 @@
 {{
     config(
         materialized='incremental',
-        unique_key=['base_currency_code', 'quote_currency_code', 'date_day']
+        unique_key=['base_currency_code', 'quote_currency_code', 'date_day', 'source_code']
     )
 }}
 

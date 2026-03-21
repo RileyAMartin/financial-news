@@ -4,14 +4,6 @@ models:
   - name: dim_currencies
     description: "Dimension table of country-level local currencies, sourced from the currencies seed."
     columns:
-      - name: country_code
-        description: "The 3-letter ISO country code, serving as the primary key."
-        data_tests:
-          - unique
-          - not_null
-          - assert_string_length:
-              expected_length: 3
-
       - name: currency_code
         description: "The 3-letter ISO 4217 currency code for the country."
         data_tests:
@@ -56,6 +48,14 @@ models:
         data_tests:
           - not_null
 
+      - name: currency_code
+        description: "The 3-letter ISO 4217 currency code for the country."
+        data_tests:
+          - not_null
+          - assert_string_length:
+              expected_length: 3
+
+
   - name: dim_indicators
     description: "Dimension table of QNEA economic indicators tracked in the pipeline."
     columns:
@@ -75,6 +75,11 @@ models:
 
       - name: processed_at
         description: "The timestamp when this dimension row was processed in dbt."
+        data_tests:
+          - not_null
+
+      - name: annualization_multiplier
+        description: "The multiplier applied to a value to produce an annualized figure. Always 4 for quarterly data."
         data_tests:
           - not_null
 
