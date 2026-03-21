@@ -11,10 +11,9 @@ DBT_PROJECT_DIR = os.path.join(REPO_ROOT, "dbt")
 
 # Cloud function URLs
 RSS_INGESTOR_URL = "https://australia-southeast2-international-finance-484205.cloudfunctions.net/rss-ingestor"
-IMF_FX_URL = "https://australia-southeast2-international-finance-484205.cloudfunctions.net/imf-fx-ingestor"
 IMF_QNEA_URL = "https://australia-southeast2-international-finance-484205.cloudfunctions.net/imf-qnea-ingestor"
 REVERSE_ETL_URL = "https://australia-southeast2-international-finance-484205.cloudfunctions.net/reverse-etl"
-FX_INGESTOR_URL = "https://australia-southeast2-international-finance-484205.cloudfunctions.net/yahoo-fx-ingestor"
+YAHOO_FX_INGESTOR_URL = "https://australia-southeast2-international-finance-484205.cloudfunctions.net/yahoo-fx-ingestor"
 
 
 def call_authenticated_cloud_function(url: str, payload: dict = None):
