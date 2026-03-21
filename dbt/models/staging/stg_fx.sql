@@ -7,6 +7,7 @@
 
 with raw_fx as (
     select
+        'YAHOO_FINANCE_FX' as source_code,
         cast(date_day as date) as date_day,
         upper(base_currency_code) as base_currency_code,
         upper(quote_currency_code) as quote_currency_code,

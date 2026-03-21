@@ -107,3 +107,12 @@ models:
         description: "The timestamp when this record was originally loaded into BigQuery."
         data_tests:
           - not_null
+
+      - name: source_code
+        description: "The identifier of the data source for this row."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_sources')
+                field: source_code

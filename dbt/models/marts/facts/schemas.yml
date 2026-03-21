@@ -132,6 +132,15 @@ models:
         data_tests:
           - not_null
 
+      - name: source_code
+        description: "The identifier of the data source for this row."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_sources')
+                field: source_code
+
   - name: fct_fx_quarterly
     description: "Fact table of quarterly average FX rates to USD, aggregated from daily FX observations."
     columns:
@@ -192,6 +201,15 @@ models:
         description: "The timestamp when this row was processed in dbt."
         data_tests:
           - not_null
+
+      - name: source_code
+        description: "The identifier of the data source for this row."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_sources')
+                field: source_code
 
   - name: fct_news
     description: "Fact table of RSS news articles that have been successfully matched to at least one country."

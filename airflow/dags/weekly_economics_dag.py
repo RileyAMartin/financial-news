@@ -56,25 +56,31 @@ with DAG(
                 "pg_table": "fct_economics",
                 "columns": [
                     "country_code",
+                    "currency_code",
                     "source_code",
                     "indicator_code",
-                    "period_end_date",
+                    "date_day",
                     "frequency",
                     "is_inflation_adjusted",
                     "ingested_at",
+                    "processed_at",
                     "value_local",
-                    "value_usd",
-                    "value_eur",
                 ],
                 "conflict_columns": [
                     "country_code",
+                    "currency_code",
+                    "source_code",
                     "indicator_code",
-                    "period_end_date",
+                    "date_day",
                     "is_inflation_adjusted",
                 ],
-                "watermark_column": "ingested_at",
+                "watermark_column": "processed_at",
             },
         },
     )
 
     ingest_imf_fx >> ingest_imf_qnea >> run_dbt_economics_models >> sync_fct_economics
+
+
+if __name__ == "__main__":
+    dag.test()

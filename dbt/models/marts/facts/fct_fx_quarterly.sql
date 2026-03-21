@@ -6,6 +6,7 @@ with fx_daily as (
 select
     base_currency_code,
     quote_currency_code,
+    source_code,
     extract(year from date_day) as date_year,
     extract(quarter from date_day) as date_quarter,
     avg(open_price) as open_price,
@@ -19,4 +20,5 @@ group by
     base_currency_code,
     quote_currency_code,
     date_year,
-    date_quarter
+    date_quarter,
+    source_code

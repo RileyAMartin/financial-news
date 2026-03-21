@@ -50,16 +50,22 @@ with DAG(
                 "columns": [
                     "url",
                     "ingested_at",
+                    "processed_at",
                     "feed_name",
                     "title",
                     "summary",
                     "published_at",
+                    "date_day",
                     "country_codes",
                 ],
                 "conflict_columns": ["url"],
-                "watermark_column": "ingested_at",
+                "watermark_column": "processed_at",
             },
         },
     )
 
     ingest_rss_task >> run_dbt_news_models >> sync_fct_news
+
+
+if __name__ == "__main__":
+    dag.test()
