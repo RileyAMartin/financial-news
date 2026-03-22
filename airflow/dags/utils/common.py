@@ -15,6 +15,9 @@ IMF_QNEA_URL = "https://australia-southeast2-international-finance-484205.cloudf
 REVERSE_ETL_URL = "https://australia-southeast2-international-finance-484205.cloudfunctions.net/reverse-etl"
 YAHOO_FX_INGESTOR_URL = "https://australia-southeast2-international-finance-484205.cloudfunctions.net/yahoo-fx-ingestor"
 
+HTTP_CONNECT_TIMEOUT_SECONDS = 15
+HTTP_READ_TIMEOUT_SECONDS = 3600
+
 
 def call_authenticated_cloud_function(url: str, payload: dict = None):
     """Generates a GCP Identity token and invokes a protected Cloud Function."""
@@ -23,10 +26,27 @@ def call_authenticated_cloud_function(url: str, payload: dict = None):
 
     headers = {"Authorization": f"Bearer {id_token}"}
 
-    if payload:
-        response = requests.post(url, json=payload, headers=headers)
-    else:
-        response = requests.post(url, headers=headers)
+    request_timeout = (HTTP_CONNECT_TIMEOUT_SECONDS, HTTP_READ_TIMEOUT_SECONDS)
+
+    try:
+        if payload:
+            response = requests.post(
+                url,
+                json=payload,
+                headers=headers,
+                timeout=request_timeout,
+            )
+        else:
+            response = requests.post(
+                url,
+                headers=headers,
+                timeout=request_timeout,
+            )
+    except requests.Timeout as exc:
+        raise TimeoutError(
+            f"Timed out waiting for Cloud Function response from {url}. "
+            f"connect={HTTP_CONNECT_TIMEOUT_SECONDS}s read={HTTP_READ_TIMEOUT_SECONDS}s"
+        ) from exc
 
     if not response.ok:
         print(f"CLOUD FUNCTION ERROR: {response.text}")
