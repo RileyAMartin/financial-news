@@ -12,6 +12,8 @@ def ingest_daily_fx_yahoo(request):
 
     if not start_date:
         return "Missing required parameter: 'start_date' (format: YYYY-MM-DD)", 400
+    if not isinstance(start_date, str):
+        return "Invalid parameter: 'start_date' must be a string in format YYYY-MM-DD", 400
 
     client = bigquery.Client()
     table_id = "international-finance-484205.raw_data.fx_raw"
