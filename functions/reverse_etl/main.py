@@ -79,7 +79,7 @@ def _build_bq_query(
     base_query = f"SELECT {col_list} FROM `{bq_dataset}.{bq_table}`"
 
     if watermark_column and watermark_value is not None:
-        query = f"{base_query} WHERE `{watermark_column}` > @watermark"
+        query = f"{base_query} WHERE `{watermark_column}` >= @watermark"
         job_config = bigquery.QueryJobConfig(
             query_parameters=[
                 bigquery.ScalarQueryParameter("watermark", "TIMESTAMP", watermark_value)
