@@ -24,9 +24,18 @@ def call_authenticated_cloud_function(url: str, payload: dict = None):
     headers = {"Authorization": f"Bearer {id_token}"}
 
     if payload:
-        response = requests.post(url, json=payload, headers=headers)
+        response = requests.post(
+            url,
+            json=payload,
+            headers=headers,
+            timeout=720
+        )
     else:
-        response = requests.post(url, headers=headers)
+        response = requests.post(
+            url,
+            headers=headers,
+            timeout=720
+        )
 
     if not response.ok:
         print(f"CLOUD FUNCTION ERROR: {response.text}")
