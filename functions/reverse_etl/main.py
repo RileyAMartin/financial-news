@@ -255,7 +255,7 @@ def reverse_etl(request):
 
         if full_refresh:
             with conn.cursor() as cur:
-                cur.execute(sql.SQL("TRUNCATE TABLE {table} RESTART IDENTITY;").format(table=sql.Identifier(pg_table)))
+                cur.execute(sql.SQL("TRUNCATE TABLE {table} CASCADE;").format(table=sql.Identifier(pg_table)))
             conn.commit()
 
         watermark_value = None
