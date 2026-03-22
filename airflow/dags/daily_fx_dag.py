@@ -27,7 +27,12 @@ with DAG(
     ingest_yahoo_fx = PythonOperator(
         task_id="ingest_yahoo_fx",
         python_callable=call_authenticated_cloud_function,
-        op_kwargs={"url": YAHOO_FX_INGESTOR_URL},
+        op_kwargs={
+            "url": YAHOO_FX_INGESTOR_URL,
+            "payload": {
+                "start_date": datetime.now().strftime("%Y-%m-%d"),
+            }
+        },
     )
 
     run_dbt_fx_models = BashOperator(

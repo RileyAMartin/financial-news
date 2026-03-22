@@ -26,7 +26,7 @@ with DAG(
         task_id="run_dbt_seeds_and_dims",
         bash_command=(
             f"source {VENV_ACTIVATE} && cd {DBT_PROJECT_DIR} && "
-            "dbt deps && dbt seed && dbt build --selector dimensions_pipeline --profiles-dir ."
+            "dbt deps && dbt seed && dbt build --selector dimensions_pipeline --profiles-dir . --full-refresh"
         ),
     )
 

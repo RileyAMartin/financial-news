@@ -54,6 +54,9 @@ models:
           - not_null
           - assert_string_length:
               expected_length: 3
+          - relationships:
+              to: ref('dim_currencies')
+              field: currency_code
 
 
   - name: dim_indicators

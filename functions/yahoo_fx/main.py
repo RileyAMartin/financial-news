@@ -40,14 +40,14 @@ def ingest_daily_fx_yahoo(request):
 
         for date, row in ticker_df.iterrows():
             all_records.append({
-                "date_day": date.strftime('%Y-%m-%d'),
+                "date_day": date.date(),
                 "open_price": float(row['Open']),
                 "high_price": float(row['High']),
                 "low_price": float(row['Low']),
                 "close_price": float(row['Close']),
                 "base_currency_code": base_currency,
                 "quote_currency_code": 'USD',
-                "ingested_at": datetime.now(tz=timezone.utc).isoformat()
+                "ingested_at": datetime.now(tz=timezone.utc)
             })
 
     if not all_records:
