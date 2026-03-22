@@ -6,9 +6,9 @@ from psycopg2 import sql
 import psycopg2
 from psycopg2.extras import execute_values
 
-BATCH_SIZE = 20000
-EXECUTE_PAGE_SIZE = 20000
-BQ_PAGE_SIZE = 20000
+BATCH_SIZE = 50000
+EXECUTE_PAGE_SIZE = 50000
+BQ_PAGE_SIZE = 50000
 REQUIRED_KEYS = (
     "bq_dataset",
     "bq_table",
@@ -195,14 +195,11 @@ def _sync_rows_to_postgres(rows_iterator, columns: list[str], conn, upsert_str: 
     batch: list[tuple] = []
 
     for page in rows_iterator.pages:
-        page_rows = [tuple(row[c] for c in columns) for row in page]
-        if not page_rows:
-            continue
-
-        batch.extend(page_rows)
-        while len(batch) >= BATCH_SIZE:
-            total_rows += _flush_batch(conn, upsert_str, batch[:BATCH_SIZE])
-            batch = batch[BATCH_SIZE:]
+        for row in page:
+            batch.append(tuple(row[c] for c in columns))
+            if len(batch) >= BATCH_SIZE:
+                total_rows += _flush_batch(conn, upsert_str, batch)
+                batch.clear()
 
     total_rows += _flush_batch(conn, upsert_str, batch)
     return total_rows
@@ -265,7 +262,11 @@ def reverse_etl(request):
         if watermark_column and not full_refresh:
             watermark_value = _get_watermark(conn, pg_table, watermark_column)
         bq_query, job_config = _build_bq_query(
-            bq_dataset, bq_table, columns, watermark_column, watermark_value
+            bq_dataset,
+            bq_table,
+            columns,
+            watermark_column,
+            watermark_value,
         )
         rows_iterator = bigquery.Client().query(bq_query, job_config=job_config).result(
             page_size=BQ_PAGE_SIZE
