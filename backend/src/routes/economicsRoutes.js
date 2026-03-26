@@ -1,7 +1,9 @@
 import express from "express";
 import { economicsController } from "../controllers/economicsController.js";
 import { validateCountryCode } from "../middleware/validateCountryCode.js";
+import { validateOptionalEconomicsCurrencyCode } from "../middleware/validateCurrencyCode.js";
 import { validateDateRange } from "../middleware/validateDateRange.js";
+import { validateFrequency } from "../middleware/validateFrequency.js";
 
 const router = express.Router();
 
@@ -10,7 +12,9 @@ const router = express.Router();
 router.get(
     "/:countryCode",
     validateCountryCode,
-    validateDateRange(true),
+    validateOptionalEconomicsCurrencyCode,
+    validateDateRange(),
+    validateFrequency,
     economicsController.getCountryDashboard
 );
 

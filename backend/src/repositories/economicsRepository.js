@@ -8,16 +8,17 @@ export const economicsRepository = {
     endDate,
     frequency = "Q"
   ) {
+    const hasDateRange = Boolean(startDate && endDate);
     const querySql = `
         SELECT
-            e.country_code, 
+            e.country_code,
+            e.currency_code,
             e.indicator_code,
             CASE 
               WHEN e.frequency = 'Q' THEN d.year_quarter 
               ELSE CAST(e.date_day AS TEXT) 
             END AS period_key,
-            e.date_day,
-            d.year_quarter,
+            CAST(e.date_day AS TEXT) AS date_day,
             e.frequency,
             e.value_local,
             e.is_inflation_adjusted,
@@ -35,18 +36,39 @@ export const economicsRepository = {
         LEFT JOIN dim_sources s ON e.source_code = s.source_code
         WHERE e.country_code = $1
           AND e.indicator_code = ANY($2)
-          AND e.date_day BETWEEN $3::date AND $4::date
-          AND e.frequency = $5
-        ORDER BY e.indicator_code, e.date_day DESC
+          AND ($3::boolean = false OR e.date_day BETWEEN $4::date AND $5::date)
+          AND e.frequency = $6
+        ORDER BY e.indicator_code, e.date_day ASC
     `;
     const { rows } = await query(querySql, [
       countryCode.toUpperCase(),
       indicatorCodes,
+      hasDateRange,
       startDate,
       endDate,
       frequency,
     ]);
     return rows;
+  },
+
+  async getEconomicsDateBounds(countryCode, indicatorCodes, frequency = "Q") {
+    const querySql = `
+        SELECT
+            CAST(MIN(e.date_day) AS TEXT) AS min_date,
+            CAST(MAX(e.date_day) AS TEXT) AS max_date
+        FROM fct_economics e
+        WHERE e.country_code = $1
+          AND e.indicator_code = ANY($2)
+          AND e.frequency = $3
+    `;
+
+    const { rows } = await query(querySql, [
+      countryCode.toUpperCase(),
+      indicatorCodes,
+      frequency,
+    ]);
+
+    return rows[0] || null;
   },
 
   async getCountryCurrencyMapping(countryCode) {
@@ -64,6 +86,7 @@ export const economicsRepository = {
   },
 
   async getQuarterlyFxRates(baseCurrencyCode, quoteCurrencyCode, startDate, endDate) {
+    const hasDateRange = Boolean(startDate && endDate);
     const querySql = `
         SELECT
             d.year_quarter AS period_key,
@@ -75,13 +98,14 @@ export const economicsRepository = {
            AND d.is_quarter_end = true
         WHERE fx.base_currency_code = $1
           AND fx.quote_currency_code = $2
-          AND d.date_day BETWEEN $3::date AND $4::date
-        ORDER BY d.date_day DESC
+          AND ($3::boolean = false OR d.date_day BETWEEN $4::date AND $5::date)
+        ORDER BY d.date_day ASC
     `;
 
     const { rows } = await query(querySql, [
       baseCurrencyCode.toUpperCase(),
       quoteCurrencyCode.toUpperCase(),
+      hasDateRange,
       startDate,
       endDate,
     ]);
@@ -90,6 +114,7 @@ export const economicsRepository = {
   },
 
   async getDailyFxRates(baseCurrencyCode, quoteCurrencyCode, startDate, endDate) {
+    const hasDateRange = Boolean(startDate && endDate);
     const querySql = `
         SELECT
             CAST(d.date_day AS TEXT) AS period_key,
@@ -98,17 +123,19 @@ export const economicsRepository = {
         INNER JOIN dim_date d ON fx.date_day = d.date_day
         WHERE fx.base_currency_code = $1
           AND fx.quote_currency_code = $2
-          AND d.date_day BETWEEN $3::date AND $4::date
-        ORDER BY d.date_day DESC
+          AND ($3::boolean = false OR d.date_day BETWEEN $4::date AND $5::date)
+        ORDER BY d.date_day ASC
     `;
 
     const { rows } = await query(querySql, [
       baseCurrencyCode.toUpperCase(),
       quoteCurrencyCode.toUpperCase(),
+      hasDateRange,
       startDate,
       endDate,
     ]);
 
     return rows;
   },
+
 };

@@ -17,6 +17,10 @@ export const dimensionsService = {
     return await dimensionsRepository.getAllCurrencies();
   },
 
+  async getCurrencyByCode(currencyCode) {
+    return await dimensionsRepository.getCurrencyByCode(currencyCode);
+  },
+
   async getCountryByCode(countryCode) {
     return await dimensionsRepository.getCountryByCode(countryCode);
   },

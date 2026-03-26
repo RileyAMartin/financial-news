@@ -1,15 +1,12 @@
 import { economicsRepository } from "../repositories/economicsRepository.js";
+import { dimensionsService } from "./dimensionsService.js";
 import { AppError } from "../utils/appError.js";
 import {
-  IMF_INDICATOR_CODES,
+  FREQUENCIES,
+  IMF_INDICATOR_SERIES_KEYS,
   RESPONSE_CODES,
   RESPONSE_MESSAGES,
 } from "../utils/constants.js";
-
-const FREQUENCIES = {
-  QUARTERLY: "Q",
-  DAILY: "D",
-};
 
 const normalizeCurrencyCode = (currencyCode) => {
   if (!currencyCode) {
@@ -26,6 +23,26 @@ const normalizeCurrencyCode = (currencyCode) => {
   return currencyCode.toUpperCase();
 };
 
+const normalizeFrequency = (frequency) => {
+  if (!frequency) {
+    return FREQUENCIES.QUARTERLY;
+  }
+
+  // Normalize frequency
+  const normalized = frequency.toUpperCase().trim();
+  if (
+    normalized !== FREQUENCIES.QUARTERLY &&
+    normalized !== FREQUENCIES.DAILY
+  ) {
+    throw new AppError(
+      RESPONSE_MESSAGES.FREQUENCY_MALFORMED,
+      RESPONSE_CODES.BAD_REQUEST
+    );
+  }
+
+  return normalized;
+};
+
 const toNumeric = (value) => {
   if (value === null || value === undefined) {
     return null;
@@ -35,43 +52,140 @@ const toNumeric = (value) => {
   return Number.isFinite(parsed) ? parsed : null;
 };
 
-const buildFxRateMap = (rows, frequency) => {
+const buildFxRateMap = (rows) => {
+  // Build period-keyed FX map
   const map = new Map();
   for (const row of rows) {
-    const periodKey =
-      frequency === FREQUENCIES.QUARTERLY ? row.year_quarter : row.period_label;
-    map.set(periodKey, toNumeric(row.close_price));
+    map.set(row.period_key, toNumeric(row.fx_rate));
   }
   return map;
 };
 
+const formatEconomicsSeries = (
+  rows,
+  indicatorCodeMap,
+  localCurrencyCode,
+  targetCurrencyCode,
+  localToUsdRateMap,
+  targetToUsdRateMap
+) => {
+  // Group rows by indicator
+  const shouldConvert = Boolean(targetCurrencyCode);
+  const groupedSeries = new Map();
+
+  for (const row of rows) {
+    const seriesKey = indicatorCodeMap[row.indicator_code];
+    const valueLocal = toNumeric(row.value_local);
+
+    if (!groupedSeries.has(seriesKey)) {
+      groupedSeries.set(seriesKey, {
+        indicator_code: row.indicator_code,
+        indicator_name: row.indicator_name,
+        indicator_description: row.indicator_description,
+        source: {
+          source_code: row.source_code,
+          publisher: row.publisher,
+          publisher_short: row.publisher_short,
+          dataset: row.dataset,
+          dataset_short: row.dataset_short,
+          url: row.source_url,
+        },
+        points: [],
+      });
+    }
+
+    let valueConverted = null;
+    if (shouldConvert && valueLocal !== null) {
+      // Convert local to target currency via usd
+      const localToUsdRate = toNumeric(localToUsdRateMap?.get(row.period_key));
+      if (Number.isFinite(localToUsdRate)) {
+        const valueUsd = valueLocal * localToUsdRate;
+
+        if (targetCurrencyCode === "USD") {
+          valueConverted = valueUsd;
+        } else {
+          const targetToUsdRate = toNumeric(
+            targetToUsdRateMap?.get(row.period_key)
+          );
+          if (Number.isFinite(targetToUsdRate) && targetToUsdRate !== 0) {
+            valueConverted = valueUsd / targetToUsdRate;
+          }
+        }
+      }
+    }
+
+    groupedSeries.get(seriesKey).points.push({
+      period_key: row.period_key,
+      date_day: row.date_day,
+      value_local: valueLocal,
+      is_inflation_adjusted: row.is_inflation_adjusted,
+      ...(shouldConvert ? { value_converted: valueConverted } : {}),
+    });
+  }
+
+  return {
+    local_currency_code: localCurrencyCode,
+    target_currency_code: targetCurrencyCode,
+    series: Array.from(groupedSeries.entries()).map(([key, value]) => ({
+      key,
+      ...value,
+    })),
+  };
+};
+
 export const economicsService = {
   async getCountryDashboard(countryCode, startDate, endDate, options = {}) {
-    // Normalize optional request params up front so the rest of the flow is deterministic.
-    const requestedFrequency = (options.frequency || FREQUENCIES.QUARTERLY)
-      .toUpperCase()
-      .trim();
-    const frequency =
-      requestedFrequency === FREQUENCIES.DAILY
-        ? FREQUENCIES.DAILY
-        : FREQUENCIES.QUARTERLY;
-
+    // Normalize query params
+    const frequency = normalizeFrequency(options.frequency);
     const targetCurrencyCode = normalizeCurrencyCode(options.currencyCode);
 
-    const codeMap = {
-      [IMF_INDICATOR_CODES.GDP]: "gdp",
-      [IMF_INDICATOR_CODES.EXPORTS]: "exports",
-      [IMF_INDICATOR_CODES.IMPORTS]: "imports",
-      [IMF_INDICATOR_CODES.EXPORT_BALANCE]: "exportBalance",
-    };
+    const indicatorCodeMap = IMF_INDICATOR_SERIES_KEYS;
 
-    // Fetch economics rows and local-currency metadata independently.
+    const bounds =
+      startDate && endDate
+        ? { min_date: startDate, max_date: endDate }
+        : await economicsRepository.getEconomicsDateBounds(
+            countryCode,
+            Object.keys(indicatorCodeMap),
+            frequency
+          );
+
+    // Handle empty range
+    if (!bounds?.min_date || !bounds?.max_date) {
+      const shouldConvert = Boolean(targetCurrencyCode);
+      return {
+        metadata: {
+          country_code: countryCode,
+          frequency,
+          start_date: startDate || null,
+          end_date: endDate || null,
+          units: {
+            value_local: "local_currency",
+            ...(shouldConvert
+              ? { value_converted: targetCurrencyCode }
+              : {}),
+          },
+          currency: {
+            local_currency_code: null,
+            ...(shouldConvert
+              ? { target_currency_code: targetCurrencyCode }
+              : {}),
+          },
+        },
+        series: [],
+      };
+    }
+
+    const resolvedStartDate = startDate || bounds.min_date;
+    const resolvedEndDate = endDate || bounds.max_date;
+
+    // Fetch facts and currency metadata
     const [rows, countryCurrency] = await Promise.all([
       economicsRepository.getEconomicsDataByCountry(
         countryCode,
-        Object.keys(codeMap),
-        startDate,
-        endDate,
+        Object.keys(indicatorCodeMap),
+        resolvedStartDate,
+        resolvedEndDate,
         frequency
       ),
       economicsRepository.getCountryCurrencyMapping(countryCode),
@@ -86,7 +200,7 @@ export const economicsService = {
     }
 
     if (targetCurrencyCode) {
-      const targetCurrency = await economicsRepository.getCurrencyByCode(
+      const targetCurrency = await dimensionsService.getCurrencyByCode(
         targetCurrencyCode
       );
       if (!targetCurrency) {
@@ -101,7 +215,6 @@ export const economicsService = {
     let targetToUsdRateMap = null;
 
     if (targetCurrencyCode) {
-      // FX is fetched at the same grain as economics so period keys line up.
       let localToUsdRates;
       let targetToUsdRates;
 
@@ -110,16 +223,16 @@ export const economicsService = {
           economicsRepository.getDailyFxRates(
             localCurrencyCode,
             "USD",
-            startDate,
-            endDate
+            resolvedStartDate,
+            resolvedEndDate
           ),
           targetCurrencyCode === "USD"
             ? Promise.resolve([])
             : economicsRepository.getDailyFxRates(
                 targetCurrencyCode,
                 "USD",
-                startDate,
-                endDate
+                resolvedStartDate,
+                resolvedEndDate
               ),
         ]);
       } else {
@@ -127,90 +240,55 @@ export const economicsService = {
           economicsRepository.getQuarterlyFxRates(
             localCurrencyCode,
             "USD",
-            startDate,
-            endDate
+            resolvedStartDate,
+            resolvedEndDate
           ),
           targetCurrencyCode === "USD"
             ? Promise.resolve([])
             : economicsRepository.getQuarterlyFxRates(
                 targetCurrencyCode,
                 "USD",
-                startDate,
-                endDate
+                resolvedStartDate,
+                resolvedEndDate
               ),
         ]);
       }
 
-      localToUsdRateMap = buildFxRateMap(localToUsdRates, frequency);
-      targetToUsdRateMap = buildFxRateMap(targetToUsdRates, frequency);
+      localToUsdRateMap = buildFxRateMap(localToUsdRates);
+      targetToUsdRateMap = buildFxRateMap(targetToUsdRates);
     }
 
-    const result = {};
+    const formatted = formatEconomicsSeries(
+      rows,
+      indicatorCodeMap,
+      localCurrencyCode,
+      targetCurrencyCode,
+      localToUsdRateMap,
+      targetToUsdRateMap
+    );
 
-    for (const row of rows) {
-      const key = codeMap[row.indicator_code];
-      const periodLabel =
-        frequency === FREQUENCIES.QUARTERLY ? row.year_quarter : row.date_day;
-      const valueLocal = toNumeric(row.value_local);
+    const shouldConvert = Boolean(formatted.target_currency_code);
 
-      let valueUsd = null;
-      let valueConverted = null;
-
-      // Conversion path is local -> USD -> target currency.
-      if (targetCurrencyCode && valueLocal !== null) {
-        const localToUsdRate = localToUsdRateMap?.get(periodLabel);
-        if (localToUsdRate !== null && localToUsdRate !== undefined) {
-          valueUsd = valueLocal * localToUsdRate;
-
-          if (targetCurrencyCode === "USD") {
-            valueConverted = valueUsd;
-          } else {
-            const targetToUsdRate = targetToUsdRateMap?.get(periodLabel);
-            if (
-              targetToUsdRate !== null &&
-              targetToUsdRate !== undefined &&
-              targetToUsdRate !== 0
-            ) {
-              valueConverted = valueUsd / targetToUsdRate;
-            }
-          }
-        }
-      }
-
-      if (!result[key]) {
-        result[key] = {
-          metadata: {
-            indicatorCode: row.indicator_code,
-            name: row.indicator_name,
-            description: row.indicator_description,
-            frequency,
-          },
-          source: {
-            sourceCode: row.source_code,
-            publisher: row.publisher,
-            publisherShort: row.publisher_short,
-            dataset: row.dataset,
-            datasetShort: row.dataset_short,
-            url: row.source_url,
-          },
-          currency: {
-            localCurrencyCode,
-            targetCurrencyCode: targetCurrencyCode || null,
-          },
-          data: {},
-        };
-      }
-
-      result[key].data[periodLabel] = {
-        date: row.date_day,
-        yearQuarter: row.year_quarter,
-        valueLocal,
-        valueUsd,
-        valueConverted,
-        isInflationAdjusted: row.is_inflation_adjusted,
-      };
-    }
-
-    return result;
+    return {
+      metadata: {
+        country_code: countryCode,
+        frequency,
+        start_date: resolvedStartDate,
+        end_date: resolvedEndDate,
+        units: {
+          value_local: "local_currency",
+          ...(shouldConvert
+            ? { value_converted: formatted.target_currency_code }
+            : {}),
+        },
+        currency: {
+          local_currency_code: formatted.local_currency_code,
+          ...(shouldConvert
+            ? { target_currency_code: formatted.target_currency_code }
+            : {}),
+        },
+      },
+      series: formatted.series,
+    };
   },
 };

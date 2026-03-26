@@ -2,7 +2,12 @@ import { newsRepository } from "../repositories/newsRepository.js";
 import { NEWS_PAGE_SIZE as PAGE_SIZE } from "../utils/constants.js";
 
 export const newsService = {
-  async getNewsFeed(countryCode, startDate = null, endDate = null, page = 1) {
+  async getNewsFeed(
+    countryCode,
+    startDate = null,
+    endDate = null,
+    page = 1
+  ) {
     const currentPage = Math.max(1, page);
     const offset = (currentPage - 1) * PAGE_SIZE;
 
@@ -32,13 +37,15 @@ export const newsService = {
     const articles = hasMore ? rows.slice(0, PAGE_SIZE) : rows;
 
     return {
-      metadata: {
-        countryCode: countryCode.toUpperCase(),
-        currentPage,
-        pageSize: PAGE_SIZE,
-        hasMore,
-      },
       articles,
+      metadata: {
+        country_code: countryCode.toUpperCase(),
+        page: currentPage,
+        page_size: PAGE_SIZE,
+        has_more: hasMore,
+        start_date: startDate,
+        end_date: endDate,
+      },
     };
   },
 };

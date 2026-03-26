@@ -36,6 +36,16 @@ export const dimensionsRepository = {
     const results = await query(querySql);
     return results.rows;
   },
+
+  async getCurrencyByCode(currencyCode) {
+    const querySql = `
+        SELECT currency_code, currency_name
+        FROM dim_currencies
+        WHERE currency_code = $1
+        `;
+    const results = await query(querySql, [currencyCode]);
+    return results.rows[0] || null;
+  },
   
   async getCountryByCode(countryCode) {
     // Fetches a specific country by its code
