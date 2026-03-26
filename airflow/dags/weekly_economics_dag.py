@@ -72,4 +72,4 @@ with DAG(
         },
     )
 
-    ingest_imf_fx >> ingest_imf_qnea >> run_dbt_economics_models >> sync_fct_economics
+    ingest_imf_qnea >> run_dbt_economics_models >> sync_fct_economics
