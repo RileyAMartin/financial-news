@@ -10,6 +10,8 @@ export const RESPONSE_CODES = {
 export const RESPONSE_MESSAGES = {
   COUNTRY_MALFORMED: "Country code must be a 3-letter string.",
   COUNTRY_DOESNT_EXIST: "The requested country could not be found.",
+  CURRENCY_MALFORMED: "Currency code must be a 3-letter string.",
+  CURRENCY_DOESNT_EXIST: "The requested currency could not be found.",
   DATE_RANGE_REQUIRED: "Start date and end date are required.",
   DATE_RANGE_MALFORMED: "Start date and end date must be in YYYY-MM-DD format.",
   DATE_RANGE_INVALID: "Invalid date range.",

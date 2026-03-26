@@ -13,6 +13,10 @@ export const dimensionsService = {
     return await dimensionsRepository.getAllSources();
   },
 
+  async getAllCurrencies() {
+    return await dimensionsRepository.getAllCurrencies();
+  },
+
   async getCountryByCode(countryCode) {
     return await dimensionsRepository.getCountryByCode(countryCode);
   },
