@@ -15,7 +15,8 @@ export const newsController = {
 
     res.status(RESPONSE_CODES.OK).json({
       status: STATUS_MESSAGES.SUCCESS,
-      data: newsFeed,
+      metadata: newsFeed.metadata,
+      data: newsFeed.articles,
     });
   },
 };

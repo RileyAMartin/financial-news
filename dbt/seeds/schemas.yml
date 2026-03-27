@@ -1,8 +1,23 @@
 version: 2
 
 seeds:
-  - name: imf_country_abbreviations
-    description: "Reference table of IMF country codes and their official and display names."
+  - name: currency_metadata
+    description: "Reference table of currencies and their metadata."
+    columns:
+      - name: currency_code
+        description: "The 3-letter ISO 4217 currency code used by the country."
+        data_tests:
+          - not_null
+          - assert_string_length:
+              expected_length: 3
+
+      - name: currency_name
+        description: "Human-readable currency name."
+        data_tests:
+          - not_null
+
+  - name: country_metadata
+    description: "Reference table of countries and their metadata."
     columns:
       - name: country_code
         description: "The 3-letter ISO country code."
@@ -21,6 +36,13 @@ seeds:
         description: "A shortened or common name used for display purposes."
         data_tests:
           - not_null
+
+      - name: currency_code
+        description: "The 3-letter ISO 4217 currency code used by the country."
+        data_tests:
+          - not_null
+          - assert_string_length:
+              expected_length: 3
 
   - name: country_keywords
     description: "Lookup table of keywords associated with each country, used to tag news articles."
@@ -55,7 +77,7 @@ seeds:
         description: "A detailed description of what the indicator measures."
 
       - name: annualization_multiplier
-        description: "The multiplier applied to a quarterly value to produce an annualized figure. Always 4 for quarterly data."
+        description: "The multiplier applied to a value to produce an annualized figure. Always 4 for quarterly data."
         data_tests:
           - not_null
 

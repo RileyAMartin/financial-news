@@ -10,7 +10,7 @@ const router = express.Router();
 router.get(
   "/:countryCode",
   validateCountryCode,
-  validateDateRange(false),
+  validateDateRange(),
   validatePagination,
   newsController.getCountryNewsFeed
 );

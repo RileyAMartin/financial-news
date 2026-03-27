@@ -6,7 +6,16 @@ from psycopg2 import sql
 import psycopg2
 from psycopg2.extras import execute_values
 
-BATCH_SIZE = 10000
+BATCH_SIZE = 50000
+EXECUTE_PAGE_SIZE = 50000
+BQ_PAGE_SIZE = 50000
+REQUIRED_KEYS = (
+    "bq_dataset",
+    "bq_table",
+    "pg_table",
+    "columns",
+    "conflict_columns",
+)
 
 # Rejects anything that isn't a plain snake_case word
 _IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
@@ -70,7 +79,7 @@ def _build_bq_query(
     base_query = f"SELECT {col_list} FROM `{bq_dataset}.{bq_table}`"
 
     if watermark_column and watermark_value is not None:
-        query = f"{base_query} WHERE `{watermark_column}` > @watermark"
+        query = f"{base_query} WHERE `{watermark_column}` >= @watermark"
         job_config = bigquery.QueryJobConfig(
             query_parameters=[
                 bigquery.ScalarQueryParameter("watermark", "TIMESTAMP", watermark_value)
@@ -118,6 +127,84 @@ def _build_upsert(
     return composed.as_string(conn)
 
 
+def _flush_batch(
+    conn: psycopg2.extensions.connection,
+    upsert_str: str,
+    batch: list[tuple],
+) -> int:
+    """Write one buffered batch to PostgreSQL and return inserted row count."""
+    if not batch:
+        return 0
+    with conn.cursor() as cur:
+        execute_values(cur, upsert_str, batch, page_size=EXECUTE_PAGE_SIZE)
+    conn.commit()
+    return len(batch)
+
+
+def _parse_request_payload(request):
+    """Parse and validate request payload. Returns (params, error_response)."""
+    payload = request.get_json(silent=True)
+    if not payload:
+        return None, ({"error": "Request body must be valid JSON."}, 400)
+
+    missing = [k for k in REQUIRED_KEYS if k not in payload]
+    if missing:
+        return (
+            None,
+            ({"error": f"Missing required parameter(s): {', '.join(missing)}"}, 400),
+        )
+
+    columns = payload["columns"]
+    conflict_columns = payload["conflict_columns"]
+
+    if not isinstance(columns, list) or not columns:
+        return None, ({"error": "'columns' must be a non-empty list of strings."}, 400)
+    if not isinstance(conflict_columns, list) or not conflict_columns:
+        return (
+            None,
+            ({"error": "'conflict_columns' must be a non-empty list of strings."}, 400),
+        )
+
+    invalid_conflicts = [c for c in conflict_columns if c not in columns]
+    if invalid_conflicts:
+        return (
+            None,
+            (
+                {
+                    "error": f"conflict_columns {invalid_conflicts} are not present in 'columns'."
+                },
+                400,
+            ),
+        )
+
+    params = {
+        "bq_dataset": payload["bq_dataset"],
+        "bq_table": payload["bq_table"],
+        "pg_table": payload["pg_table"],
+        "columns": columns,
+        "conflict_columns": conflict_columns,
+        "watermark_column": payload.get("watermark_column"),
+        "full_refresh": payload.get("full_refresh", False),
+    }
+    return params, None
+
+
+def _sync_rows_to_postgres(rows_iterator, columns: list[str], conn, upsert_str: str) -> int:
+    """Stream rows from BigQuery and upsert into PostgreSQL in chunks."""
+    total_rows = 0
+    batch: list[tuple] = []
+
+    for page in rows_iterator.pages:
+        for row in page:
+            batch.append(tuple(row[c] for c in columns))
+            if len(batch) >= BATCH_SIZE:
+                total_rows += _flush_batch(conn, upsert_str, batch)
+                batch.clear()
+
+    total_rows += _flush_batch(conn, upsert_str, batch)
+    return total_rows
+
+
 @functions_framework.http
 def reverse_etl(request):
     """
@@ -146,45 +233,17 @@ def reverse_etl(request):
         except ImportError:
             pass
 
-        # Parse the request
-        payload = request.get_json(silent=True)
-        if not payload:
-            return ({"error": "Request body must be valid JSON."}, 400)
-        required_keys = [
-            "bq_dataset",
-            "bq_table",
-            "pg_table",
-            "columns",
-            "conflict_columns",
-        ]
-        missing = [k for k in required_keys if k not in payload]
-        if missing:
-            return (
-                {"error": f"Missing required parameter(s): {', '.join(missing)}"},
-                400,
-            )
-        bq_dataset: str = payload["bq_dataset"]
-        bq_table: str = payload["bq_table"]
-        pg_table: str = payload["pg_table"]
-        columns: list[str] = payload["columns"]
-        conflict_columns: list[str] = payload["conflict_columns"]
-        watermark_column: str | None = payload.get("watermark_column")
+        params, error = _parse_request_payload(request)
+        if error:
+            return error
 
-        if not isinstance(columns, list) or not columns:
-            return ({"error": "'columns' must be a non-empty list of strings."}, 400)
-        if not isinstance(conflict_columns, list) or not conflict_columns:
-            return (
-                {"error": "'conflict_columns' must be a non-empty list of strings."},
-                400,
-            )
-        invalid_conflicts = [c for c in conflict_columns if c not in columns]
-        if invalid_conflicts:
-            return (
-                {
-                    "error": f"conflict_columns {invalid_conflicts} are not present in 'columns'."
-                },
-                400,
-            )
+        bq_dataset: str = params["bq_dataset"]
+        bq_table: str = params["bq_table"]
+        pg_table: str = params["pg_table"]
+        columns: list[str] = params["columns"]
+        conflict_columns: list[str] = params["conflict_columns"]
+        watermark_column: str | None = params["watermark_column"]
+        full_refresh: bool = params["full_refresh"]
         identifiers_to_validate = [bq_dataset, bq_table, pg_table] + columns
         if watermark_column:
             identifiers_to_validate.append(watermark_column)
@@ -194,36 +253,28 @@ def reverse_etl(request):
         # Get the high watermark from the destination table (if applicable) and build the BigQuery query
         conn = get_db_connection()
 
+        if full_refresh:
+            with conn.cursor() as cur:
+                cur.execute(sql.SQL("TRUNCATE TABLE {table} CASCADE;").format(table=sql.Identifier(pg_table)))
+            conn.commit()
+
         watermark_value = None
-        if watermark_column:
+        if watermark_column and not full_refresh:
             watermark_value = _get_watermark(conn, pg_table, watermark_column)
         bq_query, job_config = _build_bq_query(
-            bq_dataset, bq_table, columns, watermark_column, watermark_value
+            bq_dataset,
+            bq_table,
+            columns,
+            watermark_column,
+            watermark_value,
         )
-        rows_iterator = (
-            bigquery.Client().query(bq_query, job_config=job_config).result()
+        rows_iterator = bigquery.Client().query(bq_query, job_config=job_config).result(
+            page_size=BQ_PAGE_SIZE
         )
 
         upsert_str = _build_upsert(conn, pg_table, columns, conflict_columns)
 
-        total_rows = 0
-        batch = []
-
-        # Batch upload the data into the PostgreSQL table
-        for row in rows_iterator:
-            batch.append(tuple(row[c] for c in columns))
-
-            if len(batch) >= BATCH_SIZE:
-                with conn.cursor() as cur:
-                    execute_values(cur, upsert_str, batch)
-                conn.commit()
-                total_rows += len(batch)
-                batch = []
-        if batch:
-            with conn.cursor() as cur:
-                execute_values(cur, upsert_str, batch)
-            conn.commit()
-            total_rows += len(batch)
+        total_rows = _sync_rows_to_postgres(rows_iterator, columns, conn, upsert_str)
         return (
             {"message": f"Successfully synced {total_rows} rows to '{pg_table}'."},
             200,

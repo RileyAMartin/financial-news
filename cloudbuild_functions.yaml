@@ -1,11 +1,5 @@
 steps:
 
-- name: 'bash'
-  args: ['cp', '-r', './functions/common', './functions/imf_qnea/common']
-
-- name: 'bash'
-  args: ['cp', '-r', './functions/common', './functions/imf_fx/common']
-
 - name: 'google/cloud-sdk'
   args:
   - gcloud
@@ -27,12 +21,12 @@ steps:
   - gcloud
   - functions
   - deploy
-  - imf-fx-ingestor
+  - yahoo-fx-ingestor
   - --gen2
   - --region=australia-southeast2
   - --runtime=python310
-  - --source=./functions/imf_fx
-  - --entry-point=ingest_imf_fx_data
+  - --source=./functions/yahoo_fx
+  - --entry-point=ingest_daily_fx_yahoo
   - --trigger-http
   - --no-allow-unauthenticated
   - --memory=1024Mi

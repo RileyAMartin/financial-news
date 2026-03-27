@@ -25,7 +25,7 @@ def fetch_country_data():
     """
 
     url = "https://query.wikidata.org/sparql"
-    print("Fetching data from Wikidata...")
+    print("Fetching data from Wikidata")
     
     response = requests.get(url, params={'format': 'json', 'query': query})
     

@@ -26,7 +26,7 @@ with DAG(
         task_id="run_dbt_seeds_and_dims",
         bash_command=(
             f"source {VENV_ACTIVATE} && cd {DBT_PROJECT_DIR} && "
-            "dbt deps && dbt seed && dbt build --selector dimensions_pipeline --profiles-dir ."
+            "dbt deps && dbt seed && dbt build --selector dimensions_pipeline --profiles-dir . --full-refresh"
         ),
     )
 
@@ -39,9 +39,37 @@ with DAG(
                 "bq_dataset": "dbt_prod",
                 "bq_table": "dim_countries",
                 "pg_table": "dim_countries",
-                "columns": ["country_code", "official_name", "display_name"],
+                "columns": [
+                    "country_code",
+                    "official_name",
+                    "currency_code",
+                    "display_name",
+                    "processed_at"
+                ],
                 "conflict_columns": ["country_code"],
                 "watermark_column": None,
+                "full_refresh": True,
+            },
+        },
+    )
+
+    sync_dim_currencies = PythonOperator(
+        task_id="reverse_etl_dim_currencies",
+        python_callable=call_authenticated_cloud_function,
+        op_kwargs={
+            "url": REVERSE_ETL_URL,
+            "payload": {
+                "bq_dataset": "dbt_prod",
+                "bq_table": "dim_currencies",
+                "pg_table": "dim_currencies",
+                "columns": [
+                    "currency_code",
+                    "currency_name",
+                    "processed_at",
+                ],
+                "conflict_columns": ["currency_code"],
+                "watermark_column": None,
+                "full_refresh": True,
             },
         },
     )
@@ -55,9 +83,10 @@ with DAG(
                 "bq_dataset": "dbt_prod",
                 "bq_table": "dim_indicators",
                 "pg_table": "dim_indicators",
-                "columns": ["indicator_code", "name", "description"],
+                "columns": ["indicator_code", "name", "description", "processed_at"],
                 "conflict_columns": ["indicator_code"],
                 "watermark_column": None,
+                "full_refresh": True,
             },
         },
     )
@@ -78,11 +107,46 @@ with DAG(
                     "dataset",
                     "dataset_short",
                     "url",
+                    "processed_at",
                 ],
                 "conflict_columns": ["source_code"],
                 "watermark_column": None,
+                "full_refresh": True,
             },
         },
     )
 
-    run_dbt_seeds_and_dims >> [sync_dim_countries, sync_dim_indicators, sync_dim_sources]
+    sync_dim_date = PythonOperator(
+        task_id="reverse_etl_dim_date",
+        python_callable=call_authenticated_cloud_function,
+        op_kwargs={
+            "url": REVERSE_ETL_URL,
+            "payload": {
+                "bq_dataset": "dbt_prod",
+                "bq_table": "dim_date",
+                "pg_table": "dim_date",
+                "columns": [
+                    "date_day",
+                    "date_year",
+                    "date_month",
+                    "date_quarter",
+                    "is_quarter_end",
+                    "year_quarter",
+                    "financial_quarter",
+                    "financial_year",
+                    "processed_at",
+                ],
+                "conflict_columns": ["date_day"],
+                "watermark_column": None,
+                "full_refresh": True,
+            },
+        },
+    )
+
+    run_dbt_seeds_and_dims >> [
+        sync_dim_currencies,
+        sync_dim_countries,
+        sync_dim_indicators,
+        sync_dim_sources,
+        sync_dim_date,
+    ]

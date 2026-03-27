@@ -4,5 +4,6 @@ select
     publisher_short,
     dataset,
     dataset_short,
-    url
+    url,
+    current_timestamp() as processed_at
 from {{ ref("data_sources") }}

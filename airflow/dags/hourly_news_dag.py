@@ -50,14 +50,16 @@ with DAG(
                 "columns": [
                     "url",
                     "ingested_at",
+                    "processed_at",
                     "feed_name",
                     "title",
                     "summary",
                     "published_at",
+                    "date_day",
                     "country_codes",
                 ],
                 "conflict_columns": ["url"],
-                "watermark_column": "ingested_at",
+                "watermark_column": "processed_at",
             },
         },
     )

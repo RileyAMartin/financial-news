@@ -27,7 +27,7 @@ sources:
               period: day
           loaded_at_field: ingested_at
 
-      - name: imf_fx_raw
+      - name: fx_raw
         config:
           freshness:
             warn_after: 

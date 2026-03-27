@@ -5,7 +5,14 @@ export const newsRepository = {
     // Fetches the most recent news articles for the given country
     const querySql = `
         SELECT
-        url, feed_name, title, summary, published_at, country_codes
+      url,
+      feed_name,
+      title,
+      summary,
+      published_at,
+      CAST(date_day AS TEXT) AS date_day,
+      CAST(date_day AS TEXT) AS period_key,
+      country_codes
         FROM fct_news
         WHERE $1::text = ANY(country_codes)
         ORDER BY published_at DESC
@@ -31,7 +38,14 @@ export const newsRepository = {
     // Fetches news articles for the given country, published within the specified date range
     const querySql = `
         SELECT
-        url, feed_name, title, summary, published_at, country_codes
+      url,
+      feed_name,
+      title,
+      summary,
+      published_at,
+      CAST(date_day AS TEXT) AS date_day,
+      CAST(date_day AS TEXT) AS period_key,
+      country_codes
         FROM fct_news
         WHERE $1::text = ANY(country_codes)
         AND published_at >= $2

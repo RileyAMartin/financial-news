@@ -1,3 +1,4 @@
 source_code,publisher,publisher_short,dataset,dataset_short,url
 IMF_QNEA,International Monetary Fund,IMF,Quarterly National Accounts,QNEA,https://data.imf.org/en/datasets/IMF.STA:QNEA
 IMF_ER,International Monetary Fund,IMF,Exchange Rates,ER,https://data.imf.org/en/datasets/IMF.STA:ER
+YAHOO_FINANCE_FX,Yahoo Finance,Yahoo,Market Data,FX, https://finance.yahoo.com

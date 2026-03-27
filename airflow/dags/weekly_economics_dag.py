@@ -5,7 +5,6 @@ from airflow.operators.bash import BashOperator
 from utils.common import (
     VENV_ACTIVATE,
     DBT_PROJECT_DIR,
-    IMF_FX_URL,
     IMF_QNEA_URL,
     REVERSE_ETL_URL,
     call_authenticated_cloud_function,
@@ -24,12 +23,6 @@ with DAG(
     catchup=False,
     tags=["economics"],
 ) as dag:
-
-    ingest_imf_fx = PythonOperator(
-        task_id="ingest_imf_fx",
-        python_callable=call_authenticated_cloud_function,
-        op_kwargs={"url": IMF_FX_URL},
-    )
 
     ingest_imf_qnea = PythonOperator(
         task_id="ingest_imf_qnea",
@@ -56,25 +49,27 @@ with DAG(
                 "pg_table": "fct_economics",
                 "columns": [
                     "country_code",
+                    "currency_code",
                     "source_code",
                     "indicator_code",
-                    "period_end_date",
+                    "date_day",
                     "frequency",
                     "is_inflation_adjusted",
                     "ingested_at",
+                    "processed_at",
                     "value_local",
-                    "value_usd",
-                    "value_eur",
                 ],
                 "conflict_columns": [
                     "country_code",
+                    "currency_code",
+                    "source_code",
                     "indicator_code",
-                    "period_end_date",
+                    "date_day",
                     "is_inflation_adjusted",
                 ],
-                "watermark_column": "ingested_at",
+                "watermark_column": "processed_at",
             },
         },
     )
 
-    ingest_imf_fx >> ingest_imf_qnea >> run_dbt_economics_models >> sync_fct_economics
+    ingest_imf_qnea >> run_dbt_economics_models >> sync_fct_economics

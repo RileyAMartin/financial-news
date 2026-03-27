@@ -1,5 +1,5 @@
 functions-framework==3.*
 pandas
-requests
+yfinance
 pyarrow
 google-cloud-bigquery

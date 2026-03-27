@@ -2,36 +2,52 @@ version: 2
 
 models:
   - name: fct_economics
-    description: "Fact table of quarterly national economic accounts data with values denominated in local currency, USD, and EUR."
+    description: "Currency-neutral fact table of quarterly national economic accounts data, storing annualized local-currency values with direct currency keys and standardized date keys."
     columns:
       - name: country_code
         description: "The 3-letter country code for this row."
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_countries')
-              field: country_code
+              arguments:
+                to: ref('dim_countries')
+                field: country_code
+
+      - name: currency_code
+        description: "The ISO 4217 local currency code for this country-quarter observation."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_currencies')
+                field: currency_code
 
       - name: indicator_code
         description: "The IMF indicator code identifying the economic measure."
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_indicators')
-              field: indicator_code
+              arguments:
+                to: ref('dim_indicators')
+                field: indicator_code
 
       - name: source_code
         description: "The identifier of the data source for this row."
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_sources')
-              field: source_code
+              arguments:
+                to: ref('dim_sources')
+                field: source_code
 
-      - name: period_end_date
-        description: "The date of the last day of the quarter this row represents."
+      - name: date_day
+        description: "The standardized calendar date key for this quarterly observation (quarter-end date)."
         data_tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_day
 
       - name: frequency
         description: "The frequency of the observation. Always 'Q' (quarterly)."
@@ -48,20 +64,163 @@ models:
         data_tests:
           - not_null
 
+      - name: processed_at
+        description: "The timestamp when this row was processed in dbt."
+        data_tests:
+          - not_null
+
       - name: value_local
         description: "The annualized value in the local currency."
 
-      - name: value_usd
-        description: "The annualized value in US dollars, converted using the period-average exchange rate."
+  - name: fct_fx
+    description: "Fact table of daily FX rates to USD, including OHLC prices, used for currency conversion in downstream serving layers and reverse ETL."
+    columns:
+      - name: base_currency_code
+        description: "The ISO 4217 base currency code being converted to quote currency units."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_currencies')
+                field: currency_code
 
-      - name: value_eur
-        description: "The annualized value in Euros, converted using the period-average exchange rate."
+      - name: quote_currency_code
+        description: "The ISO 4217 quote currency code. In this model, it is expected to be USD."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_currencies')
+                field: currency_code
+
+      - name: date_day
+        description: "The standardized calendar date key from dim_date for this daily FX observation."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_day
+
+      - name: open_price
+        description: "Opening FX price for the day."
+        data_tests:
+          - not_null
+
+      - name: high_price
+        description: "Highest FX price for the day."
+        data_tests:
+          - not_null
+
+      - name: low_price
+        description: "Lowest FX price for the day."
+        data_tests:
+          - not_null
+
+      - name: close_price
+        description: "Closing FX price for the day; preferred rate for downstream conversion logic."
+        data_tests:
+          - not_null
+
+      - name: ingested_at
+        description: "The timestamp when this record was originally loaded into BigQuery."
+        data_tests:
+          - not_null
+
+      - name: processed_at
+        description: "The timestamp when this row was processed in dbt."
+        data_tests:
+          - not_null
+
+      - name: source_code
+        description: "The identifier of the data source for this row."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_sources')
+                field: source_code
+
+  - name: fct_fx_quarterly
+    description: "Fact table of quarterly average FX rates to USD, aggregated from daily FX observations."
+    columns:
+      - name: base_currency_code
+        description: "The ISO 4217 base currency code being converted to quote currency units."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_currencies')
+                field: currency_code
+
+      - name: quote_currency_code
+        description: "The ISO 4217 quote currency code. In this model, it is expected to be USD."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_currencies')
+                field: currency_code
+
+      - name: date_year
+        description: "Calendar year derived from date_day."
+        data_tests:
+          - not_null
+
+      - name: date_quarter
+        description: "Calendar quarter number (1-4) derived from date_day."
+        data_tests:
+          - not_null
+
+      - name: open_price
+        description: "Quarterly average of daily open FX prices."
+        data_tests:
+          - not_null
+
+      - name: high_price
+        description: "Quarterly average of daily high FX prices."
+        data_tests:
+          - not_null
+
+      - name: low_price
+        description: "Quarterly average of daily low FX prices."
+        data_tests:
+          - not_null
+
+      - name: period_average_rate
+        description: "Quarterly average of daily close FX prices."
+        data_tests:
+          - not_null
+
+      - name: ingested_at
+        description: "The latest ingested_at timestamp among daily FX records in the quarter."
+        data_tests:
+          - not_null
+
+      - name: processed_at
+        description: "The timestamp when this row was processed in dbt."
+        data_tests:
+          - not_null
+
+      - name: source_code
+        description: "The identifier of the data source for this row."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_sources')
+                field: source_code
 
   - name: fct_news
     description: "Fact table of RSS news articles that have been successfully matched to at least one country."
     columns:
       - name: ingested_at
         description: "The timestamp when this article was originally loaded into BigQuery."
+        data_tests:
+          - not_null
+
+      - name: processed_at
+        description: "The timestamp when this row was processed in dbt."
         data_tests:
           - not_null
 
@@ -88,6 +247,15 @@ models:
         description: "Timestamp when the article was published by the source."
         data_tests:
           - not_null
+
+      - name: date_day
+        description: "The standardized calendar date key from dim_date derived from published_at."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_day
 
       - name: country_codes
         description: "An array of country codes matched from the article's title and summary (e.g., ['AUS', 'USA'])."
