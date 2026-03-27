@@ -4,16 +4,21 @@ import { economicsService } from "../services/economicsService.js";
 export const economicsController = {
   async getCountryDashboard(req, res) {
     const { countryCode } = req.params;
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, currencyCode, frequency } = req.query;
 
     const dashboardData = await economicsService.getCountryDashboard(
       countryCode,
       startDate,
-      endDate
+      endDate,
+      {
+        currencyCode,
+        frequency,
+      }
     );
     res.status(RESPONSE_CODES.OK).json({
       status: STATUS_MESSAGES.SUCCESS,
-      data: dashboardData,
+      metadata: dashboardData.metadata,
+      data: dashboardData.series,
     });
   },
 };
