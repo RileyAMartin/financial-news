@@ -5,8 +5,7 @@ export const fxController = {
   async getFxSeries(req, res) {
     const { currencyCode, startDate, endDate, frequency } = req.query;
 
-    const fxData = await fxService.getFxSeries({
-      currencyCode,
+    const fxData = await fxService.getFxSeries(currencyCode, {
       startDate,
       endDate,
       frequency,

@@ -71,7 +71,10 @@ export const fxRepository = {
             AND quote_currency_code = $2
       `;
 
-      const { rows } = await query(querySql, [baseCurrencyCode, quoteCurrencyCode]);
+      const { rows } = await query(querySql, [
+        baseCurrencyCode,
+        quoteCurrencyCode,
+      ]);
       return rows[0] || null;
     }
 
@@ -88,7 +91,10 @@ export const fxRepository = {
           AND fx.quote_currency_code = $2
     `;
 
-    const { rows } = await query(querySql, [baseCurrencyCode, quoteCurrencyCode]);
+    const { rows } = await query(querySql, [
+      baseCurrencyCode,
+      quoteCurrencyCode,
+    ]);
     return rows[0] || null;
   },
 };

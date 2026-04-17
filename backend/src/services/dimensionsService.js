@@ -24,4 +24,8 @@ export const dimensionsService = {
   async getCountryByCode(countryCode) {
     return await dimensionsRepository.getCountryByCode(countryCode);
   },
+
+  async getCountryCurrencyMapping(countryCode) {
+    return await dimensionsRepository.getCountryCurrencyMapping(countryCode);
+  },
 };

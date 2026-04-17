@@ -25,4 +25,12 @@ export const dimensionsController = {
       data: sources,
     });
   },
+
+  async getCurrencies(req, res) {
+    const currencies = await dimensionsService.getAllCurrencies();
+    res.status(RESPONSE_CODES.OK).json({
+      status: STATUS_MESSAGES.SUCCESS,
+      data: currencies,
+    });
+  },
 };

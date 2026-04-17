@@ -12,7 +12,7 @@ const app = express();
 
 app.use(express.json());
 
-// Limit each IP to 500 requests per 15 minutes
+// Each IP is limited to 500 requests per 15 minutes
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 500,
@@ -29,7 +29,10 @@ app.use("/api/fx", fxRoutes);
 
 // 404
 app.use("/{*splat}", (req, res, next) => {
-  const err = new AppError(RESPONSE_MESSAGES.NOT_FOUND, RESPONSE_CODES.NOT_FOUND);
+  const err = new AppError(
+    RESPONSE_MESSAGES.NOT_FOUND,
+    RESPONSE_CODES.NOT_FOUND
+  );
   next(err);
 });
 
@@ -37,6 +40,10 @@ app.use("/{*splat}", (req, res, next) => {
 app.use((err, req, res, next) => {
   err.statusCode = err.statusCode || RESPONSE_CODES.INTERNAL_SERVER_ERROR;
   err.status = err.status || "error";
+  err.message =
+    err instanceof AppError
+      ? err.message
+      : RESPONSE_MESSAGES.INTERNAL_SERVER_ERROR;
 
   const metadata = {
     timestamp: new Date().toISOString(),
@@ -54,7 +61,7 @@ app.use((err, req, res, next) => {
   } else {
     res.status(err.statusCode).json({
       status: err.status,
-      message: err.isOperational ? err.message : RESPONSE_MESSAGES.GENERIC_ERROR,
+      message: err.message,
       metadata,
     });
   }

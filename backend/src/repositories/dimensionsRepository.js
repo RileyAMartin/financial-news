@@ -27,7 +27,7 @@ export const dimensionsRepository = {
     const results = await query(querySql);
     return results.rows;
   },
-  
+
   async getAllCurrencies() {
     // Fetches all distinct currencies from the database
     const querySql = `
@@ -38,6 +38,7 @@ export const dimensionsRepository = {
   },
 
   async getCurrencyByCode(currencyCode) {
+    // Fetches a specific currency by its code
     const querySql = `
         SELECT currency_code, currency_name
         FROM dim_currencies
@@ -46,7 +47,7 @@ export const dimensionsRepository = {
     const results = await query(querySql, [currencyCode]);
     return results.rows[0] || null;
   },
-  
+
   async getCountryByCode(countryCode) {
     // Fetches a specific country by its code
     const querySql = `
@@ -54,7 +55,20 @@ export const dimensionsRepository = {
         WHERE country_code = $1
         `;
     const results = await query(querySql, [countryCode]);
-    return results.rows[0];
+    return results.rows[0] || null;
   },
 
+  async getCountryCurrencyMapping(countryCode) {
+    const querySql = `
+        SELECT 
+            c.country_code,
+            curr.currency_code,
+            curr.currency_name
+        FROM dim_countries c
+        JOIN dim_currencies curr ON c.currency_code = curr.currency_code
+        WHERE c.country_code = $1
+    `;
+    const { rows } = await query(querySql, [countryCode.toUpperCase()]);
+    return rows[0] || null;
+  },
 };

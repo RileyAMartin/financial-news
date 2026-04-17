@@ -8,16 +8,18 @@ export const RESPONSE_CODES = {
 };
 
 export const RESPONSE_MESSAGES = {
-  COUNTRY_MALFORMED: "Country code must be a 3-letter string.",
-  COUNTRY_DOESNT_EXIST: "The requested country could not be found.",
-  CURRENCY_MALFORMED: "Currency code must be a 3-letter string.",
-  CURRENCY_DOESNT_EXIST: "The requested currency could not be found.",
-  DATE_RANGE_REQUIRED: "Start date and end date are required.",
-  DATE_RANGE_MALFORMED: "Start date and end date must be in YYYY-MM-DD format.",
+  COUNTRY_MALFORMED: "countryCode must be a 3-letter string.",
+  COUNTRY_DOESNT_EXIST: "The requested countryCode could not be found.",
+  CURRENCY_REQUIRED: "currencyCode is required.",
+  CURRENCY_MALFORMED: "currencyCode must be a 3-letter string.",
+  CURRENCY_DOESNT_EXIST: "The requested currencyCode could not be found.",
+  DATE_RANGE_REQUIRED: "startDate and endDate are required.",
+  DATE_RANGE_MALFORMED: "startDate and endDate must be in YYYY-MM-DD format.",
   DATE_RANGE_INVALID: "Invalid date range.",
-  FREQUENCY_MALFORMED: "Frequency must be one of: Q or D.",
-  PAGE_MALFORMED: "Page must be a positive integer.",
+  FREQUENCY_MALFORMED: "frequency must be one of: Q or D.",
+  PAGE_MALFORMED: "page must be a positive integer.",
   GENERIC_ERROR: "An error occurred. Please try again.",
+  INTERNAL_SERVER_ERROR: "An internal server error occurred.",
   NOT_FOUND: "The requested resource could not be found.",
 };
 

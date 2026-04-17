@@ -11,13 +11,8 @@ const toNumeric = (value) => {
 };
 
 export const fxService = {
-  async getFxSeries(options) {
-    const {
-      currencyCode,
-      frequency = FREQUENCIES.QUARTERLY,
-      startDate,
-      endDate,
-    } = options;
+  async getFxSeries(currencyCode, options = {}) {
+    const { frequency = FREQUENCIES.QUARTERLY, startDate, endDate } = options;
 
     const baseCurrencyCode = currencyCode;
     const quoteCurrencyCode = "USD";

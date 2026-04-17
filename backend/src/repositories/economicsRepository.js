@@ -68,24 +68,19 @@ export const economicsRepository = {
       frequency,
     ]);
 
-    return rows[0] || null;
+    if (!rows[0] || !rows[0].min_date || !rows[0].max_date) {
+      return { min_date: null, max_date: null };
+    }
+
+    return rows[0];
   },
 
-  async getCountryCurrencyMapping(countryCode) {
-    const querySql = `
-        SELECT 
-            c.country_code,
-            curr.currency_code,
-            curr.currency_name
-        FROM dim_countries c
-        JOIN dim_currencies curr ON c.currency_code = curr.currency_code
-        WHERE c.country_code = $1
-    `;
-    const { rows } = await query(querySql, [countryCode.toUpperCase()]);
-    return rows[0] || null;
-  },
-
-  async getQuarterlyFxRates(baseCurrencyCode, quoteCurrencyCode, startDate, endDate) {
+  async getQuarterlyFxRates(
+    baseCurrencyCode,
+    quoteCurrencyCode,
+    startDate,
+    endDate
+  ) {
     const hasDateRange = Boolean(startDate && endDate);
     const querySql = `
         SELECT
@@ -113,7 +108,12 @@ export const economicsRepository = {
     return rows;
   },
 
-  async getDailyFxRates(baseCurrencyCode, quoteCurrencyCode, startDate, endDate) {
+  async getDailyFxRates(
+    baseCurrencyCode,
+    quoteCurrencyCode,
+    startDate,
+    endDate
+  ) {
     const hasDateRange = Boolean(startDate && endDate);
     const querySql = `
         SELECT
@@ -137,5 +137,4 @@ export const economicsRepository = {
 
     return rows;
   },
-
 };
