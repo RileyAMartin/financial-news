@@ -104,8 +104,7 @@ with DAG(
                     "date_year",
                     "date_quarter",
                 ],
-                "watermark_column": None,
-                "full_refresh": True,
+                "watermark_column": "processed_at",
             },
         },
     )

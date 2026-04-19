@@ -6,9 +6,9 @@ from psycopg2 import sql
 import psycopg2
 from psycopg2.extras import execute_values
 
-BATCH_SIZE = 50000
-EXECUTE_PAGE_SIZE = 50000
-BQ_PAGE_SIZE = 50000
+BATCH_SIZE = 2000
+EXECUTE_PAGE_SIZE = 2000
+BQ_PAGE_SIZE = 2000
 REQUIRED_KEYS = (
     "bq_dataset",
     "bq_table",
