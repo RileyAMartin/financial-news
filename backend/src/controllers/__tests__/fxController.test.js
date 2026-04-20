@@ -40,6 +40,7 @@ describe("fxController", () => {
     await fxController.getFxSeries(req, res);
 
     expect(mockGetFxSeries).toHaveBeenCalledWith("JPY", {
+      targetCurrencies: ["USD"],
       startDate: "2020-01-01",
       endDate: "2020-12-31",
       frequency: "Q",

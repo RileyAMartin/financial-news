@@ -1,16 +1,12 @@
 import { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import styles from "./newsFeed.module.css";
 import { UI_CONSTANTS } from "../../utils/constants";
-import { StatusBanner } from "../layout/StatusBanner";
 
-export function NewsFeed({
-  items,
-  hasMore,
-  loading,
-  error,
-  onLoadMore,
-}) {
+// Renders an infinite-scroll news feed for a given country/currency context
+export function NewsFeed({ items, hasMore, loading, error, onLoadMore }) {
   const triggerRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     if (!triggerRef.current || !hasMore || loading || error || items.length === 0) {
@@ -23,29 +19,36 @@ export function NewsFeed({
           onLoadMore();
         }
       },
-      { rootMargin: UI_CONSTANTS.NEWS.INTERSECTION_ROOT_MARGIN }
+      { 
+        root: containerRef.current,
+        rootMargin: UI_CONSTANTS.NEWS.INTERSECTION_ROOT_MARGIN 
+      }
     );
 
     observer.observe(triggerRef.current);
     return () => observer.disconnect();
   }, [items.length, hasMore, loading, error, onLoadMore]);
 
-  return (
-    <section className={`panel ${styles.newsPanel}`}>
-      <div className={styles.panelTitleRow}>
-        <h2>News Feed</h2>
-        <span>{items.length} articles</span>
-      </div>
+  const formatDate = (dateString) => {
+    if (!dateString) return "--/--/---- --:--";
+    const d = new Date(dateString);
+    const date = d.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" });
+    const time = d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
+    return `${date} ${time}`;
+  };
 
-      <div className={styles.newsFeed}>
-        {!loading && items.length === 0 && !error && (
-          <article className={`${styles.newsCard} ${styles.endOfFeedCard}`} aria-live="polite">
+  return (
+    <section className={styles.newsPanel}>
+      <div className={styles.newsFeed} ref={containerRef}>
+        {!loading && items.length === 0 && !error && !hasMore && (
+          <div className={styles.endOfFeedCard}>
             <p>No news articles matched this filter.</p>
-          </article>
+          </div>
         )}
 
         {items.map((article, index) => (
-          <article className={styles.newsCard} key={`${article.url || "article"}-${index}`}>
+          <article className={styles.newsListItem} key={`${article.url || "article"}-${index}`}>
+            <span className={styles.newsTimestamp}>{formatDate(article.published_at)}</span>
             <a
               href={article.url || "#"}
               target="_blank"
@@ -54,42 +57,24 @@ export function NewsFeed({
             >
               {article.title}
             </a>
-
-            <p>{(article.summary || UI_CONSTANTS.NEWS.FALLBACK_SUMMARY).slice(0, UI_CONSTANTS.NEWS.MAX_SUMMARY_LENGTH)}...</p>
-
-            <div className={styles.newsMetaRow}>
-              <span className={styles.feedName}>
-                {(article.feed_name || UI_CONSTANTS.NEWS.FALLBACK_SOURCE)
-                  .replace(/_/g, " ")
-                  .toUpperCase()}
-              </span>
-              <a href={article.url || "#"} target="_blank" rel="noreferrer">
-                Source
-              </a>
-            </div>
-
-            <div className={styles.tags}>
-              {(article.country_codes || []).map((countryCode) => (
-                <span className={styles.tag} key={`${article.url || index}-${countryCode}`}>
-                  {countryCode}
-                </span>
-              ))}
-            </div>
+            <span className={styles.feedName}>
+              [{(article.feed_name || UI_CONSTANTS.NEWS.FALLBACK_SOURCE).replace(/_/g, " ").toUpperCase()}]
+            </span>
           </article>
         ))}
 
-        {loading && (
-          <StatusBanner type="loading" message={items.length === 0 ? "Loading News" : "Loading More News"} isCard />
+        {(loading || (items.length === 0 && hasMore && !error)) && (
+          <div style={{ color: "var(--color-terminal-header)", padding: "0.5rem" }}>LOADING...</div>
         )}
 
         {error && (
-          <StatusBanner type="error" message={error} isCard />
+          <div style={{ color: "var(--color-terminal-neg)", padding: "0.5rem" }}>ERROR: {error}</div>
         )}
 
         {!loading && !hasMore && items.length > 0 && (
-          <article className={`${styles.newsCard} ${styles.endOfFeedCard}`} aria-live="polite">
-            <p>End of feed.</p>
-          </article>
+          <div className={styles.endOfFeedCard}>
+            <p>EOF</p>
+          </div>
         )}
 
         <div className={styles.feedTrigger} ref={triggerRef} />
@@ -97,3 +82,19 @@ export function NewsFeed({
     </section>
   );
 }
+
+NewsFeed.propTypes = {
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      origin: PropTypes.string,
+      title: PropTypes.string,
+      link: PropTypes.string,
+      pub_date: PropTypes.string,
+    })
+  ).isRequired,
+  hasMore: PropTypes.bool,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
+  onLoadMore: PropTypes.func.isRequired,
+};

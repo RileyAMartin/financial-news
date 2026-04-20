@@ -1,38 +1,47 @@
-import { useMemo } from "react";
+import { useState } from "react";
+import PropTypes from "prop-types";
 import { MetricCard } from "./MetricCard";
 import styles from "./MetricsPanel.module.css";
-import { getMetricsDisplayRange } from "../../utils/dateRange";
-import { StatusBanner } from "../layout/StatusBanner";
 
 export function MetricsPanel({
   metrics,
   currency,
-  inflationByMetric,
-  onToggleInflation,
   loading,
   error,
-  startDate,
-  endDate,
 }) {
-  const displayRange = useMemo(() => getMetricsDisplayRange(metrics), [metrics]);
+  const [inflationByMetric, setInflationByMetric] = useState({});
+  const [prevMetrics, setPrevMetrics] = useState(metrics);
+
+  if (metrics !== prevMetrics) {
+    setPrevMetrics(metrics);
+    const next = { ...inflationByMetric };
+    for (const [key] of metrics) {
+      if (typeof next[key] !== "boolean") {
+        next[key] = false;
+      }
+    }
+    setInflationByMetric(next);
+  }
+
+  const onToggleInflation = (metricKey) => {
+    setInflationByMetric((prev) => ({
+      ...prev,
+      [metricKey]: !prev[metricKey],
+    }));
+  };
 
   return (
-    <section className={`panel ${styles.economicsPanel}`}>
-      <div className={styles.panelTitleRow}>
-        <h2>Economic Metrics</h2>
-        <span>{displayRange}</span>
-      </div>
-
+    <section className={styles.economicsPanel}>
       {loading && !error && (
-        <StatusBanner type="loading" message="Loading Economic Metrics" isCard />
+        <div style={{ color: "var(--color-terminal-header)", padding: "1rem" }}>LOADING ECONOMIC METRICS...</div>
       )}
 
       {error && (
-        <StatusBanner type="error" message={error} isCard />
+        <div style={{ color: "var(--color-terminal-neg)", padding: "1rem" }}>ERROR: {error}</div>
       )}
 
       {!loading && !error && metrics.length === 0 && (
-        <StatusBanner type="empty" message="No metrics available for this filter." isCard />
+        <div style={{ color: "var(--color-terminal-header)", padding: "1rem" }}>NO METRICS AVAILABLE.</div>
       )}
 
       {!loading && !error && metrics.length > 0 && (
@@ -52,3 +61,10 @@ export function MetricsPanel({
     </section>
   );
 }
+
+MetricsPanel.propTypes = {
+  metrics: PropTypes.arrayOf(PropTypes.array).isRequired,
+  currency: PropTypes.string,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
+};

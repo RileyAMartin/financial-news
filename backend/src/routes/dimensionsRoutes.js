@@ -3,6 +3,9 @@ import { dimensionsController } from "../controllers/dimensionsController.js";
 
 const router = express.Router();
 
+// GET /api/dimensions/map (large geojson file)
+router.get("/map", dimensionsController.getMap);
+
 // GET /api/dimensions/countries
 router.get("/countries", dimensionsController.getCountries);
 

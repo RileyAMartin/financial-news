@@ -1,26 +1,29 @@
 .metricCard {
-  border: 1px solid #24405d;
-  border-radius: 8px;
-  background: linear-gradient(160deg, #112136, #0b1929);
-  padding: 10px;
+  border: 1px solid var(--color-terminal-border);
+  border-radius: 0;
+  background-color: var(--color-terminal-bg);
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .metricCardHeader {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .metricTitleWrap {
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
   align-items: center;
 }
 
 .metricTitleWrap h3 {
   margin: 0;
-  font-size: 0.96rem;
+  font-size: 0.85rem;
+  color: var(--color-terminal-header);
+  text-transform: uppercase;
 }
 
 .tooltipWrapper {
@@ -32,77 +35,70 @@
 }
 
 .infoIcon {
-  color: #5a7d9b;
-  transition: color 0.15s ease;
+  color: var(--color-terminal-border);
+  transition: opacity 0.15s ease;
 }
 
 .infoIcon:hover {
-  color: #90cdf4;
+  opacity: 0.8;
 }
 
 .tooltipBubble {
   position: fixed;
-  background: #1a2e44;
-  color: #e2e8f0;
-  border: 1px solid #375a7c;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 0.76rem;
+  background-color: var(--color-terminal-bg);
+  color: var(--color-terminal-text);
+  border: 1px solid var(--color-terminal-header);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0;
+  font-size: 0.75rem;
   width: max-content;
-  max-width: 380px; 
-  z-index: 99999; 
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  max-width: 300px;
+  z-index: 99999;
+  box-shadow: none;
   pointer-events: none;
-  font-weight: 400;
-  line-height: 1.4;
-  animation: tooltipFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes tooltipFadeIn {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-90%);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(-100%);
-  }
+  font-weight: normal;
+  text-transform: none;
+  transform: translateX(-50%) translateY(-100%);
 }
 
 .switch {
-  border: 1px solid #355a80;
-  background: #0d1b2c;
-  border-radius: 999px;
+  border: 1px solid var(--color-terminal-header);
+  background-color: var(--color-terminal-bg);
+  border-radius: 0;
   display: inline-flex;
-  gap: 4px;
-  padding: 3px;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
 }
 
 .switchLabel {
   font-size: 0.7rem;
-  color: #8da9c6;
-  border-radius: 999px;
-  padding: 3px 8px;
+  color: var(--color-terminal-text);
+  padding: 0.25rem 0.5rem;
+  text-transform: uppercase;
 }
 
 .disabledSwitch {
-  opacity: 0.7;
+  opacity: 0.5;
   cursor: not-allowed;
+  border-color: var(--color-terminal-border);
 }
 
 .disabledLabel {
-  opacity: 0.35;
+  opacity: 0.3;
 }
 
 .active {
-  color: #0b1420;
-  background: linear-gradient(145deg, #d7f56d, #b8da35);
+  color: var(--color-terminal-bg);
+  background-color: var(--color-terminal-header);
+  font-weight: bold;
 }
 
 .metricMeta {
-  color: var(--text-muted);
-  font-size: 0.72rem;
-  margin: 8px 0;
+  color: var(--color-terminal-text);
+  font-size: 0.7rem;
+  margin: 0.5rem 0;
+  opacity: 0.7;
 }
 
 .chartWrap {
@@ -114,6 +110,7 @@
 }
 
 .cardEmpty {
-  color: var(--text-muted);
-  margin: 12px 0 4px;
+  color: var(--color-terminal-text);
+  font-size: 0.8rem;
+  margin: 0.5rem 0;
 }

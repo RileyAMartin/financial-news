@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { getEconomicsByCountry } from "../api/economicsApi";
 
-export function useEconomicsData(countryCode, startDate, endDate) {
+export function useEconomicsData(countryCode, startDate, endDate, currency) {
   const requestSequenceRef = useRef(0);
   const [state, setState] = useState({
     data: {},
@@ -26,6 +26,7 @@ export function useEconomicsData(countryCode, startDate, endDate) {
           countryCode,
           startDate,
           endDate,
+          currency,
           controller.signal
         );
 
@@ -45,7 +46,7 @@ export function useEconomicsData(countryCode, startDate, endDate) {
 
     load();
     return () => controller.abort();
-  }, [countryCode, startDate, endDate]);
+  }, [countryCode, startDate, endDate, currency]);
 
   return state;
 }

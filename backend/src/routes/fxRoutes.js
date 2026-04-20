@@ -6,7 +6,7 @@ import { validateFrequency } from "../middleware/validateFrequency.js";
 
 const router = express.Router();
 
-// GET /api/fx?currencyCode=JPY&startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&frequency=Q
+// GET /api/fx?currencyCode=JPY&targetCurrencies=USD,EUR,GBP&startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&frequency=Q
 router.get(
   "/",
   validateRequiredCurrencyCode,

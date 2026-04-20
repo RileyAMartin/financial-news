@@ -1,4 +1,5 @@
 import { Info } from "lucide-react";
+import PropTypes from "prop-types";
 import { useMemo, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -13,7 +14,6 @@ import {
 import {
   formatCompactNumber,
   formatCurrencyValue,
-  formatQuarter,
   getCurrencyField,
 } from "../../utils/formatters";
 import styles from "./MetricCard.module.css";
@@ -31,8 +31,8 @@ export function MetricCard({
 
   const currencyField = getCurrencyField(currency);
 
-  const hasNominal = useMemo(() => metric.data.some((point) => !point.isInflationAdjusted), [metric]);
-  const hasReal = useMemo(() => metric.data.some((point) => point.isInflationAdjusted), [metric]);
+  const hasNominal = useMemo(() => metric.points && metric.points.some((point) => !point.is_inflation_adjusted), [metric]);
+  const hasReal = useMemo(() => metric.points && metric.points.some((point) => point.is_inflation_adjusted), [metric]);
 
   const effectiveIsInflationAdjusted = useMemo(() => {
     if (!hasReal) return false;
@@ -41,14 +41,15 @@ export function MetricCard({
   }, [hasReal, hasNominal, isInflationAdjusted]);
 
   const chartData = useMemo(() => {
-    const filteredSeries = metric.data
-      .filter((point) => point.isInflationAdjusted === effectiveIsInflationAdjusted)
+    if (!metric || !metric.points) return [];
+    const filteredSeries = metric.points
+      .filter((point) => point.is_inflation_adjusted === effectiveIsInflationAdjusted)
       .slice()
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
+      .sort((a, b) => new Date(a.date_day) - new Date(b.date_day));
 
     return filteredSeries.map((point) => ({
-      date: point.date,
-      value: point[currencyField],
+      period_key: point.period_key,
+      value: point[currencyField] ?? point.value_local,
     }));
   }, [metric, currencyField, effectiveIsInflationAdjusted]);
 
@@ -71,7 +72,7 @@ export function MetricCard({
     <article className={styles.metricCard}>
       <header className={styles.metricCardHeader}>
         <div className={styles.metricTitleWrap}>
-          <h3 className="metric-title">{metric.metadata.name}</h3>
+          <h3 className="metric-title">{metric.indicator_name}</h3>
           <div 
             className={styles.tooltipWrapper}
             ref={iconRef}
@@ -89,7 +90,7 @@ export function MetricCard({
                 role="tooltip"
                 style={{ top: tooltipPos.top, left: tooltipPos.left }}
               >
-                {metric.metadata.description}
+                {metric.indicator_description}
               </div>,
               document.body
             )}
@@ -112,7 +113,7 @@ export function MetricCard({
       </header>
 
       <p className={styles.metricMeta}>
-        {metric.source.publisherShort} • {metric.source.datasetShort} ({currency})
+        {metric.source.publisher_short} • {metric.source.dataset_short} ({currency})
       </p>
 
       {chartData.length === 0 ? (
@@ -121,21 +122,20 @@ export function MetricCard({
         <div className={styles.chartWrap}>
           <ResponsiveContainer width="100%" height={180}>
             <LineChart data={chartData} margin={{ top: 18, right: 18, left: 0, bottom: 4 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1f2d3d" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-terminal-border)" vertical={false} />
               
               <XAxis 
-                dataKey="date" 
-                tick={{ fill: "#6b8bad", fontSize: 10 }} 
+                dataKey="period_key" 
+                tick={{ fill: "var(--color-terminal-header)", fontSize: 10, fontFamily: "inherit" }} 
                 tickMargin={12}
                 axisLine={false}
                 tickLine={false}
-                tickFormatter={formatQuarter} 
                 minTickGap={30}
               />
               
               <YAxis
                 width={50}
-                tick={{ fill: "#6b8bad", fontSize: 10 }}
+                tick={{ fill: "var(--color-terminal-header)", fontSize: 10, fontFamily: "inherit" }}
                 tickMargin={8}
                 axisLine={false}
                 tickLine={false}
@@ -144,29 +144,29 @@ export function MetricCard({
               
               <Tooltip
                 formatter={(value) => [formatCurrencyValue(value, currency), "Value"]}
-                labelFormatter={(label) => formatQuarter(label)}
                 contentStyle={{
-                  background: "rgba(11, 21, 33, 0.95)",
-                  border: "1px solid #2d4f74",
-                  borderRadius: "6px",
-                  color: "#deedff",
-                  padding: "8px 12px",
+                  background: "var(--color-terminal-bg)",
+                  border: "1px solid var(--color-terminal-header)",
+                  borderRadius: "0",
+                  color: "var(--color-terminal-text)",
+                  padding: "4px 8px",
                   fontSize: "0.82rem",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.4)"
+                  boxShadow: "none",
+                  fontFamily: "inherit"
                 }}
-                itemStyle={{ paddingBottom: 0, color: "#90cdf4" }}
-                labelStyle={{ color: "#6b8bad", marginBottom: "4px", fontSize: "0.76rem" }}
-                cursor={{ stroke: "#355a80", strokeWidth: 1, strokeDasharray: "4 4" }}
+                itemStyle={{ paddingBottom: 0, color: "var(--color-terminal-text)", fontFamily: "inherit" }}
+                labelStyle={{ color: "var(--color-terminal-header)", marginBottom: "4px", fontSize: "0.76rem", fontFamily: "inherit" }}
+                cursor={{ stroke: "var(--color-terminal-pos)", strokeWidth: 1, strokeDasharray: "4 4" }}
               />
               
               <Line
-                type="monotone"
+                type="stepAfter"
                 dataKey="value"
-                stroke="#63b3ed"
-                strokeWidth={2}
+                stroke="var(--color-terminal-pos)"
+                strokeWidth={1}
                 dot={false}
-                activeDot={{ r: 5, fill: "#63b3ed", stroke: "#0f1928", strokeWidth: 2 }}
-                animationDuration={800}
+                activeDot={{ r: 4, fill: "var(--color-terminal-bg)", stroke: "var(--color-terminal-pos)", strokeWidth: 1 }}
+                animationDuration={0}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -175,3 +175,17 @@ export function MetricCard({
     </article>
   );
 }
+
+MetricCard.propTypes = {
+  metric: PropTypes.shape({
+    data: PropTypes.array,
+    key: PropTypes.string,
+    indicator_name: PropTypes.string,
+    units: PropTypes.string,
+    frequency: PropTypes.string,
+    source_name: PropTypes.string,
+  }).isRequired,
+  currency: PropTypes.string,
+  isInflationToggled: PropTypes.bool,
+  onToggleInflation: PropTypes.func.isRequired,
+};

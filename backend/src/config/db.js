@@ -3,6 +3,7 @@ import config from "./config.js";
 
 const pool = new Pool({
   connectionString: config.db.url,
+  connectionTimeoutMillis: 10000,
   ssl: {
     rejectUnauthorized: true,
     ca: config.db.cert,

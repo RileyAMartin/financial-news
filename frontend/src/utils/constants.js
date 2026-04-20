@@ -1,12 +1,4 @@
-export const CURRENCIES = ["LOCAL", "EUR", "USD"];
-
-export const TIME_PERIODS = [
-  { value: "1Y", label: "1Y", years: 1 },
-  { value: "3Y", label: "3Y", years: 3 },
-  { value: "5Y", label: "5Y", years: 5 },
-  { value: "10Y", label: "10Y", years: 10 },
-  { value: "ALL", label: "All", years: null },
-];
+export const CURRENCIES = ["USD", "EUR", "JPY", "GBP", "CNY"];
 
 export const UI_CONSTANTS = {
   NEWS: {
@@ -17,8 +9,15 @@ export const UI_CONSTANTS = {
   },
   MAP: {
     FALLBACK_COUNTRY_CODE: "USA",
+    DEFAULT_CENTER: [39.8, -98.5],
+    DEFAULT_ZOOM: 3,
   },
   METRICS: {
     FALLBACK_DATE: "1990-01-01",
-  }
+  },
+  FX: {
+    FALLBACK_BASE_CURRENCY: "USD",
+    MAJOR_CURRENCIES: ["USD", "EUR", "GBP", "JPY", "CNY", "CHF", "CAD", "AUD"],
+    DEFAULT_FREQUENCY: "D",
+  },
 };

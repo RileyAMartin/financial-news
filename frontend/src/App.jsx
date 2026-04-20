@@ -1,137 +1,92 @@
-import { useEffect, useMemo, useReducer } from "react";
+import styles from "./App.module.css";
 import { DashboardHeader } from "./components/layout/DashboardHeader";
-import { TopNav } from "./components/layout/TopNav";
 import { WorldMap } from "./components/map/WorldMap";
 import { MetricsPanel } from "./components/metrics/MetricsPanel";
 import { NewsFeed } from "./components/news/NewsFeed";
-import { useDimensionsData } from "./hooks/useDimensionsData";
-import { useEconomicsData } from "./hooks/useEconomicsData";
-import { useNewsFeed } from "./hooks/useNewsFeed";
-import { dashboardReducer, initialDashboardState } from "./state/dashboardState";
-import { UI_CONSTANTS } from "./utils/constants";
-import { getDateRange } from "./utils/dateRange";
-import { StatusBanner } from "./components/layout/StatusBanner";
+import { FxMonitor } from "./components/fx/FxMonitor";
+import { useDashboardController } from "./hooks/useDashboardController";
 
 export default function App() {
-  const [state, dispatch] = useReducer(dashboardReducer, initialDashboardState);
-
-  const {
-    countries,
-    indicators,
-    sources,
-    geoJson,
-    loading: dimensionsLoading,
-    error: dimensionsError,
-  } = useDimensionsData();
-
-  const dateRange = useMemo(
-    () => getDateRange(state.timePeriod),
-    [state.timePeriod]
-  );
-
-  const {
-    data: economics,
-    loading: economicsLoading,
-    error: economicsError,
-  } = useEconomicsData(
-    state.selectedCountry,
-    dateRange.startDate,
-    dateRange.endDate
-  );
-
-  const {
-    items: newsItems,
-    hasMore: newsHasMore,
-    loading: newsLoading,
-    error: newsError,
-    loadMore: loadMoreNews,
-  } = useNewsFeed(state.selectedCountry, dateRange.startDate, dateRange.endDate);
-
-  useEffect(() => {
-    if (countries.length === 0 || state.selectedCountry) {
-      return;
-    }
-
-    const preferred =
-      countries.find((country) => country.country_code === UI_CONSTANTS.MAP.FALLBACK_COUNTRY_CODE) || countries[0];
-
-    dispatch({ type: "setCountry", payload: preferred.country_code });
-  }, [countries, state.selectedCountry]);
-
-  useEffect(() => {
-    dispatch({ type: "primeInflationKeys", payload: Object.keys(economics) });
-  }, [economics]);
-
-  const selectedCountryDetails = useMemo(
-    () =>
-      countries.find((country) => country.country_code === state.selectedCountry) ||
-      null,
-    [countries, state.selectedCountry]
-  );
-
-  const metricEntries = useMemo(() => Object.entries(economics), [economics]);
-
-  const statusError = dimensionsError || economicsError || newsError;
+  const { state, actions, data } = useDashboardController();
 
   return (
-    <div className="dashboard-shell">
-      <TopNav />
-
-      <main className="dashboard-main">
+    <div className={styles.dashboardShell}>
+      <div className={styles.commandBar}>
         <DashboardHeader
           selectedCountry={state.selectedCountry}
-          countries={countries}
-          selectedCountryDetails={selectedCountryDetails}
-          timePeriod={state.timePeriod}
-          currency={state.currency}
-          indicatorCount={indicators.length}
-          sourceCount={sources.length}
-          onCountryChange={(code) => dispatch({ type: "setCountry", payload: code })}
-          onTimePeriodChange={(period) =>
-            dispatch({ type: "setTimePeriod", payload: period })
-          }
-          onCurrencyChange={(currency) =>
-            dispatch({ type: "setCurrency", payload: currency })
-          }
+          countries={state.countries}
+          selectedCountryDetails={state.selectedCountryDetails}
+          targetCurrency={state.targetCurrency}
+          currencies={state.currencies}
+          dateRange={state.dateRange}
+          onCountryChange={actions.handleCountryChange}
+          onDateRangeChange={actions.setDateRange}
+          onCurrencyChange={actions.setTargetCurrency}
         />
+      </div>
 
-        <WorldMap
-          geoJson={geoJson}
-          selectedCountry={state.selectedCountry}
-          countries={countries}
-          loading={dimensionsLoading}
-          onSelectCountry={(code) => dispatch({ type: "setCountry", payload: code })}
-        />
-
-        <section className="split-panels">
-          <MetricsPanel
-            metrics={metricEntries}
-            currency={state.currency}
-            inflationByMetric={state.inflationByMetric}
-            onToggleInflation={(metricKey) =>
-              dispatch({ type: "toggleInflation", payload: metricKey })
-            }
-            loading={economicsLoading}
-            error={economicsError}
-            startDate={dateRange.startDate}
-            endDate={dateRange.endDate}
-          />
-
-          <div className="news-wrapper">
-            <NewsFeed
-              items={newsItems}
-              hasMore={newsHasMore}
-              loading={newsLoading}
-              error={newsError}
-              onLoadMore={loadMoreNews}
-            />
+      <div className={styles.panesContainer}>
+        {/* Column 1: Map and News */}
+        <div className={styles.colLeft}>
+          <div className={`${styles.pane} ${styles.mapPane}`}>
+            <div className={styles.paneHeader}>Geo Selection</div>
+            <div className={styles.paneContent} style={{ padding: 0 }}>
+              <WorldMap
+                geoJson={state.geoJson}
+                selectedCountry={state.selectedCountry}
+                countries={state.countries}
+                loading={data.dimensions.loading}
+                onSelectCountry={actions.handleCountryChange}
+              />
+            </div>
           </div>
-        </section>
 
-        {statusError && (
-          <StatusBanner type="error" message={statusError} />
-        )}
-      </main>
+          <div className={`${styles.pane} ${styles.newsPane}`}>
+            <div className={styles.paneHeader}>News Feed</div>
+            <div className={styles.paneContent} style={{ padding: 0 }}>
+              <NewsFeed
+                items={data.news.items}
+                hasMore={data.news.hasMore}
+                loading={data.news.loading}
+                error={data.news.error}
+                onLoadMore={data.news.loadMore}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Column 2: Economics and FX */}
+        <div className={styles.colRight}>
+          <div className={`${styles.pane} ${styles.economicsPane}`}>
+            <div className={styles.paneHeader}>Economics</div>
+            <div className={styles.paneContent} style={{ padding: 0 }}>
+              <MetricsPanel
+                metrics={state.metricEntries}
+                currency={state.targetCurrency}
+                loading={data.economics.loading}
+                error={data.economics.error}
+                startDate={state.dateRange.startDate}
+                endDate={state.dateRange.endDate}
+              />
+            </div>
+          </div>
+
+          <div className={`${styles.pane} ${styles.fxPane}`}>
+            <div className={styles.paneHeader}>
+              {state.selectedCountryDetails ? `FX Monitor (${state.baseCurrency} Cross Rates)` : "FX Monitor"}
+            </div>
+            <div className={styles.paneContent} style={{ padding: 0 }}>
+              <FxMonitor
+                baseCurrency={state.baseCurrency}
+                targetCurrencies={state.targetCurrencies}
+                data={data.fx.data}
+                loading={data.fx.loading}
+                error={data.fx.error}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

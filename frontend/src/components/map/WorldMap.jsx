@@ -1,27 +1,28 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
+import PropTypes from "prop-types";
 import { GeoJSON, MapContainer, TileLayer, useMapEvents, useMap } from "react-leaflet";
-import { getFeatureIso3, getFeatureName } from "../../utils/geo";
 import styles from "./WorldMap.module.css";
+import { UI_CONSTANTS } from "../../utils/constants";
 import "leaflet/dist/leaflet.css";
 
 const MAP_STYLE = {
   default: {
-    color: "#2d3748",
-    weight: 0.5,
-    fillColor: "#172b42",
-    fillOpacity: 0.4,
+    color: "#3f3f46",
+    weight: 0.8,
+    fillColor: "#000000",
+    fillOpacity: 1,
   },
   hover: {
-    color: "#90cdf4",
+    color: "#FFB800",
     weight: 1,
-    fillColor: "#2c5282",
-    fillOpacity: 0.5,
+    fillColor: "#18181b",
+    fillOpacity: 1,
   },
   selected: {
-    color: "#63b3ed",
+    color: "#FFB800",
     weight: 1.5,
-    fillColor: "#2a6f97",
-    fillOpacity: 0.65,
+    fillColor: "#18181b",
+    fillOpacity: 1,
   },
 };
 
@@ -65,15 +66,13 @@ function MapResizer() {
 
 export function WorldMap({ geoJson, selectedCountry, onSelectCountry, countries, loading }) {
   const hoveredLayerRef = useRef(null);
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const availableCountryCodes = countries ? countries.map((c) => c.country_code) : [];
 
   const clearHover = () => {
     if (hoveredLayerRef.current) {
       const layer = hoveredLayerRef.current;
-      // const iso3 = layer.feature.id;
-      const iso3 = getFeatureIso3(layer.feature.properties);
+      const iso3 = layer.feature.properties["ISO3166-1-Alpha-3"];
       layer.setStyle(iso3 === selectedCountry ? MAP_STYLE.selected : MAP_STYLE.default);
       layer.closeTooltip();
       hoveredLayerRef.current = null;
@@ -81,8 +80,7 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry, countries,
   };
 
   const styleFeature = (feature) => {
-    // const iso3 = feature.id;
-    const iso3 = getFeatureIso3(feature.properties);
+    const iso3 = feature.properties["ISO3166-1-Alpha-3"];
     const isAvailable = availableCountryCodes.includes(iso3);
 
     if (!isAvailable) {
@@ -92,9 +90,8 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry, countries,
   };
 
   const onEachFeature = (feature, layer) => {
-    // const iso3 = feature.id;
-    const iso3 = getFeatureIso3(feature.properties);
-    const name = getFeatureName(feature.properties);
+    const iso3 = feature.properties["ISO3166-1-Alpha-3"];
+    const name = feature.properties.name || "Unknown";
     const isAvailable = availableCountryCodes.includes(iso3);
 
     layer.bindTooltip(
@@ -111,12 +108,10 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry, countries,
       mouseover: (e) => {
         if (!isAvailable) return;
         const layer = e.target;
-        // If we moved directly from one country to another without mouseout...
         if (hoveredLayerRef.current && hoveredLayerRef.current !== layer) {
           clearHover();
         }
         
-        // Only apply hover style if not selected
         if (iso3 !== selectedCountry) {
           layer.setStyle(MAP_STYLE.hover);
         }
@@ -124,7 +119,6 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry, countries,
       },
       mouseout: (e) => {
         if (!isAvailable) return;
-        // Only clear if we are moving out of the current hovered layer
         if (hoveredLayerRef.current === e.target) {
           clearHover();
         }
@@ -139,7 +133,7 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry, countries,
 
   if (loading || !geoJson) {
     return (
-      <div className={`panel ${styles.mapPanel} ${styles.loadingPanel}`}>
+      <div className={`${styles.mapPanel} ${styles.loadingPanel}`}>
         <span className="spinner" aria-hidden="true" />
         <span>Loading world map...</span>
       </div>
@@ -147,11 +141,11 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry, countries,
   }
 
   return (
-    <section className={`panel ${styles.mapPanel} ${styles.mapLoaded}`}>
-      <div className={`${styles.mapContainerWrapper} ${isCollapsed ? styles.collapsed : ""}`}>
+    <section className={`${styles.mapPanel} ${styles.mapLoaded}`}>
+      <div className={styles.mapContainerWrapper}>
         <MapContainer
-          center={[20, 0]}
-          zoom={2}
+          center={UI_CONSTANTS.MAP.DEFAULT_CENTER}
+          zoom={UI_CONSTANTS.MAP.DEFAULT_ZOOM}
           minZoom={2}
           maxZoom={6}
           scrollWheelZoom={true}
@@ -179,20 +173,32 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry, countries,
             ]}
           />
           <GeoJSON
-            key={selectedCountry} // Only re-render when selection changes, NOT on hover
+            key={selectedCountry}
             data={geoJson}
             style={styleFeature}
             onEachFeature={onEachFeature}
           />
         </MapContainer>
-        <button 
-          className={styles.collapseButton} 
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          aria-label={isCollapsed ? "Expand map" : "Collapse map"}
-        >
-          {isCollapsed ? "↓" : "↑"}
-        </button>
+
       </div>
     </section>
   );
 }
+
+MapInteractions.propTypes = {
+  onDragStart: PropTypes.func,
+  onDragEnd: PropTypes.func,
+  onZoomStart: PropTypes.func,
+};
+
+WorldMap.propTypes = {
+  geoJson: PropTypes.object,
+  selectedCountry: PropTypes.string,
+  countries: PropTypes.arrayOf(
+    PropTypes.shape({
+      country_code: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  loading: PropTypes.bool,
+  onSelectCountry: PropTypes.func.isRequired,
+};

@@ -1,150 +1,65 @@
 :root {
-  --bg-base: #07101a;
-  --bg-surface: #101e30;
-  --bg-panel: #12263c;
-  --bg-panel-2: #0d1d2d;
-  --bg-panel-map: #262626;
-  --border: #27435f;
-  --text-main: #e4f1ff;
-  --text-muted: #9bb3cb;
-  --accent: #2ea1ff;
-  --accent-2: #d2ff58;
-  --danger: #f27070;
-  --shadow: 0 18px 30px rgba(0, 0, 0, 0.3);
-}
-
-* {
-  box-sizing: border-box;
+  --color-terminal-bg: #000000;
+  --color-terminal-card: #09090b;
+  --color-terminal-muted: #a1a1aa;
+  --color-terminal-border: #27272a;
+  --color-terminal-pos: #00FF00;
+  --color-terminal-neg: #FF0000;
+  --color-terminal-header: #FFB800;
+  --color-terminal-text: #FFFFFF;
 }
 
 html,
 body,
 #root {
-  margin: 0;
-  min-height: 100%;
-}
-
-body {
-  font-family: "IBM Plex Sans", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: var(--text-main);
-  min-height: 100vh;
-  background-color: #07101a;
-  background:
-    radial-gradient(circle at 16% 10%, #1f3854 0%, transparent 31%),
-    radial-gradient(circle at 85% -5%, #2d4268 0%, transparent 24%),
-    linear-gradient(160deg, #05101a 0%, #081521 54%, #091828 100%);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-}
-
-.dashboard-shell {
   height: 100vh;
-  display: flex;
-  flex-direction: column;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
 }
 
-.dashboard-main {
-  width: min(1540px, 96vw);
-  margin: 14px auto 24px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-  gap: 14px;
+body {
+  background-color: var(--color-terminal-bg);
+  color: var(--color-terminal-text);
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.panel {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: linear-gradient(160deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);
-  box-shadow: var(--shadow);
+* {
+  transition: none;
+  animation: none;
+  border-radius: 0;
+  font-family: inherit;
+  box-sizing: border-box;
 }
 
-.split-panels {
-  display: grid;
-  grid-template-columns: 1.9fr 1.1fr;
-  gap: 12px;
-  align-items: stretch;
-  flex: 1;
-  min-height: 0;
+select, input, button {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--color-terminal-bg);
+  border: 1px solid var(--color-terminal-header);
+  color: var(--color-terminal-text);
+  outline: none;
 }
 
-.news-wrapper {
-  position: relative;
-  min-height: 0;
+select:focus, input:focus {
+  border-color: var(--color-terminal-text);
 }
 
-.status-card {
-  border: 1px solid #2f4f6f;
-  border-radius: 10px;
-  padding: 6px 12px;
-  background: linear-gradient(160deg, rgba(20, 40, 60, 0.7), rgba(14, 28, 43, 0.82));
-  color: #cfe2f7;
-  font-size: 0.84rem;
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
-
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  min-height: 140px;
-  width: 100%;
+::-webkit-scrollbar-track {
+  background-color: var(--color-terminal-bg);
+  border-left: 1px solid var(--color-terminal-border);
 }
-
-.spinner {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 3px solid rgba(142, 184, 224, 0.35);
-  border-top-color: #9ed4ff;
-  animation: spin 0.8s linear infinite;
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-terminal-border);
 }
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.empty-state {
-  text-align: center;
-}
-
-.status-card.error {
-  color: #ffd0d0;
-  border-color: #7f3b3b;
-  background: linear-gradient(160deg, rgba(67, 26, 29, 0.8), rgba(41, 15, 17, 0.86));
-}
-
-.status-banner {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 120;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: 8px;
-  border: 1px solid #375a7c;
-  background: #0d1a2a;
-  color: #d6eaff;
-  padding: 8px 11px;
-  font-size: 0.8rem;
-}
-
-.status-banner.error {
-  border-color: #7f3b3b;
-  background: #30171b;
-  color: #ffd3d3;
-}
-
-@media (max-width: 1140px) {
-  .split-panels {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-terminal-muted);
 }

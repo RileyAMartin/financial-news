@@ -1,5 +1,7 @@
 import express from "express";
 import rateLimit from "express-rate-limit";
+import cors from "cors";
+import compression from "compression";
 import config from "./config/config.js";
 import economicsRoutes from "./routes/economicsRoutes.js";
 import fxRoutes from "./routes/fxRoutes.js";
@@ -9,6 +11,15 @@ import { AppError } from "./utils/appError.js";
 import { RESPONSE_CODES, RESPONSE_MESSAGES } from "./utils/constants.js";
 
 const app = express();
+
+// Compress heavy payloads (like GeoJSON files)
+app.use(compression());
+
+const corsOptions = {
+  origin: process.env.FRONTEND_URL,
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 app.use(express.json());
 

@@ -4,7 +4,7 @@ export const dimensionsRepository = {
   async getAllCountries() {
     // Fetches all distinct countries from the database
     const querySql = `
-        SELECT DISTINCT country_code, official_name, display_name FROM dim_countries
+        SELECT DISTINCT country_code, official_name, display_name, currency_code FROM dim_countries
         `;
     const results = await query(querySql);
     return results.rows;
@@ -51,7 +51,7 @@ export const dimensionsRepository = {
   async getCountryByCode(countryCode) {
     // Fetches a specific country by its code
     const querySql = `
-        SELECT country_code, official_name, display_name FROM dim_countries
+        SELECT country_code, official_name, display_name, currency_code FROM dim_countries
         WHERE country_code = $1
         `;
     const results = await query(querySql, [countryCode]);

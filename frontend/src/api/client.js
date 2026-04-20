@@ -1,4 +1,6 @@
-export async function fetchJson(url, options = {}) {
+export async function fetchJson(endpoint, options = {}) {
+  const baseUrl = import.meta.env.VITE_API_URL || "";
+  const url = `${baseUrl}${endpoint}`;
   const response = await fetch(url, options);
 
   if (!response.ok) {

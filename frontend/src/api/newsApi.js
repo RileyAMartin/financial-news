@@ -13,14 +13,9 @@ export async function getNewsByCountry(
     page: String(page),
   });
 
-  const json = await fetchJson(`/api/news/${countryCode}?${params.toString()}`, {
+  const json = await fetchJson(`/news/${countryCode}?${params.toString()}`, {
     signal,
   });
 
-  return (
-    json.data || {
-      metadata: { hasMore: false },
-      articles: [],
-    }
-  );
+  return json;
 }

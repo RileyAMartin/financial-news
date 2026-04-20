@@ -1,130 +1,83 @@
 .mapPanel {
-  padding: 0 8px;
-  min-height: auto;
-  transition: min-height 0.3s ease;
-}
-
-.mapLoaded {
-  background: var(--bg-panel-map);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-terminal-bg);
+  padding: 0;
 }
 
 .mapContainerWrapper {
+  width: 100%;
+  height: 100%;
   position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.loadingPanel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  min-height: 360px;
 }
 
 .worldMap {
-  height: 355px;
-  border-radius: 8px;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-terminal-bg);
   z-index: 1;
-  background: var(--bg-panel-map);
-  transition: height 0.3s ease;
 }
 
-.collapsed .worldMap {
-  height: 120px !important;
-}
-
-.collapseButton {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-main);
-  padding: 4px 16px;
-  cursor: pointer;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  transition: all 0.2s ease;
-  user-select: none;
-}
-
-.collapseButton:hover {
-  background: var(--bg-panel);
-  color: var(--accent);
+.mapLoaded {
+  background-color: var(--color-terminal-bg);
 }
 
 .countryTooltip {
-  background: #0f1b29;
-  color: #deecff;
-  border: 1px solid #386186;
-  border-radius: 6px;
-  font-size: 0.74rem;
-  padding: 3px 7px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background: var(--color-terminal-bg);
+  color: var(--color-terminal-text);
+  border: 1px solid var(--color-terminal-header);
+  border-radius: 0;
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
 }
-:global(path.leaflet-interactive:focus) {
+
+.worldMap :global(path.leaflet-interactive:focus) {
   outline: none;
 }
 
 .mapDragging :global(.leaflet-interactive) {
-  pointer-events: none !important;
+  pointer-events: none;
 }
 
-:global(.leaflet-container) {
-  background: var(--bg-panel-map) !important;
+.worldMap :global(.leaflet-container) {
+  background: var(--color-terminal-bg);
   outline: none;
+  font-family: inherit;
 }
-:global(.leaflet-control-zoom) {
-  border: 1px solid var(--border) !important;
-  border-radius: 6px !important;
+
+.worldMap :global(.leaflet-control-zoom) {
+  border: 1px solid var(--color-terminal-header);
+  border-radius: 0;
   overflow: hidden;
-  box-shadow: var(--shadow) !important;
-  user-select: none;
+  box-shadow: none;
 }
 
-:global(.leaflet-control-zoom-in),
-:global(.leaflet-control-zoom-out) {
-  background-color: var(--bg-surface) !important;
-  color: var(--text-main) !important;
-  border-bottom: 1px solid var(--border) !important;
-  transition: all 0.2s ease;
+.worldMap :global(.leaflet-control-zoom-in),
+.worldMap :global(.leaflet-control-zoom-out) {
+  background-color: var(--color-terminal-bg);
+  color: var(--color-terminal-header);
+  border-bottom: 1px solid var(--color-terminal-border);
+  border-radius: 0;
 }
 
-:global(.leaflet-control-zoom-in:hover),
-:global(.leaflet-control-zoom-out:hover) {
-  background-color: var(--bg-panel) !important;
-  color: var(--accent) !important;
+.worldMap :global(.leaflet-control-zoom-in:hover),
+.worldMap :global(.leaflet-control-zoom-out:hover) {
+  background-color: var(--color-terminal-header);
+  color: var(--color-terminal-bg);
 }
 
-:global(.leaflet-control-zoom-out) {
-  border-bottom: none !important;
+.worldMap :global(.leaflet-control-attribution) {
+  background: var(--color-terminal-bg);
+  color: var(--color-terminal-border);
+  border-radius: 0;
 }
 
-:global(.leaflet-control-attribution) {
-  background: rgba(13, 29, 45, 0.8) !important;
-  color: var(--text-muted) !important;
-  padding: 0 8px !important;
-  border-top-left-radius: 8px;
-}
-
-:global(.leaflet-control-attribution a) {
-  color: var(--accent) !important;
+.worldMap :global(.leaflet-control-attribution a) {
+  color: var(--color-terminal-header);
   text-decoration: none;
 }
 
-@media (max-width: 760px) {
-  .worldMap {
-    height: 310px;
-  }
-  .collapsed .worldMap {
-    height: 100px !important;
-  }
-}
