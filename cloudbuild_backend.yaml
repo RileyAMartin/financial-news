@@ -1,0 +1,28 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - gcr.io/$PROJECT_ID/financial-news-backend
+      - ./backend
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - gcr.io/$PROJECT_ID/financial-news-backend
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - financial-news-backend
+      - --image=gcr.io/$PROJECT_ID/financial-news-backend
+      - --region=australia-southeast2
+      - --platform=managed
+      - --allow-unauthenticated
+      - --update-env-vars=NODE_ENV=production,FRONTEND_URL=https://finance.rileymartin.me
+      - --set-secrets=DB_URL=COCKROACH_DB_URL:latest,DB_CERT=COCKROACH_DB_CERT:latest
+
+images:
+  - gcr.io/$PROJECT_ID/financial-news-backend
