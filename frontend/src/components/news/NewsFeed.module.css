@@ -1,0 +1,64 @@
+.newsPanel {
+  padding: 0;
+  box-sizing: border-box;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--color-terminal-bg);
+}
+
+.newsFeed {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.newsListItem {
+  display: block;
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px dotted var(--color-terminal-border);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.newsListItem:hover {
+  background-color: var(--color-terminal-card);
+}
+
+.newsTimestamp {
+  color: var(--color-terminal-muted);
+  margin-right: 0.5rem;
+}
+
+.newsTitle {
+  color: var(--color-terminal-header);
+  text-decoration: none;
+}
+
+.newsTitle:hover {
+  text-decoration: underline;
+}
+
+.feedName {
+  color: var(--color-terminal-text);
+  font-size: 0.7rem;
+  margin-left: 0.5rem;
+}
+
+.endOfFeedCard {
+  text-align: center;
+  padding: 0.5rem;
+  color: var(--color-terminal-header);
+  font-size: 0.8rem;
+}
+
+.feedTrigger {
+  width: 100%;
+  height: 1px;
+}

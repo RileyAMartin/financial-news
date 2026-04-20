@@ -6,12 +6,11 @@ export const newsController = {
     const { countryCode } = req.params;
     const { startDate, endDate, page } = req.query;
 
-    const newsFeed = await newsService.getNewsFeed(
-      countryCode,
+    const newsFeed = await newsService.getNewsFeed(countryCode, {
       startDate,
       endDate,
-      page
-    );
+      page,
+    });
 
     res.status(RESPONSE_CODES.OK).json({
       status: STATUS_MESSAGES.SUCCESS,

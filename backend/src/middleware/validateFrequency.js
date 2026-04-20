@@ -5,6 +5,7 @@ import {
   RESPONSE_MESSAGES,
 } from "../utils/constants.js";
 
+// Frequency must be either quarterly or daily. If not provided, defaults to quarterly.
 export const validateFrequency = (req, res, next) => {
   const { frequency } = req.query;
 
@@ -13,10 +14,10 @@ export const validateFrequency = (req, res, next) => {
     return next();
   }
 
-  const normalized = frequency.toUpperCase().trim();
+  const normalizedFrequency = frequency.toUpperCase().trim();
   if (
-    normalized !== FREQUENCIES.QUARTERLY &&
-    normalized !== FREQUENCIES.DAILY
+    normalizedFrequency !== FREQUENCIES.QUARTERLY &&
+    normalizedFrequency !== FREQUENCIES.DAILY
   ) {
     throw new AppError(
       RESPONSE_MESSAGES.FREQUENCY_MALFORMED,
@@ -24,6 +25,6 @@ export const validateFrequency = (req, res, next) => {
     );
   }
 
-  req.query.frequency = normalized;
+  req.query.frequency = normalizedFrequency;
   next();
 };

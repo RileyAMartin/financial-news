@@ -2,12 +2,8 @@ import { newsRepository } from "../repositories/newsRepository.js";
 import { NEWS_PAGE_SIZE as PAGE_SIZE } from "../utils/constants.js";
 
 export const newsService = {
-  async getNewsFeed(
-    countryCode,
-    startDate = null,
-    endDate = null,
-    page = 1
-  ) {
+  async getNewsFeed(countryCode, options = {}) {
+    const { startDate = null, endDate = null, page = 1 } = options;
     const currentPage = Math.max(1, page);
     const offset = (currentPage - 1) * PAGE_SIZE;
 

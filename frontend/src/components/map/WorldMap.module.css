@@ -1,0 +1,83 @@
+.mapPanel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-terminal-bg);
+  padding: 0;
+}
+
+.mapContainerWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.worldMap {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-terminal-bg);
+  z-index: 1;
+}
+
+.mapLoaded {
+  background-color: var(--color-terminal-bg);
+}
+
+.countryTooltip {
+  background: var(--color-terminal-bg);
+  color: var(--color-terminal-text);
+  border: 1px solid var(--color-terminal-header);
+  border-radius: 0;
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.worldMap :global(path.leaflet-interactive:focus) {
+  outline: none;
+}
+
+.mapDragging :global(.leaflet-interactive) {
+  pointer-events: none;
+}
+
+.worldMap :global(.leaflet-container) {
+  background: var(--color-terminal-bg);
+  outline: none;
+  font-family: inherit;
+}
+
+.worldMap :global(.leaflet-control-zoom) {
+  border: 1px solid var(--color-terminal-header);
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.worldMap :global(.leaflet-control-zoom-in),
+.worldMap :global(.leaflet-control-zoom-out) {
+  background-color: var(--color-terminal-bg);
+  color: var(--color-terminal-header);
+  border-bottom: 1px solid var(--color-terminal-border);
+  border-radius: 0;
+}
+
+.worldMap :global(.leaflet-control-zoom-in:hover),
+.worldMap :global(.leaflet-control-zoom-out:hover) {
+  background-color: var(--color-terminal-header);
+  color: var(--color-terminal-bg);
+}
+
+.worldMap :global(.leaflet-control-attribution) {
+  background: var(--color-terminal-bg);
+  color: var(--color-terminal-border);
+  border-radius: 0;
+}
+
+.worldMap :global(.leaflet-control-attribution a) {
+  color: var(--color-terminal-header);
+  text-decoration: none;
+}
+

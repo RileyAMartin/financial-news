@@ -1,0 +1,191 @@
+.dashboardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  gap: 1rem;
+}
+
+.headerLeft h1 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.125rem;
+  letter-spacing: 0.05em;
+  color: var(--color-terminal-header);
+  text-transform: uppercase;
+}
+
+.countryCodeBadge {
+  font-size: 0.875rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  padding: 0.125rem 0.375rem;
+  color: var(--color-terminal-bg);
+  background: var(--color-terminal-header);
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.datePickerGroup {
+  display: flex;
+  gap: 1rem;
+}
+
+.controlGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 120px;
+}
+
+.controlGroup span {
+  color: var(--color-terminal-header);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.controlGroup select,
+.customDatePicker {
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  border-radius: 0;
+  border: 1px solid var(--color-terminal-header);
+  background-color: var(--color-terminal-bg);
+  color: var(--color-terminal-text);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.controlGroup select:focus,
+.customDatePicker:focus {
+  outline: 1px solid var(--color-terminal-header);
+}
+
+/* Global overrides for react-datepicker to match brutalism */
+.datePickerGroup :global(.react-datepicker-wrapper) {
+  width: 100%;
+}
+
+.datePickerGroup :global(.react-datepicker) {
+  font-family: inherit;
+  background-color: var(--color-terminal-bg);
+  color: var(--color-terminal-text);
+  border: 1px solid var(--color-terminal-header);
+  border-radius: 0;
+}
+
+.datePickerGroup :global(.react-datepicker__year-select) {
+  background-color: var(--color-terminal-bg);
+  color: var(--color-terminal-header);
+  border: 1px solid var(--color-terminal-header);
+  font-family: inherit;
+  padding: 0.1rem;
+  margin-left: 0.5rem;
+  border-radius: 0;
+  outline: none;
+}
+
+.datePickerGroup :global(.react-datepicker__year-select:focus) {
+  outline: 1px solid var(--color-terminal-header);
+}
+
+.datePickerGroup :global(.react-datepicker__header) {
+  background-color: var(--color-terminal-bg);
+  border-bottom: 1px solid var(--color-terminal-header);
+  border-radius: 0;
+}
+
+.datePickerGroup :global(.react-datepicker__current-month),
+.datePickerGroup :global(.react-datepicker-time__header),
+.datePickerGroup :global(.react-datepicker-year-header) {
+  color: var(--color-terminal-header);
+}
+
+.datePickerGroup :global(.react-datepicker__day-name) {
+  color: var(--color-terminal-text);
+}
+
+.datePickerGroup :global(.react-datepicker__day),
+.datePickerGroup :global(.react-datepicker__time-name) {
+  color: var(--color-terminal-text);
+  border-radius: 0;
+}
+
+.datePickerGroup :global(.react-datepicker__day:hover) {
+  background-color: var(--color-terminal-header);
+  color: var(--color-terminal-bg);
+}
+
+.datePickerGroup :global(.react-datepicker__day--selected),
+.datePickerGroup :global(.react-datepicker__day--in-selecting-range),
+.datePickerGroup :global(.react-datepicker__day--in-range),
+.datePickerGroup :global(.react-datepicker__month-text--selected),
+.datePickerGroup :global(.react-datepicker__month-text--in-selecting-range),
+.datePickerGroup :global(.react-datepicker__month-text--in-range),
+.datePickerGroup :global(.react-datepicker__quarter-text--selected),
+.datePickerGroup :global(.react-datepicker__quarter-text--in-selecting-range),
+.datePickerGroup :global(.react-datepicker__quarter-text--in-range),
+.datePickerGroup :global(.react-datepicker__year-text--selected),
+.datePickerGroup :global(.react-datepicker__year-text--in-selecting-range),
+.datePickerGroup :global(.react-datepicker__year-text--in-range) {
+  background-color: var(--color-terminal-header);
+  color: var(--color-terminal-bg);
+  font-weight: bold;
+}
+
+.datePickerGroup :global(.react-datepicker__day--keyboard-selected),
+.datePickerGroup :global(.react-datepicker__month-text--keyboard-selected),
+.datePickerGroup :global(.react-datepicker__quarter-text--keyboard-selected),
+.datePickerGroup :global(.react-datepicker__year-text--keyboard-selected) {
+  background-color: var(--color-terminal-header);
+  color: var(--color-terminal-bg);
+}
+
+.datePickerGroup :global(.react-datepicker__navigation-icon::before) {
+  border-color: var(--color-terminal-header);
+}
+
+.datePickerGroup :global(.react-datepicker__navigation:hover *::before) {
+  border-color: var(--color-terminal-header);
+}
+
+.controlGroup input[type="text"]::placeholder {
+  color: var(--color-terminal-text);
+  outline: none;
+  cursor: pointer;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.controlGroup select:focus,
+.controlGroup input[type="date"]:focus {
+  border-color: var(--color-terminal-text);
+  color: var(--color-terminal-text);
+}
+
+.controlGroup input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) sepia(1) saturate(5) hue-rotate(35deg);
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .dashboardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

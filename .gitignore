@@ -10,3 +10,7 @@ notebooks/
 logs/
 
 node_modules/
+
+.vscode/
+
+.vite

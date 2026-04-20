@@ -1,0 +1,65 @@
+:root {
+  --color-terminal-bg: #000000;
+  --color-terminal-card: #09090b;
+  --color-terminal-muted: #a1a1aa;
+  --color-terminal-border: #27272a;
+  --color-terminal-pos: #00FF00;
+  --color-terminal-neg: #FF0000;
+  --color-terminal-header: #FFB800;
+  --color-terminal-text: #FFFFFF;
+}
+
+html,
+body,
+#root {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--color-terminal-bg);
+  color: var(--color-terminal-text);
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  transition: none;
+  animation: none;
+  border-radius: 0;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+select, input, button {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--color-terminal-bg);
+  border: 1px solid var(--color-terminal-header);
+  color: var(--color-terminal-text);
+  outline: none;
+}
+
+select:focus, input:focus {
+  border-color: var(--color-terminal-text);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background-color: var(--color-terminal-bg);
+  border-left: 1px solid var(--color-terminal-border);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-terminal-border);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-terminal-muted);
+}

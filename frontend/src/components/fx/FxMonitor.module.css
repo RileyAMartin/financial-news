@@ -1,0 +1,113 @@
+.fxContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}
+
+.topRow {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  gap: 1rem;
+}
+
+.gridContainer {
+  flex: 0 0 40%;
+  border: 1px solid var(--color-terminal-header);
+  background-color: var(--color-terminal-bg);
+  overflow-y: auto;
+}
+
+.brutalistTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.75rem;
+}
+
+.brutalistTable th {
+  background-color: var(--color-terminal-header);
+  color: var(--color-terminal-bg);
+  padding: 0.5rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brutalistTable td {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--color-terminal-border);
+}
+
+.cellPair {
+  color: var(--color-terminal-text);
+  font-weight: bold;
+}
+
+.cellRate {
+  color: var(--color-terminal-text);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.cellPos {
+  color: var(--color-terminal-pos);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.cellNeg {
+  color: var(--color-terminal-neg);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.cellNeutral {
+  color: var(--color-terminal-muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.empty {
+  color: var(--color-terminal-muted);
+  text-align: center;
+  font-style: italic;
+  padding: 2rem;
+}
+
+.chartContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-terminal-border);
+  background-color: var(--color-terminal-bg);
+}
+
+.chartHeader {
+  background-color: var(--color-terminal-border);
+  color: var(--color-terminal-text);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.chartWrapper {
+  flex: 1;
+  padding: 0.5rem 0.5rem 0.5rem 0;
+  position: relative;
+  min-height: 0;
+}
+
+.loading {
+  color: var(--color-terminal-header);
+  padding: 1rem;
+}
+
+.error {
+  color: var(--color-terminal-neg);
+  padding: 1rem;
+}

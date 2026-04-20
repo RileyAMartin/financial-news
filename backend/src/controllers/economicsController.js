@@ -4,14 +4,14 @@ import { economicsService } from "../services/economicsService.js";
 export const economicsController = {
   async getCountryDashboard(req, res) {
     const { countryCode } = req.params;
-    const { startDate, endDate, currencyCode, frequency } = req.query;
+    const { startDate, endDate, targetCurrencyCode, frequency } = req.query;
 
     const dashboardData = await economicsService.getCountryDashboard(
       countryCode,
-      startDate,
-      endDate,
       {
-        currencyCode,
+        startDate,
+        endDate,
+        targetCurrencyCode,
         frequency,
       }
     );
