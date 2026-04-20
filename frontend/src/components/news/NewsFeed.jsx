@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import styles from "./newsFeed.module.css";
+import styles from "./NewsFeed.module.css";
 import { UI_CONSTANTS } from "../../utils/constants";
 
 // Renders an infinite-scroll news feed for a given country/currency context
