@@ -102,6 +102,7 @@
     flex-direction: column;
     height: auto;
     overflow: visible;
+    gap: 1.5rem;
   }
 
   .colLeft, 
@@ -109,6 +110,7 @@
     width: 100%;
     height: auto;
     border-right: none;
+    gap: 1.5rem;
   }
 
   .mapPane,
