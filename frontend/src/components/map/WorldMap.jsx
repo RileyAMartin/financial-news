@@ -135,7 +135,7 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry, countries,
     return (
       <div className={`${styles.mapPanel} ${styles.loadingPanel}`}>
         <span className="spinner" aria-hidden="true" />
-        <span>Loading world map...</span>
+        <span>LOADING WORLD MAP...</span>
       </div>
     );
   }
