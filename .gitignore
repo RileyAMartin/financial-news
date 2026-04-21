@@ -1,16 +1,18 @@
+# Python
 .venv
 venv
-gcloud_creds.json
-
-.env
-.env.*
 __pycache__/
 
+# Credentials
+gcloud_creds.json
+.env
+.env.*
+
+# Local data
+.vscode/
 notebooks/
 logs/
 
+# JS
 node_modules/
-
-.vscode/
-
-.vite
+.vite/
