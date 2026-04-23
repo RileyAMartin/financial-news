@@ -33,7 +33,7 @@ export function FxMonitor({
   const { summaryGrid, chartData } = useMemo(() => {
     if (!data || data.length === 0) return { summaryGrid: [], chartData: [] };
 
-    // 1. Group data by quote currency to find latest/previous and starting values
+    // Group data by quote currency to find latest/previous and starting values
     const groupedByQuote = {};
     data.forEach((row) => {
       const q = row.quote_currency_code;
@@ -49,7 +49,6 @@ export function FxMonitor({
       if (!series || series.length < 1) return;
 
       // Extract latest vs previous for grid
-      // Data is assumed to be sorted ASC by period_key from API
       const latest = series[series.length - 1];
       const previous = series.length > 1 ? series[series.length - 2] : latest;
 
@@ -68,8 +67,8 @@ export function FxMonitor({
       startRates[quote] = series[0].fx_rate;
     });
 
-    // 2. Build multi-line chart data (rebased to 100)
-    // First, pivot data so each row is a single day with multiple currency values
+    // Build chart data rebased to 100
+    // Pivot data so each row is a single day with multiple currency values
     const recordsByPeriod = {};
     data.forEach((row) => {
       if (!recordsByPeriod[row.period_key]) {
