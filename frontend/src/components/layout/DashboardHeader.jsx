@@ -77,6 +77,7 @@ export function DashboardHeader({
               onBlur={handleCalendarClose}
               dateFormat="yyyy-MM-dd"
               className={styles.datePicker}
+              portalId="root-portal"
               showYearDropdown
               dropdownMode="select"
             />
@@ -90,6 +91,7 @@ export function DashboardHeader({
               onBlur={handleCalendarClose}
               dateFormat="yyyy-MM-dd"
               className={styles.datePicker}
+              portalId="root-portal"
               showYearDropdown
               dropdownMode="select"
             />
