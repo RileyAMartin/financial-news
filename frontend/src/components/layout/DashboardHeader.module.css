@@ -74,11 +74,11 @@
   outline: 1px solid var(--color-terminal-header);
 }
 
-.datePickerGroup :global(.react-datepicker-wrapper) {
+:global(.react-datepicker-wrapper) {
   width: 100%;
 }
 
-.datePickerGroup :global(.react-datepicker) {
+:global(.react-datepicker) {
   font-family: inherit;
   background-color: var(--color-terminal-bg);
   color: var(--color-terminal-text);
@@ -86,7 +86,7 @@
   border-radius: 0;
 }
 
-.datePickerGroup :global(.react-datepicker__year-select) {
+:global(.react-datepicker__year-select) {
   background-color: var(--color-terminal-bg);
   color: var(--color-terminal-header);
   border: 1px solid var(--color-terminal-header);
@@ -97,67 +97,67 @@
   outline: none;
 }
 
-.datePickerGroup :global(.react-datepicker__year-select:focus) {
+:global(.react-datepicker__year-select:focus) {
   outline: 1px solid var(--color-terminal-header);
 }
 
-.datePickerGroup :global(.react-datepicker__header) {
+:global(.react-datepicker__header) {
   background-color: var(--color-terminal-bg);
   border-bottom: 1px solid var(--color-terminal-header);
   border-radius: 0;
 }
 
-.datePickerGroup :global(.react-datepicker__current-month),
-.datePickerGroup :global(.react-datepicker-time__header),
-.datePickerGroup :global(.react-datepicker-year-header) {
+:global(.react-datepicker__current-month),
+:global(.react-datepicker-time__header),
+:global(.react-datepicker-year-header) {
   color: var(--color-terminal-header);
 }
 
-.datePickerGroup :global(.react-datepicker__day-name) {
+:global(.react-datepicker__day-name) {
   color: var(--color-terminal-text);
 }
 
-.datePickerGroup :global(.react-datepicker__day),
-.datePickerGroup :global(.react-datepicker__time-name) {
+:global(.react-datepicker__day),
+:global(.react-datepicker__time-name) {
   color: var(--color-terminal-text);
   border-radius: 0;
 }
 
-.datePickerGroup :global(.react-datepicker__day:hover) {
+:global(.react-datepicker__day:hover) {
   background-color: var(--color-terminal-header);
   color: var(--color-terminal-bg);
 }
 
-.datePickerGroup :global(.react-datepicker__day--selected),
-.datePickerGroup :global(.react-datepicker__day--in-selecting-range),
-.datePickerGroup :global(.react-datepicker__day--in-range),
-.datePickerGroup :global(.react-datepicker__month-text--selected),
-.datePickerGroup :global(.react-datepicker__month-text--in-selecting-range),
-.datePickerGroup :global(.react-datepicker__month-text--in-range),
-.datePickerGroup :global(.react-datepicker__quarter-text--selected),
-.datePickerGroup :global(.react-datepicker__quarter-text--in-selecting-range),
-.datePickerGroup :global(.react-datepicker__quarter-text--in-range),
-.datePickerGroup :global(.react-datepicker__year-text--selected),
-.datePickerGroup :global(.react-datepicker__year-text--in-selecting-range),
-.datePickerGroup :global(.react-datepicker__year-text--in-range) {
+:global(.react-datepicker__day--selected),
+:global(.react-datepicker__day--in-selecting-range),
+:global(.react-datepicker__day--in-range),
+:global(.react-datepicker__month-text--selected),
+:global(.react-datepicker__month-text--in-selecting-range),
+:global(.react-datepicker__month-text--in-range),
+:global(.react-datepicker__quarter-text--selected),
+:global(.react-datepicker__quarter-text--in-selecting-range),
+:global(.react-datepicker__quarter-text--in-range),
+:global(.react-datepicker__year-text--selected),
+:global(.react-datepicker__year-text--in-selecting-range),
+:global(.react-datepicker__year-text--in-range) {
   background-color: var(--color-terminal-header);
   color: var(--color-terminal-bg);
   font-weight: bold;
 }
 
-.datePickerGroup :global(.react-datepicker__day--keyboard-selected),
-.datePickerGroup :global(.react-datepicker__month-text--keyboard-selected),
-.datePickerGroup :global(.react-datepicker__quarter-text--keyboard-selected),
-.datePickerGroup :global(.react-datepicker__year-text--keyboard-selected) {
+:global(.react-datepicker__day--keyboard-selected),
+:global(.react-datepicker__month-text--keyboard-selected),
+:global(.react-datepicker__quarter-text--keyboard-selected),
+:global(.react-datepicker__year-text--keyboard-selected) {
   background-color: var(--color-terminal-header);
   color: var(--color-terminal-bg);
 }
 
-.datePickerGroup :global(.react-datepicker__navigation-icon::before) {
+:global(.react-datepicker__navigation-icon::before) {
   border-color: var(--color-terminal-header);
 }
 
-.datePickerGroup :global(.react-datepicker__navigation:hover *::before) {
+:global(.react-datepicker__navigation:hover *::before) {
   border-color: var(--color-terminal-header);
 }
 
