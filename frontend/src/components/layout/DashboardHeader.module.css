@@ -55,7 +55,7 @@
 }
 
 .controlGroup select,
-.customDatePicker {
+.datePicker {
   width: 100%;
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
@@ -70,11 +70,10 @@
 }
 
 .controlGroup select:focus,
-.customDatePicker:focus {
+.datePicker:focus {
   outline: 1px solid var(--color-terminal-header);
 }
 
-/* Global overrides for react-datepicker to match brutalism */
 .datePickerGroup :global(.react-datepicker-wrapper) {
   width: 100%;
 }

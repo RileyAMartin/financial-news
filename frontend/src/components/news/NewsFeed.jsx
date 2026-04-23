@@ -19,7 +19,7 @@ export function NewsFeed({ items, hasMore, loading, error, onLoadMore }) {
           onLoadMore();
         }
       },
-      { 
+      {
         root: containerRef.current,
         rootMargin: UI_CONSTANTS.NEWS.INTERSECTION_ROOT_MARGIN 
       }

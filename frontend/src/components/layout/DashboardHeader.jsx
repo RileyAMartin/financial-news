@@ -16,7 +16,6 @@ export function DashboardHeader({
   onDateRangeChange,
   onCurrencyChange,
 }) {
-  // Convert YYYY-MM-DD string to Date object safely
   const parseDateString = (dateStr) => {
     if (!dateStr) return null;
     const parts = dateStr.split("-");
@@ -77,9 +76,7 @@ export function DashboardHeader({
               onCalendarClose={handleCalendarClose}
               onBlur={handleCalendarClose}
               dateFormat="yyyy-MM-dd"
-              className={styles.customDatePicker}
-              calendarClassName={styles.brutalistCalendar}
-              portalId="root-portal"
+              className={styles.datePicker}
               showYearDropdown
               dropdownMode="select"
             />
@@ -92,9 +89,7 @@ export function DashboardHeader({
               onCalendarClose={handleCalendarClose}
               onBlur={handleCalendarClose}
               dateFormat="yyyy-MM-dd"
-              className={styles.customDatePicker}
-              calendarClassName={styles.brutalistCalendar}
-              portalId="root-portal"
+              className={styles.datePicker}
               showYearDropdown
               dropdownMode="select"
             />
