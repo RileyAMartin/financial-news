@@ -34,7 +34,12 @@ describe("fxService.getFxSeries", () => {
 
   it("should use provided dates instead of bounds", async () => {
     mockGetQuarterlyRates.mockResolvedValue([
-      { period_key: "2020-Q1", base_currency_code: "EUR", fx_rate: 1.2, source_code: "SRC" },
+      {
+        period_key: "2020-Q1",
+        base_currency_code: "EUR",
+        fx_rate: 1.2,
+        source_code: "SRC",
+      },
     ]);
 
     const result = await fxService.getFxSeries("EUR", {
@@ -60,7 +65,12 @@ describe("fxService.getFxSeries", () => {
       max_date: "2020-12-31",
     });
     mockGetDailyRates.mockResolvedValue([
-      { period_key: "2020-01-01", base_currency_code: "JPY", fx_rate: 0.007, source_code: "SRC" },
+      {
+        period_key: "2020-01-01",
+        base_currency_code: "JPY",
+        fx_rate: 0.007,
+        source_code: "SRC",
+      },
     ]);
 
     const result = await fxService.getFxSeries("JPY", {
@@ -83,8 +93,18 @@ describe("fxService.getFxSeries", () => {
       max_date: "2020-12-31",
     });
     mockGetDailyRates.mockResolvedValue([
-      { period_key: "2020-01-01", base_currency_code: "AUD", fx_rate: 0.75, source_code: "SRC1" },
-      { period_key: "2020-01-01", base_currency_code: "GBP", fx_rate: 1.30, source_code: "SRC2" },
+      {
+        period_key: "2020-01-01",
+        base_currency_code: "AUD",
+        fx_rate: 0.75,
+        source_code: "SRC1",
+      },
+      {
+        period_key: "2020-01-01",
+        base_currency_code: "GBP",
+        fx_rate: 1.3,
+        source_code: "SRC2",
+      },
     ]);
 
     const result = await fxService.getFxSeries("AUD", {
@@ -98,11 +118,11 @@ describe("fxService.getFxSeries", () => {
       "2020-12-31"
     );
     expect(result.data).toHaveLength(2); // One for USD, one for GBP
-    
-    const gbpResult = result.data.find(d => d.quote_currency_code === "GBP");
-    expect(gbpResult.fx_rate).toBeCloseTo(0.75 / 1.30); // Base USD rate / Target USD rate
-    
-    const usdResult = result.data.find(d => d.quote_currency_code === "USD");
+
+    const gbpResult = result.data.find((d) => d.quote_currency_code === "GBP");
+    expect(gbpResult.fx_rate).toBeCloseTo(0.75 / 1.3); // Base USD rate / Target USD rate
+
+    const usdResult = result.data.find((d) => d.quote_currency_code === "USD");
     expect(usdResult.fx_rate).toBe(0.75); // Target is USD, so just base rate (0.75 / 1.0)
   });
 });

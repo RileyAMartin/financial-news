@@ -1,3 +1,7 @@
+import { readFileSync } from "fs";
+// import path
+import path from "path";
+
 const config = {
   port: process.env.PORT || 8080,
   nodeEnv: process.env.NODE_ENV || "production",

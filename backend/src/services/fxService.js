@@ -12,22 +12,28 @@ const toNumeric = (value) => {
 
 export const fxService = {
   async getFxSeries(currencyCode, options = {}) {
-    const { frequency = FREQUENCIES.QUARTERLY, startDate, endDate, targetCurrencies } = options;
+    const {
+      frequency = FREQUENCIES.QUARTERLY,
+      startDate,
+      endDate,
+      targetCurrencies,
+    } = options;
 
     const baseCurrencyCode = currencyCode;
-    const quoteCurrencies = (targetCurrencies || ["USD"]).map((c) => c.toUpperCase());
-    
+    const quoteCurrencies = (targetCurrencies || ["USD"]).map((c) =>
+      c.toUpperCase()
+    );
+
     // We need rates for the base currency and all target currencies to calculate cross rates.
     // They are all stored as X to USD (where X is the base_currency_code and USD is the quote_currency_code)
-    const currenciesToFetch = Array.from(new Set([baseCurrencyCode, ...quoteCurrencies])).filter((c) => c !== "USD");
+    const currenciesToFetch = Array.from(
+      new Set([baseCurrencyCode, ...quoteCurrencies])
+    ).filter((c) => c !== "USD");
 
     const bounds =
       startDate && endDate
         ? { min_date: startDate, max_date: endDate }
-        : await fxRepository.getDateBounds(
-            currenciesToFetch,
-            frequency
-          );
+        : await fxRepository.getDateBounds(currenciesToFetch, frequency);
 
     if (!bounds?.min_date || !bounds?.max_date) {
       return {
@@ -65,10 +71,15 @@ export const fxService = {
     const ratesByPeriod = {};
     for (const row of rows) {
       if (!ratesByPeriod[row.period_key]) {
-        ratesByPeriod[row.period_key] = { rates: { USD: 1.0 }, source_code: row.source_code };
+        ratesByPeriod[row.period_key] = {
+          rates: { USD: 1.0 },
+          source_code: row.source_code,
+        };
       }
-      ratesByPeriod[row.period_key].rates[row.base_currency_code] = toNumeric(row.fx_rate);
-      
+      ratesByPeriod[row.period_key].rates[row.base_currency_code] = toNumeric(
+        row.fx_rate
+      );
+
       // Override source code if it's the base currency to show the right source
       if (row.base_currency_code === baseCurrencyCode) {
         ratesByPeriod[row.period_key].source_code = row.source_code;
@@ -78,14 +89,18 @@ export const fxService = {
     const calculatedData = [];
     for (const [period, data] of Object.entries(ratesByPeriod)) {
       const baseToUsdRate = data.rates[baseCurrencyCode];
-      
+
       // If we don't have the origin rate for this period, skip it
       if (baseToUsdRate === undefined || baseToUsdRate === null) continue;
 
       for (const target of quoteCurrencies) {
         const targetToUsdRate = data.rates[target];
-        
-        if (targetToUsdRate !== undefined && targetToUsdRate !== null && targetToUsdRate !== 0) {
+
+        if (
+          targetToUsdRate !== undefined &&
+          targetToUsdRate !== null &&
+          targetToUsdRate !== 0
+        ) {
           // If base is CAD (CAD->USD=0.75) and target is GBP (GBP->USD=1.30)
           // 1 CAD = 0.75 USD -> 1 CAD = (0.75 / 1.30) GBP
           const crossRate = baseToUsdRate / targetToUsdRate;
@@ -110,7 +125,9 @@ export const fxService = {
           fx_rate: `[Quotes] per ${baseCurrencyCode}`,
         },
       },
-      data: calculatedData.sort((a, b) => a.period_key.localeCompare(b.period_key)),
+      data: calculatedData.sort((a, b) =>
+        a.period_key.localeCompare(b.period_key)
+      ),
     };
   },
 };

@@ -22,7 +22,7 @@ steps:
       - --platform=managed
       - --allow-unauthenticated
       - --update-env-vars=NODE_ENV=production,FRONTEND_URL=https://finance.rileymartin.me
-      - --set-secrets=DB_URL=COCKROACH_DB_URL:latest,DB_CERT=COCKROACH_DB_CERT:latest
+      - --set-secrets=DB_URL=DB_URL:latest,DB_CERT=DB_CERT:latest
 
 images:
   - gcr.io/$PROJECT_ID/financial-news-backend
