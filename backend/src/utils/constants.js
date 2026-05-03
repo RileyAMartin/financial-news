@@ -16,6 +16,7 @@ export const RESPONSE_MESSAGES = {
   DATE_RANGE_REQUIRED: "startDate and endDate are required.",
   DATE_RANGE_MALFORMED: "startDate and endDate must be in YYYY-MM-DD format.",
   DATE_RANGE_INVALID: "Invalid date range.",
+  MAP_DATA_UNAVAILABLE: "Map data unavailable.",
   FREQUENCY_MALFORMED: "frequency must be one of: Q or D.",
   PAGE_MALFORMED: "page must be a positive integer.",
   GENERIC_ERROR: "An error occurred. Please try again.",
