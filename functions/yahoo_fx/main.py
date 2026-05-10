@@ -15,6 +15,11 @@ def ingest_daily_fx_yahoo(request):
     if not isinstance(start_date, str):
         return "Invalid parameter: 'start_date' must be a string in format YYYY-MM-DD", 400
 
+    # If no end_date provided, default to 2 days after start_date
+    end_date = payload.get("end_date") or start_date + datetime.timedelta(days=2)
+    if not isinstance(end_date, str):
+        return "Invalid parameter: 'end_date' must be a string in format YYYY-MM-DD", 400
+
     client = bigquery.Client()
     table_id = "international-finance-484205.raw_data.fx_raw"
     
@@ -26,7 +31,7 @@ def ingest_daily_fx_yahoo(request):
     currency_codes = currency_df['currency_code'].unique()
     tickers = [f"{code}USD=X" for code in currency_codes if code != 'USD']
     
-    data = yf.download(tickers, start=start_date, interval="1d", group_by='ticker', threads=True)
+    data = yf.download(tickers, start=start_date, end=end_date, interval="1d", group_by='ticker', threads=True)
     
     all_records = []
     
