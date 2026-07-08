@@ -15,6 +15,8 @@ export function DashboardHeader({
   onCountryChange,
   onDateRangeChange,
   onCurrencyChange,
+  onNavigate,
+  currentView,
 }) {
   const parseDateString = (dateStr) => {
     if (!dateStr) return null;
@@ -58,6 +60,9 @@ export function DashboardHeader({
   return (
     <section className={styles.dashboardHeader}>
       <div className={styles.headerLeft}>
+        <button className={styles.navButton} onClick={() => onNavigate && onNavigate(currentView === "projectOverview" ? "dashboard" : "projectOverview")}>
+          {currentView === "projectOverview" ? "Dashboard" : "Project Overview"}
+        </button>
         <h1>
           {selectedCountryDetails?.display_name || "Loading Country..."}
           {selectedCountryDetails && (
@@ -163,4 +168,6 @@ DashboardHeader.propTypes = {
   onCountryChange: PropTypes.func.isRequired,
   onDateRangeChange: PropTypes.func.isRequired,
   onCurrencyChange: PropTypes.func.isRequired,
+  onNavigate: PropTypes.func,
+  currentView: PropTypes.string,
 };

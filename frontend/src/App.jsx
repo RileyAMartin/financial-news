@@ -1,5 +1,7 @@
 import styles from "./App.module.css";
+import { useState } from "react";
 import { DashboardHeader } from "./components/layout/DashboardHeader";
+import ProjectOverview from "./components/pages/ProjectOverview";
 import { WorldMap } from "./components/map/WorldMap";
 import { MetricsPanel } from "./components/metrics/MetricsPanel";
 import { NewsFeed } from "./components/news/NewsFeed";
@@ -8,6 +10,7 @@ import { useDashboardController } from "./hooks/useDashboardController";
 
 export default function App() {
   const { state, actions, data } = useDashboardController();
+  const [view, setView] = useState("dashboard");
 
   return (
     <div className={styles.dashboardShell}>
@@ -22,10 +25,15 @@ export default function App() {
           onCountryChange={actions.handleCountryChange}
           onDateRangeChange={actions.setDateRange}
           onCurrencyChange={actions.setTargetCurrency}
+          onNavigate={(to) => setView(to)}
+          currentView={view}
         />
       </div>
 
-      <div className={styles.panesContainer}>
+      {view === "projectOverview" ? (
+        <ProjectOverview />
+      ) : (
+        <div className={styles.panesContainer}>
         {/* Column 1: Map and News */}
         <div className={styles.colLeft}>
           <div className={`${styles.pane} ${styles.mapPane}`}>
@@ -87,6 +95,7 @@ export default function App() {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }
