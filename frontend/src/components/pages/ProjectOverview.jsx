@@ -19,7 +19,7 @@ export default function ProjectOverview() {
           This platform is an end-to-end data engineering project designed to automatically ingest, model, and visualise global financial data. The goal was to build a centralised monitor that connects daily currency fluctuations and macro-economic indicators with the headlines driving them.
         </p>
         <p>
-          The entire pipeline is structured as an enterprise-grade data platform, utilising modular architecture, data warehousing design, and automated orchestration.
+          The entire pipeline utilises modular architecture, data warehousing, and automated orchestration to schedule and run each pipeline.
         </p>
 
         <h3>The Tech Stack</h3>
