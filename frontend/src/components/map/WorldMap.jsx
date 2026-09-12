@@ -26,7 +26,6 @@ const MAP_STYLE = {
   },
 };
 
-
 function MapInteractions({ onDragStart, onDragEnd, onZoomStart }) {
   const map = useMapEvents({
     dragstart: () => {
@@ -68,6 +67,8 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry, countries,
   const hoveredLayerRef = useRef(null);
 
   const availableCountryCodes = countries ? countries.map((c) => c.country_code) : [];
+
+  const cartoApiKey = import.meta.env.VITE_CARTO_API_KEY || "";
 
   const clearHover = () => {
     if (hoveredLayerRef.current) {
@@ -165,7 +166,7 @@ export function WorldMap({ geoJson, selectedCountry, onSelectCountry, countries,
           />
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-            url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
+            url={`https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png?key=${cartoApiKey}`}
             noWrap={true}
             bounds={[
               [-90, -180],
